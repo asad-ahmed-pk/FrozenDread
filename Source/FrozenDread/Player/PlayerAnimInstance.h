@@ -9,8 +9,10 @@
 #include "Animation/AnimInstance.h"
 #include "PlayerAnimInstance.generated.h"
 
+class APlayerCharacter;
+
 /**
- * 
+ * Animation instance for the player.
  */
 UCLASS()
 class FROZENDREAD_API UPlayerAnimInstance : public UAnimInstance
@@ -21,4 +23,10 @@ public:
 	virtual void NativeInitializeAnimation() override;
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+private:
+	TWeakObjectPtr<APlayerCharacter> PlayerCharacter { nullptr };
+
+	bool ShouldMove { false };
+	bool IsFalling { false };
 };
