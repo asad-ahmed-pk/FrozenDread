@@ -6,8 +6,10 @@
 #include "FrozenDread/Player/PlayerAnimInstance.h"
 
 #include "FrozenDread/Player/PlayerCharacter.h"
+#include "FrozenDread/Player/GamePlayerState.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerState.h"
 
 constexpr double MIN_GROUND_SPEED_TO_MOVE { 3.0 };
 
@@ -27,10 +29,9 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	if (PlayerCharacter.IsValid())
 	{
-		// Update anim parameters
+		// Movement
 		const UCharacterMovementComponent* MovementComponent { CastChecked<UCharacterMovementComponent>(PlayerCharacter->GetMovementComponent()) };
 
-		// Movement
 		const FVector Velocity { MovementComponent->Velocity };
 		const FVector GroundVelocity { Velocity.X, Velocity.Y, 0.0 };
 		const double Acceleration { MovementComponent->GetCurrentAcceleration().Length() };
@@ -40,5 +41,12 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		
 		// Falling
 		IsFalling = MovementComponent->IsFalling();
+
+		// Is wearing the exo suit?
+		if (const APlayerState* PlayerState { PlayerCharacter->GetPlayerState() })
+		{
+			const AGamePlayerState* GamePlayerState = CastChecked<AGamePlayerState>(PlayerState);
+			IsWearingExoSuit = GamePlayerState->GetIsWearingSuit();
+		}
 	}
 }

@@ -7,6 +7,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -33,6 +34,10 @@ APlayerCharacter::APlayerCharacter()
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	MainCamera->SetupAttachment(GetMesh(), TEXT("head"));
 
+	// ExoSuit mesh
+	ExoSuitMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ExoSuitMesh"));
+	ExoSuitMesh->SetupAttachment(GetCapsuleComponent());
+
 	// Other settings
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -50,6 +55,9 @@ void APlayerCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	// Hide the ExoSuit mesh
+	ExoSuitMesh->SetVisibility(false, true);
 }
 
 // Called every frame
@@ -112,3 +120,9 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void APlayerCharacter::SwitchToExoSuit() const
+{
+	MainCamera->AttachToComponent(ExoSuitMesh, FAttachmentTransformRules::KeepWorldTransform, TEXT("head"));
+	ExoSuitMesh->SetVisibility(true, true);
+	GetMesh()->SetVisibility(false, true);
+}

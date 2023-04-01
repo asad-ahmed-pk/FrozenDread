@@ -25,14 +25,17 @@ public:
 	virtual void NativeBeginPlay() override;
 
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
 	bool ShouldMove { false };
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
 	bool IsFalling { false };
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
 	double GroundSpeed { 0.0 };
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Suit", meta=(AllowPrivateAccess = "true"))
+	bool IsWearingExoSuit { false };
 
 private:
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter { nullptr };
