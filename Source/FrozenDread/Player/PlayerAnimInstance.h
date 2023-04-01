@@ -7,9 +7,12 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "MetasoundSource.h"
+
 #include "PlayerAnimInstance.generated.h"
 
 class APlayerCharacter;
+class UMetaSoundSource;
 
 /**
  * Animation instance for the player.
@@ -24,6 +27,9 @@ public:
 
 	virtual void NativeBeginPlay() override;
 
+	UFUNCTION(BlueprintCallable)
+	void PlayFootStepSound();
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
 	bool ShouldMove { false };
@@ -36,6 +42,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Suit", meta=(AllowPrivateAccess = "true"))
 	bool IsWearingExoSuit { false };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sounds", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UMetaSoundSource> ExoSuitWalkingSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sounds", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UMetaSoundSource> ManWalkingSound;
 
 private:
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter { nullptr };

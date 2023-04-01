@@ -8,6 +8,7 @@
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/Player/GamePlayerState.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerState.h"
 
@@ -20,6 +21,24 @@ void UPlayerAnimInstance::NativeBeginPlay()
 	// Cache player character reference
 	if (AActor* Owner { GetOwningActor() }) {
 		PlayerCharacter = CastChecked<APlayerCharacter>(Owner);
+	}
+}
+
+void UPlayerAnimInstance::PlayFootStepSound()
+{
+	check(PlayerCharacter.IsValid());
+
+	AGamePlayerState* PlayerState { CastChecked<AGamePlayerState>(PlayerCharacter->GetPlayerState()) };
+
+	if (PlayerState->GetIsWearingSuit())
+	{
+		check(ExoSuitWalkingSound);
+		UGameplayStatics::PlaySound2D(this, ExoSuitWalkingSound);
+	}
+	else
+	{
+		check(ManWalkingSound);
+		UGameplayStatics::PlaySound2D(this, ManWalkingSound);
 	}
 }
 

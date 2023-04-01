@@ -33,8 +33,10 @@ void AGamePlayerController::Tick(float DeltaTime)
 	
 }
 
-void AGamePlayerController::SwitchPlayerSuit()
+void AGamePlayerController::SwitchPlayerSuit() const
 {
-	check(PlayerCharacter.IsValid());
+	check(PlayerCharacter.IsValid() && GamePlayerState.IsValid());
+	
 	PlayerCharacter->SwitchToExoSuit();
+	GamePlayerState->SetIsWearingSuit(true);
 }

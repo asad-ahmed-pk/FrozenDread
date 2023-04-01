@@ -27,7 +27,7 @@ public:
 
 private:
 	// Switch to wearing the exo suit.
-	void SwitchPlayerSuit();
+	void SwitchPlayerSuit() const;
 
 private:
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
