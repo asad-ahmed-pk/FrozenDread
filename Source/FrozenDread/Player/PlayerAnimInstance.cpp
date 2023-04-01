@@ -11,10 +11,9 @@
 
 constexpr double MIN_GROUND_SPEED_TO_MOVE { 3.0 };
 
-
-void UPlayerAnimInstance::NativeInitializeAnimation()
+void UPlayerAnimInstance::NativeBeginPlay()
 {
-	Super::NativeInitializeAnimation();
+	Super::NativeBeginPlay();
 
 	// Cache player character reference
 	if (AActor* Owner { GetOwningActor() }) {
@@ -34,13 +33,12 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		// Movement
 		const FVector Velocity { MovementComponent->Velocity };
 		const FVector GroundVelocity { Velocity.X, Velocity.Y, 0.0 };
-		const double GroundSpeed { GroundVelocity.Length() };
 		const double Acceleration { MovementComponent->GetCurrentAcceleration().Length() };
 
+		GroundSpeed  =  GroundVelocity.Length();
 		ShouldMove = (GroundSpeed > MIN_GROUND_SPEED_TO_MOVE && Acceleration > 0.0);
 		
 		// Falling
 		IsFalling = MovementComponent->IsFalling();
 	}
 }
-

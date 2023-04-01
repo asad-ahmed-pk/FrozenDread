@@ -20,13 +20,20 @@ class FROZENDREAD_API UPlayerAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 
 public:
-	virtual void NativeInitializeAnimation() override;
-
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	virtual void NativeBeginPlay() override;
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess))
+	bool ShouldMove { false };
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess))
+	bool IsFalling { false };
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess))
+	double GroundSpeed { 0.0 };
 
 private:
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter { nullptr };
-
-	bool ShouldMove { false };
-	bool IsFalling { false };
 };
