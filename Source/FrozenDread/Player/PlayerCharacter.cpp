@@ -5,6 +5,8 @@
 
 #include "PlayerCharacter.h"
 
+#include "FrozenDread/Gameplay/InteractionComponent.h"
+
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -38,6 +40,10 @@ APlayerCharacter::APlayerCharacter()
 	ExoSuitMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ExoSuitMesh"));
 	ExoSuitMesh->SetupAttachment(GetCapsuleComponent());
 
+	// Interaction component
+	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>(TEXT("Interaction Component"));
+	AddOwnedComponent(InteractionComponent);
+
 	// Other settings
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -66,7 +72,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-//////////////////////////////////////////////// MOVEMENT ////////////////////////////////////////////////
+//////////////////////////////////////////////// INPUT ////////////////////////////////////////////////
 
 // Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -81,6 +87,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+
+		// Use Action
+		EnhancedInputComponent->BindAction(UseAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Use);
 	}
 }
 
@@ -119,6 +128,17 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
+
+void APlayerCharacter::Use(const FInputActionValue& Value)
+{
+	// Input is a binary action
+	if (Value.Get<bool>())
+	{
+		InteractionComponent->InteractWithCurrentItem();
+	}
+}
+
+//////////////////////////////////////////////// EVENTS ////////////////////////////////////////////////
 
 void APlayerCharacter::SwitchToExoSuit() const
 {

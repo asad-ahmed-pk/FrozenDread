@@ -14,6 +14,10 @@ void AGamePlayerController::BeginPlay()
 
 	PlayerCharacter = CastChecked<APlayerCharacter>(GetCharacter());
 	GamePlayerState = GetPlayerState<AGamePlayerState>();
+
+#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
+IsWearingSuitCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("game.debug.player.is_wearing_suit"));
+#endif
 }
 
 void AGamePlayerController::Tick(float DeltaTime)
@@ -23,14 +27,12 @@ void AGamePlayerController::Tick(float DeltaTime)
 #if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
 	if (GamePlayerState.IsValid())
 	{
-		const IConsoleVariable* CVar { IConsoleManager::Get().FindConsoleVariable(TEXT("game.debug.player.is_wearing_suit")) };
-		if (const bool IsWearingCVar { CVar->GetInt() == 1 })
+		if (IsWearingSuitCVar->GetInt() == 1)
 		{
 			SwitchPlayerSuit();
 		}
 	}
 #endif
-	
 }
 
 void AGamePlayerController::SwitchPlayerSuit() const

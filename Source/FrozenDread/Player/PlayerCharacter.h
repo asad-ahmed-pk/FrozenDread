@@ -15,6 +15,7 @@ class USkeletalMeshComponent;
 class UInputAction;
 class UInputComponent;
 class UInputMappingContext;
+class UInteractionComponent;
 
 UCLASS()
 class FROZENDREAD_API APlayerCharacter : public ACharacter
@@ -46,6 +47,9 @@ private:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	/** Called for pressing the 'use' key */
+	void Use(const FInputActionValue& Value);
+
 private:
 	/** Main FPS Camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
@@ -55,15 +59,22 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Mesh", meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> ExoSuitMesh;
 
+	/** Interaction component for interacting with the world */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UInteractionComponent> InteractionComponent;
+
 	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MoveAction;
 
 	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> LookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> UseAction;
 };

@@ -11,6 +11,7 @@
 
 class APlayerCharacter;
 class AGamePlayerState;
+class IConsoleVariable;
 
 /**
  * Main player controller class for the game
@@ -25,11 +26,15 @@ public:
 	
 	virtual void Tick(float DeltaTime) override;
 
-private:
 	// Switch to wearing the exo suit.
 	void SwitchPlayerSuit() const;
+
 
 private:
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
 	TWeakObjectPtr<AGamePlayerState> GamePlayerState;
+
+#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
+	IConsoleVariable* IsWearingSuitCVar { nullptr };
+#endif
 };
