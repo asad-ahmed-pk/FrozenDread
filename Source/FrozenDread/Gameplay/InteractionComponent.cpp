@@ -5,9 +5,10 @@
 
 #include "FrozenDread/Gameplay/InteractionComponent.h"
 
-#include "InteractiveObject.h"
+#include "FrozenDread/Gameplay/InteractiveObject.h"
 #include "FrozenDread/Player/GamePlayerController.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
+#include "FrozenDread/UI/InteractionWidget.h"
 
 
 // Sets default values for this component's properties
@@ -33,6 +34,7 @@ void UInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if (PlayerCharacter.IsValid())
 	{
 		QueryForInteractiveObjects();
+		UpdateUI();
 	}
 }
 
@@ -43,16 +45,42 @@ void UInteractionComponent::InteractWithCurrentItem() const
 	}
 }
 
+void UInteractionComponent::SetInteractionWidget(UInteractionWidget* Widget)
+{
+	InteractionWidget = Widget;
+	InteractionWidget->Show(false);
+}
+
 void UInteractionComponent::SetCurrentInteractiveObject(IInteractiveObject* Object)
 {
 	if (CurrentObject != nullptr)
 	{
-		if (CurrentObject != Object) {
+		if (CurrentObject != Object)
+		{
 			CurrentObject->SetHighlighted(false);
 		}
 	}
 
 	CurrentObject = Object;
+}
+
+void UInteractionComponent::UpdateUI() const
+{
+	if (CurrentObject != nullptr)
+	{
+		if (InteractionWidget)
+		{
+			const FString String { FString::Printf(TEXT("[E] %s"), *CurrentObject->DisplayText().ToString()) };
+			const FText Text { FText::FromString(String) };
+
+			InteractionWidget->SetInteractionText(Text);
+			InteractionWidget->Show(true);
+
+			return;
+		}
+	}
+
+	InteractionWidget->Show(false);
 }
 
 void UInteractionComponent::QueryForInteractiveObjects()

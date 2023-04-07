@@ -40,6 +40,9 @@ public:
 	// Switch the mesh to ExoSuit
 	void SwitchToExoSuit() const;
 
+	// Get a reference to the interaction component
+	FORCEINLINE UInteractionComponent* GetInteractionComponent() const { return InteractionComponent.Get(); }
+
 private:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);

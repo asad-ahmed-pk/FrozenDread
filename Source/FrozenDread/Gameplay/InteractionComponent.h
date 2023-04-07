@@ -10,6 +10,7 @@
 #include "InteractionComponent.generated.h"
 
 class APlayerCharacter;
+class UInteractionWidget;
 class IInteractiveObject;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -30,12 +31,17 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	/** Trigger an interaction event with the current item being looked at */
 	void InteractWithCurrentItem() const;
+
+	/** Set an unowned reference to interaction widget to show and hide */
+	void SetInteractionWidget(UInteractionWidget* Widget);
 
 private:
 	void QueryForInteractiveObjects();
 	void SetCurrentInteractiveObject(IInteractiveObject* Object);
 	void GetLineTraceFromScreen(FVector& Start, FVector& End) const;
+	void UpdateUI() const;
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Properties", meta=(AllowPrivateAccess = "true"))
@@ -46,5 +52,6 @@ private:
 
 private:
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
+	UInteractionWidget* InteractionWidget;
 	IInteractiveObject* CurrentObject { nullptr };
 };
