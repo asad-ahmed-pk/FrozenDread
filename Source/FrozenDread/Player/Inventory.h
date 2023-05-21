@@ -22,12 +22,12 @@ class FROZENDREAD_API UInventory : public UObject
 	GENERATED_BODY()
 
 public:
-	/** Add the given inventory item component to this inventory */
-	void AddItemToInventory(TSharedPtr<AInventoryItem> InventoryItemComponent);
+	/** Add the given inventory item to this inventory */
+	void AddItemToInventory(AInventoryItem* InventoryItem);
 
 	/** Query inventory system to see if the player has the given item type of ID */
-	bool HasItem(EGameItemType ItemType, uint8 ID);
+	bool HasItem(EGameItemType ItemType, uint8 ID) const;
 	
 private:
-	TArray<TSharedPtr<AInventoryItem>> Items;
+	TArray<TWeakObjectPtr<AInventoryItem>> Items;
 };

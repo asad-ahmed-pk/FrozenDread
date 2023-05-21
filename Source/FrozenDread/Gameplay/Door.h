@@ -69,6 +69,7 @@ public:
 
 private:
 	void CoolDownComplete() { CanInteract = true; }
+	bool PlayerHasKeyCard(APlayerCharacter* PlayerCharacter) const;
 
 private:
 	/** The direction the door moves in when opened */

@@ -6,6 +6,7 @@
 #include "PlayerCharacter.h"
 
 #include "FrozenDread/Gameplay/InteractionComponent.h"
+#include "FrozenDread/Player/Inventory.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -17,7 +18,7 @@
 //////////////////////////////////////////////// UE FUNCTIONS ////////////////////////////////////////////////
 
 // Sets default values
-APlayerCharacter::APlayerCharacter()
+APlayerCharacter::APlayerCharacter() : Inventory(CreateDefaultSubobject<UInventory>(TEXT("Inventory")))
 {
 	// Capsule setup
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);

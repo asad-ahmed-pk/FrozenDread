@@ -7,16 +7,16 @@
 
 #include "FrozenDread/Gameplay/InventoryItem.h"
 
-void UInventory::AddItemToInventory(TSharedPtr<AInventoryItem> InventoryItemComponent)
+void UInventory::AddItemToInventory(AInventoryItem* InventoryItem)
 {
-	Items.Add(InventoryItemComponent);
+	Items.Add(InventoryItem);
 }
 
-bool UInventory::HasItem(EGameItemType ItemType, uint8 ID)
+bool UInventory::HasItem(EGameItemType ItemType, uint8 ID) const
 {
 	for (const auto& Item : Items)
 	{
-		if (Item->GetGameItemType() == ItemType && Item->GetItemID() == static_cast<int32>(ID))
+		if (Item.IsValid() && Item->GetGameItemType() == ItemType && Item->GetItemID() == static_cast<int32>(ID))
 		{
 			return true;
 		}

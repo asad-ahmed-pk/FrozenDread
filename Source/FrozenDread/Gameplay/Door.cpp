@@ -9,6 +9,9 @@
 #include "Components/SceneComponent.h"
 #include "Kismet/GameplayStatics.h"
 
+#include "FrozenDread/Player/Inventory.h"
+#include "FrozenDread/Player/PlayerCharacter.h"
+
 // Sets default values
 ADoor::ADoor()
 {
@@ -56,7 +59,17 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 		break;
 
 	case EDoorLockState::RequiresKeyCard:
-		// TODO: Query player's inventory system and unlock if matching keycard is available
+		// Query player's inventory system and unlock if matching key card is in the inventory
+		if (PlayerHasKeyCard(PlayerCharacter))
+		{
+			check(UnlockSound);
+			UGameplayStatics::PlaySoundAtLocation(this, UnlockSound, GetActorLocation());
+			LockState = EDoorLockState::Unlocked;
+		}
+		else
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, AccessDeniedSound, GetActorLocation());
+		}
 		break;
 	}
 
@@ -80,4 +93,17 @@ FText ADoor::DisplayText() const
 	{
 		return ClosedStateText;
 	}
+}
+
+// Check if the player has the key card for unlocking this door
+bool ADoor::PlayerHasKeyCard(APlayerCharacter* PlayerCharacter) const
+{
+	check(KeyCardID != EKeyCardID::None);
+	
+	check(PlayerCharacter);
+
+	UInventory* Inventory { PlayerCharacter->GetInventory() };
+	check(Inventory);
+
+	return (Inventory->HasItem(EGameItemType::KeyCard, static_cast<uint8>(KeyCardID)));
 }

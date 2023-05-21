@@ -16,6 +16,7 @@ class UInputAction;
 class UInputComponent;
 class UInputMappingContext;
 class UInteractionComponent;
+class UInventory;
 
 UCLASS()
 class FROZENDREAD_API APlayerCharacter : public ACharacter
@@ -42,6 +43,9 @@ public:
 
 	// Get a reference to the interaction component
 	FORCEINLINE UInteractionComponent* GetInteractionComponent() const { return InteractionComponent.Get(); }
+
+	// Get a reference to the player's inventory system
+	FORCEINLINE UInventory* GetInventory() const { return Inventory; }
 
 private:
 	/** Called for movement input */
@@ -80,4 +84,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> UseAction;
+
+private:
+	TObjectPtr<UInventory> Inventory { nullptr };
 };
