@@ -7,10 +7,13 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/SceneComponent.h"
+#include "Components/TimelineComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "FrozenDread/Player/Inventory.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
+#include "FrozenDread/UI/DoorLockStatusWidget.h"
 
 // Sets default values
 ADoor::ADoor()
@@ -27,6 +30,12 @@ ADoor::ADoor()
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Door Mesh"));
 	DoorMesh->SetupAttachment(RootComponent);
 
+	// World UMG widgets for the lock status
+	LockStatusWidgetFront = CreateDefaultSubobject<UWidgetComponent>(TEXT("Lock Status Widget (Front)"));
+	LockStatusWidgetFront->SetupAttachment(DoorMesh);
+	LockStatusWidgetBack = CreateDefaultSubobject<UWidgetComponent>(TEXT("Lock Status Widget (Back)"));
+	LockStatusWidgetBack->SetupAttachment(DoorMesh);
+
 	// Other settings
 	PrimaryActorTick.bCanEverTick = false;
 }
@@ -35,6 +44,12 @@ ADoor::ADoor()
 void ADoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ADoor::BeginPlay()
+{
+	Super::BeginPlay();
+	SetLockStatusWidgets(LockState != EDoorLockState::Unlocked);
 }
 
 /////////////////////////////////////////// IInteractiveObject Interface ///////////////////////////////////////////
@@ -65,6 +80,7 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 			check(UnlockSound);
 			UGameplayStatics::PlaySoundAtLocation(this, UnlockSound, GetActorLocation());
 			LockState = EDoorLockState::Unlocked;
+			SetLockStatusWidgets(false);
 		}
 		else
 		{
@@ -95,6 +111,8 @@ FText ADoor::DisplayText() const
 	}
 }
 
+/////////////////////////////////////////// Door Functionality ///////////////////////////////////////////
+
 // Check if the player has the key card for unlocking this door
 bool ADoor::PlayerHasKeyCard(APlayerCharacter* PlayerCharacter) const
 {
@@ -102,8 +120,25 @@ bool ADoor::PlayerHasKeyCard(APlayerCharacter* PlayerCharacter) const
 	
 	check(PlayerCharacter);
 
-	UInventory* Inventory { PlayerCharacter->GetInventory() };
+	const UInventory* Inventory { PlayerCharacter->GetInventory() };
 	check(Inventory);
 
 	return (Inventory->HasItem(EGameItemType::KeyCard, static_cast<uint8>(KeyCardID)));
+}
+
+// Update the widget to show the locked the status
+void ADoor::SetLockStatusWidgets(bool IsLocked) const
+{
+	UDoorLockStatusWidget* WidgetFront { CastChecked<UDoorLockStatusWidget>(LockStatusWidgetFront->GetWidget()) };
+	WidgetFront->SetIsLocked(IsLocked);
+	UDoorLockStatusWidget* WidgetBack { CastChecked<UDoorLockStatusWidget>(LockStatusWidgetBack->GetWidget()) };
+	WidgetBack->SetIsLocked(IsLocked);
+}
+
+void ADoor::Unlock()
+{
+	LockState = EDoorLockState::Unlocked;
+	SetLockStatusWidgets(false);
+	check(UnlockSound);
+	UGameplayStatics::PlaySoundAtLocation(this, UnlockSound, GetActorLocation());
 }

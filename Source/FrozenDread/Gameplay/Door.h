@@ -37,6 +37,8 @@ enum class EDoorMoveDirection : uint8
 class UBoxComponent;
 class USceneComponent;
 class UStaticMeshComponent;
+class UWidgetComponent;
+class UTimelineComponent;
 
 UCLASS()
 class FROZENDREAD_API ADoor : public AActor, public IInteractiveObject
@@ -50,8 +52,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void BeginPlay() override;
+
 	// Unlock the door (can only be done if state is locked)
-	void Unlock() { LockState = EDoorLockState::Unlocked; }
+	void Unlock();
 
 	// IInteractiveObject implementation
 
@@ -68,8 +72,9 @@ public:
 	FDoorInteractionEvent DoorInteractionEvent;
 
 private:
-	void CoolDownComplete() { CanInteract = true; }
 	bool PlayerHasKeyCard(APlayerCharacter* PlayerCharacter) const;
+	void CoolDownComplete() { CanInteract = true; }
+	void SetLockStatusWidgets(bool IsLocked) const;
 
 private:
 	/** The direction the door moves in when opened */
@@ -119,6 +124,14 @@ private:
 	/** True if the door is currently opened or closed */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Interaction", meta=(AllowPrivateAccess="true"))
 	bool IsOpen { false };
+
+	/** The UMG Widget for the door's lock / unlock world UI (front)*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UWidgetComponent> LockStatusWidgetFront;
+
+	/** The UMG Widget for the door's lock / unlock world UI (back)*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UWidgetComponent> LockStatusWidgetBack;
 
 private:
 	FTimerHandle CoolDownTimer;

@@ -7,6 +7,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+
 #include "InteractionWidget.generated.h"
 
 class UTextBlock;
