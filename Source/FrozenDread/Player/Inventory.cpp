@@ -10,6 +10,7 @@
 void UInventory::AddItemToInventory(AInventoryItem* InventoryItem)
 {
 	Items.Add(InventoryItem);
+	InventoryItemAddedEvent.Broadcast(InventoryItem);
 }
 
 bool UInventory::HasItem(EGameItemType ItemType, uint8 ID) const

@@ -8,6 +8,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+
 #include "PlayerCharacter.generated.h"
 
 class UCameraComponent;
@@ -41,11 +42,11 @@ public:
 	// Switch the mesh to ExoSuit
 	void SwitchToExoSuit() const;
 
+	// Get a reference to the player's inventory system
+	UInventory* GetInventory() const;
+
 	// Get a reference to the interaction component
 	FORCEINLINE UInteractionComponent* GetInteractionComponent() const { return InteractionComponent.Get(); }
-
-	// Get a reference to the player's inventory system
-	FORCEINLINE UInventory* GetInventory() const { return Inventory; }
 
 private:
 	/** Called for movement input */
@@ -84,7 +85,4 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> UseAction;
-
-private:
-	TObjectPtr<UInventory> Inventory { nullptr };
 };

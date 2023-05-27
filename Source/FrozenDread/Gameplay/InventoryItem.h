@@ -6,6 +6,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Actor.h"
 #include "MetasoundSource.h"
 
@@ -15,6 +16,7 @@
 #include "InventoryItem.generated.h"
 
 class UMetaSoundSource;
+class UTexture2D;
 
 UCLASS()
 class FROZENDREAD_API AInventoryItem : public AActor, public IInteractiveObject
@@ -36,6 +38,11 @@ public:
 	virtual FText DisplayText() const override { return InteractionText; }
 	virtual void Interact(APlayerCharacter* PlayerCharacter) override;
 
+	// Getters
+	FORCEINLINE FText GetTitleText() const { return TitleText; }
+	FORCEINLINE FText GetDescriptionText() const { return DescriptionText; }
+	UTexture2D* GetInventoryIcon() const { return InventoryIcon; }
+
 private:
 	/** The text to display as the title of the item in the inventory */
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
@@ -44,6 +51,10 @@ private:
 	/** The text to display as the description of the item in the inventory */
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
 	FText DescriptionText;
+
+	/** The icon to use in the inventory */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UTexture2D> InventoryIcon;
 
 	/** The text to display whe the player looks at the item */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction", meta=(AllowPrivateAccess="true"))

@@ -6,7 +6,7 @@
 #include "PlayerCharacter.h"
 
 #include "FrozenDread/Gameplay/InteractionComponent.h"
-#include "FrozenDread/Player/Inventory.h"
+#include "FrozenDread/Player/GamePlayerController.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -18,7 +18,7 @@
 //////////////////////////////////////////////// UE FUNCTIONS ////////////////////////////////////////////////
 
 // Sets default values
-APlayerCharacter::APlayerCharacter() : Inventory(CreateDefaultSubobject<UInventory>(TEXT("Inventory")))
+APlayerCharacter::APlayerCharacter()
 {
 	// Capsule setup
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -139,11 +139,18 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 	}
 }
 
-//////////////////////////////////////////////// EVENTS ////////////////////////////////////////////////
+//////////////////////////////////////////////// OTHER ////////////////////////////////////////////////
 
 void APlayerCharacter::SwitchToExoSuit() const
 {
 	MainCamera->AttachToComponent(ExoSuitMesh, FAttachmentTransformRules::KeepWorldTransform, TEXT("head"));
 	ExoSuitMesh->SetVisibility(true, true);
 	GetMesh()->SetVisibility(false, true);
+}
+
+UInventory* APlayerCharacter::GetInventory() const
+{
+	const AGamePlayerController* PlayerController { GetController<AGamePlayerController>() };
+	check(PlayerController);
+	return PlayerController->GetInventory();
 }
