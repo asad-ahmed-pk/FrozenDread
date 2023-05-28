@@ -132,11 +132,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::Use(const FInputActionValue& Value)
 {
-	// Input is a binary action
-	if (Value.Get<bool>())
-	{
-		InteractionComponent->InteractWithCurrentItem();
-	}
+	InteractionComponent->InteractWithCurrentItem();
 }
 
 //////////////////////////////////////////////// OTHER ////////////////////////////////////////////////

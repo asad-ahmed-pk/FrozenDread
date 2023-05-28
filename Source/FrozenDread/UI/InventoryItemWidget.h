@@ -12,6 +12,7 @@
 #include "InventoryItemWidget.generated.h"
 
 class UTextBlock;
+class UTexture2D;
 class UImage;
 
 /**
@@ -21,6 +22,10 @@ UCLASS()
 class FROZENDREAD_API UInventoryItemWidget : public UUserWidget, public IUserObjectListEntry
 {
 	GENERATED_BODY()
+
+public:
+	/** Highlight or un-highlight this widget */
+	void SetHighlighted(bool bIsHighlighted);
 	
 protected:
 	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
@@ -30,7 +35,20 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UTextBlock> TitleText;
 
-	/** The image icon to use for the item*/
+	/** The image icon to use for the item */
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UImage> IconImage;
+
+	/** The background image to use for the item */
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UImage> BackgroundImage;
+
+private:
+	/** The texture to use for the normal state of the item (not hovered) */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UTexture2D> DefaultBackgroundTexture;
+
+	/** The texture to use for the highlighted state of the item (hovered) */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UTexture2D> HighlightedTexture;
 };

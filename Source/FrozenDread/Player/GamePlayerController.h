@@ -16,6 +16,7 @@ class IConsoleVariable;
 class UInputMappingContext;
 class UInputAction;
 class UInventory;
+class UMetaSoundSource;
 
 /**
  * Main player controller class for the game
@@ -39,10 +40,10 @@ public:
 	FORCEINLINE UInventory* GetInventory() const { return Inventory; }
 
 protected:
-	virtual void SetupInputComponent() override;
-
-private:
+	UFUNCTION(BlueprintCallable, Category="Inventory")
 	void ToggleInventory();
+
+	virtual void SetupInputComponent() override;
 
 private:
 	/** MappingContext */
@@ -52,6 +53,10 @@ private:
 	/** Inventory Toggle Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> InventoryToggleAction;
+	
+	/** Sound to play when the player opens or closes the inventory */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sound", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UMetaSoundSource> InventoryToggleSound;
 
 private:
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;

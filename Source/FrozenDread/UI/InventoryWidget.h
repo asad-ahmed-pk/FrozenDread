@@ -14,6 +14,10 @@
 
 class AInventoryItem;
 class UTileView;
+class UTextBlock;
+class UButton;
+class UInventoryItemWidget;
+class UMetaSoundSource;
 
 /**
  * UMG Widget for presenting the player's inventory.
@@ -40,9 +44,25 @@ protected:
 
 	/** The title of the item currently being displayed */
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	FText CurrentSelectionTitle;
+	TObjectPtr<UTextBlock> CurrentSelectionTitle;
 
 	/** The description of the item currently being displayed */
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
-	FText CurrentSelectionDescription;
+	TObjectPtr<UTextBlock> CurrentSelectionDescription;
+
+	/** Close button to close the inventory */
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UButton> CloseButton;
+
+private:
+	/** The sound to play when the user hovers over an item */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sound", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UMetaSoundSource> HoverSound;
+
+	/** The sound to play when the user selects an item */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sound", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UMetaSoundSource> SelectionSound;
+
+private:
+    UInventoryItemWidget* CurrentSelectedItemWidget { nullptr };
 };

@@ -7,6 +7,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "FrozenDread/Gameplay/InteractionComponent.h"
 #include "FrozenDread/Player/GamePlayerState.h"
@@ -101,9 +102,22 @@ void AGamePlayerController::ToggleInventory()
 	if (IsViewingInventory)
 	{
 		PlayerCharacter->DisableInput(this);
+		const FInputModeGameAndUI InputMode;
+		SetInputMode(InputMode);
 	}
 	else
 	{
 		PlayerCharacter->EnableInput(this);
+		const FInputModeGameOnly InputMode;
+		SetInputMode(InputMode);
 	}
+
+	// Mouse pointer
+	bShowMouseCursor = IsViewingInventory;
+	bEnableClickEvents = IsViewingInventory;
+	bEnableMouseOverEvents = IsViewingInventory;
+
+	// Play inventory toggle sound
+	check(InventoryToggleSound);
+	UGameplayStatics::PlaySound2D(this, InventoryToggleSound);
 }

@@ -11,6 +11,16 @@
 
 #include "FrozenDread/Gameplay/InventoryItem.h"
 
+void UInventoryItemWidget::SetHighlighted(bool bIsHighlighted)
+{
+	// if already selected then ignore
+	check(DefaultBackgroundTexture);
+	check(HighlightedTexture);
+
+	const FSlateBrush Brush { UWidgetBlueprintLibrary::MakeBrushFromTexture(bIsHighlighted ? HighlightedTexture : DefaultBackgroundTexture) };
+	BackgroundImage->SetBrush(Brush);
+}
+
 void UInventoryItemWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	const AInventoryItem* Item { CastChecked<AInventoryItem>(ListItemObject) };
