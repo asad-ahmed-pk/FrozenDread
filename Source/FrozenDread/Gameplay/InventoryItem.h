@@ -49,7 +49,7 @@ private:
 	FText TitleText;
 
 	/** The text to display as the description of the item in the inventory */
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true", MultiLine="true"))
 	FText DescriptionText;
 
 	/** The icon to use in the inventory */

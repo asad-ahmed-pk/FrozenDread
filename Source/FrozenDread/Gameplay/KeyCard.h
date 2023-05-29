@@ -8,7 +8,6 @@
 #include "CoreMinimal.h"
 
 #include "FrozenDread/Gameplay/GameItems.h"
-#include "FrozenDread/Gameplay/InteractiveObject.h"
 #include "FrozenDread/Gameplay/InventoryItem.h"
 
 #include "KeyCard.generated.h"
