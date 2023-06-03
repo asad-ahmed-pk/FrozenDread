@@ -18,6 +18,11 @@ class FROZENDREAD_API AGameLevelScriptActor : public ALevelScriptActor
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
+
+	
+
+public:
 	UFUNCTION(BlueprintCallable)
 	void PlayIntroCutScene();
 

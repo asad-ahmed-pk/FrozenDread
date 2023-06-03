@@ -13,6 +13,7 @@
 #include "FrozenDread/Player/GamePlayerState.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/Player/Inventory.h"
+#include "FrozenDread/System/PlayerDialogueSubsystem.h"
 #include "FrozenDread/UI/GameHUD.h"
 #include "FrozenDread/UI/InventoryWidget.h"
 
@@ -49,6 +50,10 @@ void AGamePlayerController::BeginPlay()
 
 	// Setup InteractionComponent on the player character
 	PlayerCharacter->GetInteractionComponent()->SetInteractionWidget(GameHUD->GetInteractionWidget());
+
+	// Setup dialogue subsystem
+	UPlayerDialogueSubsystem* DialogueSubsystem { GetWorld()->GetSubsystem<UPlayerDialogueSubsystem>() };
+	DialogueSubsystem->Setup(GameHUD->GetDialogueWidget());
 
 #if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
 IsWearingSuitCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("game.debug.player.is_wearing_suit"));

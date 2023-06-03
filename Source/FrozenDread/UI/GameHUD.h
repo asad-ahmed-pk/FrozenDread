@@ -12,6 +12,7 @@
 class UUserWidget;
 class UInteractionWidget;
 class UInventoryWidget;
+class UDialogueWidget;
 
 /**
  * The main HUD to use during gameplay.
@@ -34,12 +35,21 @@ public:
 	/** Get the reference to the Inventory Widget */
 	UInventoryWidget* GetInventoryWidget() const;
 
+	/** Get the reference to the dialogue Widget */
+	UDialogueWidget* GetDialogueWidget() const;
+
 protected:
+	/** The BP class to use for the interaction widget */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UUserWidget> InteractionWidgetClass;
 
+	/** The BP class to use for the inventory widget */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UUserWidget> InventoryWidgetClass;
+
+	/** The BP class to use for the dialogue widget */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UUserWidget> DialogueWidgetClass;
 
 private:
 	UPROPERTY()
@@ -47,4 +57,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> InventoryWidget;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> DialogueWidget;
 };
