@@ -17,6 +17,12 @@
 /** Event triggered when the door is successfully interacted with */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDoorInteractionEvent);
 
+/** Player tried to interact with a locked door */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerTriedLockedDoorEvent);
+
+/** Player tried to interact with a locked door without the required key card */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerTriedLockedDoorNoKeyCardEvent);
+
 /** The states for the door's lock state. */
 UENUM(BlueprintType)
 enum class EDoorLockState : uint8
@@ -68,8 +74,18 @@ public:
 	// The display text to show for the 
 	virtual FText DisplayText() const override;
 
-	UPROPERTY(BlueprintAssignable)
+public:
+	/** Event for when the player interacts with a door */
+	UPROPERTY(BlueprintAssignable, Category="Interaction")
 	FDoorInteractionEvent DoorInteractionEvent;
+
+	/** Event for when the player tried to use a door for which there was no matching keycard */
+	UPROPERTY(BlueprintAssignable, Category="Interaction")
+	FPlayerTriedLockedDoorNoKeyCardEvent OnPlayerTriedLockedDoorNoKeyCard;
+
+	/** Event for when the player tried a door that was locked */
+	UPROPERTY(BlueprintAssignable, Category="Interaction")
+	FPlayerTriedLockedDoorEvent OnPlayerTriedLockedDoor;
 
 private:
 	bool PlayerHasKeyCard(APlayerCharacter* PlayerCharacter) const;

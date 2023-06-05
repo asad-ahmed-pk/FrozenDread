@@ -18,5 +18,5 @@ void UDoorLockStatusWidget::SetIsLocked(bool bLocked)
 void UDoorLockStatusWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	SetIsLocked(true);
+	SetIsLocked(IsLocked);
 }

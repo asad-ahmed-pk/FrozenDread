@@ -7,7 +7,6 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/SceneComponent.h"
-#include "Components/TimelineComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -70,6 +69,7 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 	case EDoorLockState::Locked:
 		// Access denied
 		check(AccessDeniedSound);
+		OnPlayerTriedLockedDoor.Broadcast();
 		UGameplayStatics::PlaySoundAtLocation(this, AccessDeniedSound, GetActorLocation());
 		break;
 
@@ -84,6 +84,8 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 		}
 		else
 		{
+			OnPlayerTriedLockedDoorNoKeyCard.Broadcast();
+			PlayerFailedToUnlockKeyCardDoor();
 			UGameplayStatics::PlaySoundAtLocation(this, AccessDeniedSound, GetActorLocation());
 		}
 		break;
