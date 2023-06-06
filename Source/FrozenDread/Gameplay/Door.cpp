@@ -85,7 +85,6 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 		else
 		{
 			OnPlayerTriedLockedDoorNoKeyCard.Broadcast();
-			PlayerFailedToUnlockKeyCardDoor();
 			UGameplayStatics::PlaySoundAtLocation(this, AccessDeniedSound, GetActorLocation());
 		}
 		break;
