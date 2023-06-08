@@ -28,7 +28,7 @@ void UPlayerAnimInstance::PlayFootStepSound()
 {
 	check(PlayerCharacter.IsValid());
 
-	AGamePlayerState* PlayerState { CastChecked<AGamePlayerState>(PlayerCharacter->GetPlayerState()) };
+	const AGamePlayerState* PlayerState { CastChecked<AGamePlayerState>(PlayerCharacter->GetPlayerState()) };
 
 	if (PlayerState->GetIsWearingSuit())
 	{
