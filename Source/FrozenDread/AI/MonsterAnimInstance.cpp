@@ -37,5 +37,5 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	const double Acceleration { MovementComponent->GetCurrentAcceleration().Length() };
 
 	GroundSpeed  =  GroundVelocity.Length();
-	ShouldMove = (GroundSpeed > MIN_GROUND_SPEED_TO_MOVE && Acceleration > 0.0);
+	ShouldMove = (GroundSpeed > MIN_GROUND_SPEED_TO_MOVE);
 }
