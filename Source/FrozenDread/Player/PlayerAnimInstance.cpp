@@ -12,7 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerState.h"
 
-constexpr double MIN_GROUND_SPEED_TO_MOVE { 3.0 };
+static constexpr double MIN_GROUND_SPEED_TO_MOVE { 3.0 };
 
 void UPlayerAnimInstance::NativeBeginPlay()
 {

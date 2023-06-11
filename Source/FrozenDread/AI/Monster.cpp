@@ -5,6 +5,7 @@
 
 #include "Monster.h"
 
+#include "EnvironmentDataComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -20,6 +21,9 @@ AMonster::AMonster()
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+
+	// Environment data component
+	EnvironmentDataComponent = CreateDefaultSubobject<UEnvironmentDataComponent>(TEXT("Environment Data Component"));
 	
 	// Other settings
 	PrimaryActorTick.bCanEverTick = true;
