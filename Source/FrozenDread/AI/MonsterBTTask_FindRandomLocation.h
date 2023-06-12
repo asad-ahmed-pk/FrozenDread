@@ -20,7 +20,7 @@ class FROZENDREAD_API UMonsterBTTask_FindRandomLocation : public UBTTask_Blackbo
 public:
 	UMonsterBTTask_FindRandomLocation();
 
-private:
+protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual FString GetStaticDescription() const override;
 	virtual void OnGameplayTaskActivated(UGameplayTask& Task) override;

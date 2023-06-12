@@ -5,9 +5,10 @@
 
 #include "FrozenDread/AI/MonsterAnimInstance.h"
 
-#include "FrozenDread/AI/Monster.h"
-
+#include "Animation/AnimMontage.h"
 #include "GameFramework/CharacterMovementComponent.h"
+
+#include "FrozenDread/AI/Monster.h"
 
 static constexpr double MIN_GROUND_SPEED_TO_MOVE { 3.0 };
 
@@ -34,8 +35,28 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	const FVector Velocity { MovementComponent->Velocity };
 	const FVector GroundVelocity { Velocity.X, Velocity.Y, 0.0 };
-	const double Acceleration { MovementComponent->GetCurrentAcceleration().Length() };
 
 	GroundSpeed  =  GroundVelocity.Length();
 	ShouldMove = (GroundSpeed > MIN_GROUND_SPEED_TO_MOVE);
+}
+
+void UMonsterAnimInstance::StartFeeding()
+{
+	check(FeedingAnimMontage);
+	
+	Montage_Stop(0.1F);
+	Montage_Play(FeedingAnimMontage);
+	Montage_JumpToSection(FName(TEXT("Start")), FeedingAnimMontage);
+}
+
+void UMonsterAnimInstance::StopFeeding()
+{
+	check(FeedingAnimMontage);
+	Montage_JumpToSection(FName(TEXT("Stop")), FeedingAnimMontage);
+}
+
+EMonsterState UMonsterAnimInstance::GetMonsterState() const
+{
+	check(Monster.IsValid());
+	return Monster->GetMonsterState();
 }

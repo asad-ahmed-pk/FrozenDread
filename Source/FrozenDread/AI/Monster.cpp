@@ -9,6 +9,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "FrozenDread/AI/MonsterAnimInstance.h"
+
 // Sets default values
 AMonster::AMonster()
 {
@@ -27,6 +29,40 @@ AMonster::AMonster()
 	
 	// Other settings
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AMonster::SetMonsterState(const EMonsterState& State)
+{
+	// Skip setting the state if there is no change
+	if (MonsterState == State)
+	{
+		return;
+	}
+
+	UMonsterAnimInstance* AnimInstance { CastChecked<UMonsterAnimInstance>(GetMesh()->GetAnimInstance()) };
+	
+	switch (State)
+	{
+	case EMonsterState::Feeding:
+		AnimInstance->StartFeeding();
+		break;
+
+	case EMonsterState::Alerted:
+		if (MonsterState == EMonsterState::Feeding)
+		{
+			// Notify anim instance to transition to end feeding animation
+			AnimInstance->StopFeeding();
+		}
+		else
+		{
+			// Nothing to do for the other cases
+		}
+
+	default:
+		break;
+	}
+
+	MonsterState = State;
 }
 
 // Called when the game starts or when spawned
