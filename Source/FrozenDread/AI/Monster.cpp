@@ -57,6 +57,15 @@ void AMonster::SetMonsterState(const EMonsterState& State)
 		{
 			// Nothing to do for the other cases
 		}
+		break;
+
+	case EMonsterState::HuntingPlayer:
+		if (MonsterState == EMonsterState::Feeding)
+		{
+			// Notify anim instance to transition to end feeding animation
+			AnimInstance->StopFeeding();
+		}
+		break;
 
 	default:
 		break;

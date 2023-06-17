@@ -33,6 +33,9 @@ public:
 	/** Stop feeding animation */
 	void StopFeeding();
 
+	UFUNCTION(BlueprintCallable, Category="Anim Notify")
+	void MonsterStoppedFeeding();
+
 	UFUNCTION(BlueprintCallable, Category="State")
 	EMonsterState GetMonsterState() const;
 

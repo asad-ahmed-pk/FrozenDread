@@ -14,6 +14,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 //////////////////////////////////////////////// UE FUNCTIONS ////////////////////////////////////////////////
 
@@ -44,6 +46,11 @@ APlayerCharacter::APlayerCharacter()
 	// Interaction component
 	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>(TEXT("Interaction Component"));
 	AddOwnedComponent(InteractionComponent);
+
+	// Perception stimuli source
+	PerceptionStimuliSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("PerceptionStimuliComponent"));
+	PerceptionStimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
+	PerceptionStimuliSource->RegisterWithPerceptionSystem();
 
 	// Other settings
 	PrimaryActorTick.bCanEverTick = true;

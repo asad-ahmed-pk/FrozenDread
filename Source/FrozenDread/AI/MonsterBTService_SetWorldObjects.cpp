@@ -9,10 +9,9 @@
 #include "Algo/MinElement.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+#include "FrozenDread/AI/BlackboardKeys.h"
 #include "FrozenDread/AI/Monster.h"
 #include "FrozenDread/AI/EnvironmentDataComponent.h"
-
-const FName CLOSEST_CORPSE_KEY_NAME { TEXT("Closest Corpse Location") };
 
 UMonsterBTService_SetWorldObjects::UMonsterBTService_SetWorldObjects()
 {
@@ -65,7 +64,7 @@ void UMonsterBTService_SetWorldObjects::TickNode(UBehaviorTreeComponent& OwnerCo
 
 	if (CorpseLocation)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsVector(CLOSEST_CORPSE_KEY_NAME, *CorpseLocation);
+		OwnerComp.GetBlackboardComponent()->SetValueAsVector(BlackBoardKey::CLOSEST_CORPSE_KEY_NAME, *CorpseLocation);
 	}
 }
 

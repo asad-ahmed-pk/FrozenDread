@@ -18,6 +18,8 @@ class UInputComponent;
 class UInputMappingContext;
 class UInteractionComponent;
 class UInventory;
+class UAISense;
+class UAIPerceptionStimuliSourceComponent;
 
 UCLASS()
 class FROZENDREAD_API APlayerCharacter : public ACharacter
@@ -83,6 +85,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> LookAction;
 
+	/** Use Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> UseAction;
+
+	/** The perception stimulant to get the player detected by the monster */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UAIPerceptionStimuliSourceComponent> PerceptionStimuliSource;
 };

@@ -5,7 +5,6 @@
 
 #include "FrozenDread/AI/MonsterAnimInstance.h"
 
-#include "Animation/AnimMontage.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "FrozenDread/AI/Monster.h"
@@ -45,14 +44,21 @@ void UMonsterAnimInstance::StartFeeding()
 	check(FeedingAnimMontage);
 	
 	Montage_Stop(0.1F);
-	Montage_Play(FeedingAnimMontage);
 	Montage_JumpToSection(FName(TEXT("Start")), FeedingAnimMontage);
+	Montage_Play(FeedingAnimMontage);
 }
 
 void UMonsterAnimInstance::StopFeeding()
 {
 	check(FeedingAnimMontage);
+	Montage_Stop(0.1);
 	Montage_JumpToSection(FName(TEXT("Stop")), FeedingAnimMontage);
+	Montage_Play(FeedingAnimMontage);
+}
+
+void UMonsterAnimInstance::MonsterStoppedFeeding()
+{
+	Montage_Stop(0.2F);
 }
 
 EMonsterState UMonsterAnimInstance::GetMonsterState() const

@@ -9,6 +9,11 @@
 #include "AIController.h"
 #include "MonsterAIController.generated.h"
 
+struct FAIStimulus;
+
+class AMonster;
+class UAIPerceptionComponent;
+class UAISenseConfig_Sight;
 class UBehaviorTreeComponent;
 class UBehaviorTree;
 
@@ -26,6 +31,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void Tick(float DeltaSeconds) override;
+
+private:
+	UFUNCTION()
+	void OnSightPerceptionUpdate(AActor* Actor, FAIStimulus Stimulus);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess="true"))
@@ -36,4 +46,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UBlackboardComponent> BlackboardComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Perception", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UAISenseConfig_Sight> SightConfig;
+
+private:
+	AMonster* Monster { nullptr };
 };
