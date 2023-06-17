@@ -39,30 +39,12 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	ShouldMove = (GroundSpeed > MIN_GROUND_SPEED_TO_MOVE);
 }
 
-void UMonsterAnimInstance::StartFeeding()
-{
-	check(FeedingAnimMontage);
-	
-	Montage_Stop(0.1F);
-	Montage_JumpToSection(FName(TEXT("Start")), FeedingAnimMontage);
-	Montage_Play(FeedingAnimMontage);
-}
-
-void UMonsterAnimInstance::StopFeeding()
-{
-	check(FeedingAnimMontage);
-	Montage_Stop(0.1);
-	Montage_JumpToSection(FName(TEXT("Stop")), FeedingAnimMontage);
-	Montage_Play(FeedingAnimMontage);
-}
-
-void UMonsterAnimInstance::MonsterStoppedFeeding()
-{
-	Montage_Stop(0.2F);
-}
-
 EMonsterState UMonsterAnimInstance::GetMonsterState() const
 {
-	check(Monster.IsValid());
-	return Monster->GetMonsterState();
+	if (Monster.IsValid())
+	{
+		return Monster->GetMonsterState();
+	}
+
+	return EMonsterState::Idle;
 }

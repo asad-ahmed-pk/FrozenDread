@@ -9,7 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-#include "FrozenDread/AI/MonsterAnimInstance.h"
+#include "FrozenDread/AI/MonsterAIController.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -31,53 +31,13 @@ AMonster::AMonster()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void AMonster::SetMonsterState(const EMonsterState& State)
-{
-	// Skip setting the state if there is no change
-	if (MonsterState == State)
-	{
-		return;
-	}
-
-	UMonsterAnimInstance* AnimInstance { CastChecked<UMonsterAnimInstance>(GetMesh()->GetAnimInstance()) };
-	
-	switch (State)
-	{
-	case EMonsterState::Feeding:
-		AnimInstance->StartFeeding();
-		break;
-
-	case EMonsterState::Alerted:
-		if (MonsterState == EMonsterState::Feeding)
-		{
-			// Notify anim instance to transition to end feeding animation
-			AnimInstance->StopFeeding();
-		}
-		else
-		{
-			// Nothing to do for the other cases
-		}
-		break;
-
-	case EMonsterState::HuntingPlayer:
-		if (MonsterState == EMonsterState::Feeding)
-		{
-			// Notify anim instance to transition to end feeding animation
-			AnimInstance->StopFeeding();
-		}
-		break;
-
-	default:
-		break;
-	}
-
-	MonsterState = State;
-}
-
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	Controller = GetController<AMonsterAIController>();
+	GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &AMonster::OnMontageCompleted);
 }
 
 // Called every frame
@@ -86,3 +46,33 @@ void AMonster::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AMonster::SetMonsterState(const EMonsterState& State)
+{
+	// Skip setting the state if there is no change
+	if (MonsterState == State)
+	{
+		return;
+	}
+
+	switch (State)
+	{
+	case EMonsterState::Alerted:
+		check(RageMontage);
+		PlayAnimMontage(RageMontage);
+		break;
+
+	default:
+		break;
+	}
+	
+	MonsterState = State;
+}
+
+void AMonster::OnMontageCompleted(UAnimMontage* Montage, bool WasInterrupted)
+{
+	if (Montage == RageMontage)
+	{
+		check(Controller);
+		Controller->MonsterRageCompleted();
+	}
+}

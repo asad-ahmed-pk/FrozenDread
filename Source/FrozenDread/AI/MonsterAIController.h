@@ -28,6 +28,9 @@ class FROZENDREAD_API AMonsterAIController : public AAIController
 public:
 	AMonsterAIController();
 
+	/** Call when monster has completed the rage animation sequence */
+	void MonsterRageCompleted() const;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
@@ -36,6 +39,8 @@ protected:
 private:
 	UFUNCTION()
 	void OnSightPerceptionUpdate(AActor* Actor, FAIStimulus Stimulus);
+
+	AActor* GetPerceivedPlayerCharacter() const;
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess="true"))

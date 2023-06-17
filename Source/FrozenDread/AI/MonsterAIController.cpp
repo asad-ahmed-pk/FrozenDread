@@ -66,20 +66,22 @@ void AMonsterAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	// Update the player's location if monster is currently hunting the player
+	// Update the player's location if monster is currently chasing the player
 	if (Monster && Monster->GetMonsterState() == EMonsterState::HuntingPlayer)
 	{
-		check(PerceptionComponent);
-
-		// The only actor the monster can chase is the player in this game
-		// safe to assume this is the player
-		TArray<AActor*> Actors;
-		PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), Actors);
-		if (Actors.Num() > 0)
+		if (const AActor* Player = GetPerceivedPlayerCharacter())
 		{
-			const FVector TargetLocation { Actors[0]->GetActorLocation() };
+			const FVector TargetLocation { Player->GetActorLocation() };
 			GetBlackboardComponent()->SetValueAsVector(BlackBoardKey::TARGET_LOCATION, TargetLocation);
 		}
+	}
+}
+
+void AMonsterAIController::MonsterRageCompleted() const
+{
+	if (GetPerceivedPlayerCharacter())
+	{
+		Monster->SetMonsterState(EMonsterState::HuntingPlayer);
 	}
 }
 
@@ -90,7 +92,7 @@ void AMonsterAIController::OnSightPerceptionUpdate(AActor* Actor, FAIStimulus St
 		APlayerCharacter* Player { Cast<APlayerCharacter>(Actor) };
 		if (Player != nullptr)
 		{
-			Monster->SetMonsterState(EMonsterState::HuntingPlayer);
+			Monster->SetMonsterState(EMonsterState::Alerted);
 			GetBlackboardComponent()->SetValueAsVector(BlackBoardKey::TARGET_LOCATION, Player->GetActorLocation());
 			SetFocus(Player);
 		}
@@ -100,5 +102,21 @@ void AMonsterAIController::OnSightPerceptionUpdate(AActor* Actor, FAIStimulus St
 		SetFocus(nullptr);
 		Monster->SetMonsterState(EMonsterState::Searching);
 	}
+}
+
+AActor* AMonsterAIController::GetPerceivedPlayerCharacter() const
+{
+	check(PerceptionComponent);
+
+	// The only actor the monster can chase is the player in this game
+	// safe to assume this is the player
+	TArray<AActor*> Actors;
+	PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), Actors);
+	if (Actors.Num() > 0)
+	{
+		return Actors[0];
+	}
+
+	return nullptr;
 }
 

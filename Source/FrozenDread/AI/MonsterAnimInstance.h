@@ -27,16 +27,8 @@ public:
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-	/** Start the feeding animation */
-	void StartFeeding();
-
-	/** Stop feeding animation */
-	void StopFeeding();
-
-	UFUNCTION(BlueprintCallable, Category="Anim Notify")
-	void MonsterStoppedFeeding();
-
-	UFUNCTION(BlueprintCallable, Category="State")
+protected:
+	UFUNCTION(BlueprintCallable, Category="State", meta=(BlueprintThreadSafe))
 	EMonsterState GetMonsterState() const;
 
 private:
@@ -46,9 +38,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true"))
 	double GroundSpeed { 0.0 };
 
-	/** The montage to use for the feeding animations */
+	/** The montage to use for the Scream animation */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UAnimMontage> FeedingAnimMontage;
+	TObjectPtr<UAnimMontage> ScreamMontage;
 
 private:
 	TWeakObjectPtr<AMonster> Monster { nullptr };

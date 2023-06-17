@@ -10,7 +10,10 @@
 #include "Monster.generated.h"
 
 class UEnvironmentDataComponent;
+class UAnimMontage;
+class AMonsterAIController;
 
+/** Enum for representing the monster's state */
 UENUM(BlueprintType)
 enum class EMonsterState : uint8
 {
@@ -54,9 +57,18 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UFUNCTION()
+	void OnMontageCompleted(UAnimMontage* Montage, bool WasInterrupted);
+
+private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UEnvironmentDataComponent> EnvironmentDataComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UAnimMontage> RageMontage;
+
 private:
 	EMonsterState MonsterState { EMonsterState::Idle };
+	AMonsterAIController* Controller { nullptr };
 };
+
