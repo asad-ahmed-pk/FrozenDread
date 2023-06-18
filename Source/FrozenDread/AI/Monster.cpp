@@ -18,11 +18,11 @@ AMonster::AMonster()
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	// Character movement config
-	GetCharacterMovement()->JumpZVelocity = 700.f;
-	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	MovementComponent = GetCharacterMovement();
+	MovementComponent->MaxWalkSpeed = DefaultMovementSpeed;
+	MovementComponent->MinAnalogWalkSpeed = 20.f;
+	MovementComponent->BrakingDecelerationWalking = 2000.f;
+
 
 	// Environment data component
 	EnvironmentDataComponent = CreateDefaultSubobject<UEnvironmentDataComponent>(TEXT("Environment Data Component"));
@@ -44,6 +44,16 @@ void AMonster::BeginPlay()
 void AMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// If chasing the player, increase speed every tick
+	if (MonsterState == EMonsterState::HuntingPlayer)
+	{
+		check(MovementComponent);
+		if (MovementComponent->MaxWalkSpeed <= MaxHuntingSpeed)
+		{
+			MovementComponent->MaxWalkSpeed += (DeltaTime * HuntingSpeedGainPerSecond);
+		}
+	}
 }
 
 void AMonster::SetMonsterState(const EMonsterState& State)
@@ -56,13 +66,28 @@ void AMonster::SetMonsterState(const EMonsterState& State)
 
 	switch (State)
 	{
+	case EMonsterState::Idle:
+		break;
+	
 	case EMonsterState::Alerted:
 		check(RageMontage);
 		PlayAnimMontage(RageMontage);
 		break;
 
-	default:
+	case EMonsterState::Feeding:
 		break;
+
+	case EMonsterState::Searching:
+		break;
+
+	case EMonsterState::HuntingPlayer:
+		break;
+	}
+
+	// Set movement speed back to normal if not hunting player
+	if (State != EMonsterState::HuntingPlayer)
+	{
+		MovementComponent->MaxWalkSpeed = DefaultMovementSpeed;
 	}
 	
 	MonsterState = State;

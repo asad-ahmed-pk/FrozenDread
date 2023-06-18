@@ -12,6 +12,7 @@
 class UEnvironmentDataComponent;
 class UAnimMontage;
 class AMonsterAIController;
+class UCharacterMovementComponent;
 
 /** Enum for representing the monster's state */
 UENUM(BlueprintType)
@@ -61,14 +62,30 @@ private:
 	void OnMontageCompleted(UAnimMontage* Montage, bool WasInterrupted);
 
 private:
+	/** The component that queries for data in the monster's surroundings */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UEnvironmentDataComponent> EnvironmentDataComponent;
 
+	/** The montage to use for the rage animation */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UAnimMontage> RageMontage;
+
+	/** The default speed of the monster when not chasing the player */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true"))
+	float DefaultMovementSpeed { 300.0F };
+
+	/** The max speed that can be reached when chasing the player */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true"))
+	float MaxHuntingSpeed { 500.0F };
+	
+	/** The increase in movement speed per second when the monster is hunting the player */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true"))
+	float HuntingSpeedGainPerSecond { 5.0F };
+
 
 private:
 	EMonsterState MonsterState { EMonsterState::Idle };
 	AMonsterAIController* Controller { nullptr };
+	UCharacterMovementComponent* MovementComponent { nullptr };
 };
 

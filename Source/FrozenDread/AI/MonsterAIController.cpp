@@ -77,11 +77,14 @@ void AMonsterAIController::Tick(float DeltaSeconds)
 	}
 }
 
-void AMonsterAIController::MonsterRageCompleted() const
+void AMonsterAIController::MonsterRageCompleted()
 {
 	if (GetPerceivedPlayerCharacter())
 	{
 		Monster->SetMonsterState(EMonsterState::HuntingPlayer);
+
+		// MonsterState key is only used for debugging and not actually used by the BT
+		GetBlackboardComponent()->SetValueAsEnum(BlackBoardKey::MONSTER_STATE, static_cast<uint8>(EMonsterState::HuntingPlayer));
 	}
 }
 
@@ -102,6 +105,10 @@ void AMonsterAIController::OnSightPerceptionUpdate(AActor* Actor, FAIStimulus St
 		SetFocus(nullptr);
 		Monster->SetMonsterState(EMonsterState::Searching);
 	}
+
+	// Setting enum value of the monster state for debugging only
+	const uint8 EnumValue { static_cast<uint8>(Monster->GetMonsterState()) };
+	GetBlackboardComponent()->SetValueAsEnum(BlackBoardKey::MONSTER_STATE, EnumValue);
 }
 
 AActor* AMonsterAIController::GetPerceivedPlayerCharacter() const

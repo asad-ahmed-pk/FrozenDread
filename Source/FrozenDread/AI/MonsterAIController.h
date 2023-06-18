@@ -29,7 +29,7 @@ public:
 	AMonsterAIController();
 
 	/** Call when monster has completed the rage animation sequence */
-	void MonsterRageCompleted() const;
+	void MonsterRageCompleted();
 
 protected:
 	virtual void BeginPlay() override;
