@@ -15,8 +15,10 @@ UMonsterBTDecorator_IsState::UMonsterBTDecorator_IsState()
 
 FString UMonsterBTDecorator_IsState::GetStaticDescription() const
 {
-	const TEnumAsByte StateEnum { State };
-	return FString::Printf(TEXT("Check if monster state is %s"), *UEnum::GetValueAsString(StateEnum.GetValue()));
+	const UEnum* EnumPtr { StaticEnum<EMonsterState>() };
+	const int32 EnumIndex { static_cast<int32>(State) };
+	const FString DisplayName { EnumPtr->GetDisplayNameTextByIndex(EnumIndex).ToString() };
+	return FString::Printf(TEXT("Check if monster state is %s"), *DisplayName);
 }
 
 void UMonsterBTDecorator_IsState::OnGameplayTaskActivated(UGameplayTask& Task)

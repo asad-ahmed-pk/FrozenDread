@@ -23,6 +23,9 @@ public:
 	// The player has interacted with the exo suit
 	void PlayerInteractedWithExoSuit(const APlayerCharacter* PlayerCharacter);
 
+	// The player was caught by the monster
+	void PlayerWasCaught() const;
+
 private:
 	bool PlayerIsWearingExoSuit { false };
 };

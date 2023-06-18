@@ -20,12 +20,8 @@ class FROZENDREAD_API AGameLevelScriptActor : public ALevelScriptActor
 public:
 	virtual void BeginPlay() override;
 
-	
-
 public:
-	UFUNCTION(BlueprintCallable)
-	void PlayIntroCutScene();
-
-	UFUNCTION(BlueprintCallable)
-	void PlayEndingCutScene();
+	// Trigger game over since player was caught
+	UFUNCTION(BlueprintNativeEvent)
+	void PlayerWasCaught();
 };

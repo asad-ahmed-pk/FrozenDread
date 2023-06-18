@@ -17,5 +17,4 @@ APlayGameMode::APlayGameMode()
 		ECVF_Cheat
 	);
 #endif
-	
 }

@@ -7,11 +7,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "FrozenDread/Gameplay/Event.h"
+
 #include "Monster.generated.h"
 
 class UEnvironmentDataComponent;
 class UAnimMontage;
 class AMonsterAIController;
+class USphereComponent;
 class UCharacterMovementComponent;
 
 /** Enum for representing the monster's state */
@@ -61,10 +65,17 @@ private:
 	UFUNCTION()
 	void OnMontageCompleted(UAnimMontage* Montage, bool WasInterrupted);
 
+	UFUNCTION()
+	void OnAttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 private:
 	/** The component that queries for data in the monster's surroundings */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UEnvironmentDataComponent> EnvironmentDataComponent;
+
+	/** The sphere used to determine when the monster will attack */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<USphereComponent> AttackSphere;
 
 	/** The montage to use for the rage animation */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
@@ -81,7 +92,6 @@ private:
 	/** The increase in movement speed per second when the monster is hunting the player */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true"))
 	float HuntingSpeedGainPerSecond { 5.0F };
-
 
 private:
 	EMonsterState MonsterState { EMonsterState::Idle };

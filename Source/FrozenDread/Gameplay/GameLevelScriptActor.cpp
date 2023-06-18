@@ -14,12 +14,7 @@ void AGameLevelScriptActor::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AGameLevelScriptActor::PlayIntroCutScene()
+void AGameLevelScriptActor::PlayerWasCaught_Implementation()
 {
-	
-}
-
-void AGameLevelScriptActor::PlayEndingCutScene()
-{
-	
+	UE_LOG(LogTemp, Warning, TEXT("Implement PlayerWasCaught() in BP"));
 }

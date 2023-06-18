@@ -52,6 +52,9 @@ APlayerCharacter::APlayerCharacter()
 	PerceptionStimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
 	PerceptionStimuliSource->RegisterWithPerceptionSystem();
 
+	// Player Tag
+	Tags.Add(FName("Player"));
+
 	// Other settings
 	PrimaryActorTick.bCanEverTick = true;
 }

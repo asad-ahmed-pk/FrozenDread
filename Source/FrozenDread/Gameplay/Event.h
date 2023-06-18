@@ -7,6 +7,7 @@
 
 class AInventoryItem;
 
+// TODO: Consider removing this since there is only 1 event declared here
 namespace Event
 {
 	namespace Inventory

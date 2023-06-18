@@ -7,9 +7,12 @@
 
 #include "EnvironmentDataComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "FrozenDread/AI/MonsterAIController.h"
+#include "FrozenDread/Game/PlayGameMode.h"
+#include "FrozenDread/System/GameEventSubsystem.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -23,6 +26,11 @@ AMonster::AMonster()
 	MovementComponent->MinAnalogWalkSpeed = 20.f;
 	MovementComponent->BrakingDecelerationWalking = 2000.f;
 
+	// Sphere component
+	AttackSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AttackSphere"));
+	AttackSphere->SetSphereRadius(100.0F);
+	AttackSphere->SetupAttachment(GetRootComponent());
+	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AMonster::OnAttackSphereBeginOverlap);
 
 	// Environment data component
 	EnvironmentDataComponent = CreateDefaultSubobject<UEnvironmentDataComponent>(TEXT("Environment Data Component"));
@@ -99,5 +107,17 @@ void AMonster::OnMontageCompleted(UAnimMontage* Montage, bool WasInterrupted)
 	{
 		check(Controller);
 		Controller->MonsterRageCompleted();
+	}
+}
+
+void AMonster::OnAttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	static const FName PlayerTag { "Player" };
+	if (OtherActor->ActorHasTag(PlayerTag))
+	{
+		// Report to the event subsystem that the player was caught
+		const UGameEventSubsystem* EventSubsystem { GetWorld()->GetSubsystem<UGameEventSubsystem>() };
+		check(EventSubsystem);
+		EventSubsystem->PlayerWasCaught();
 	}
 }
