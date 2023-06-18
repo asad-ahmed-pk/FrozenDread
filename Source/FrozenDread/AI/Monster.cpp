@@ -11,7 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "FrozenDread/AI/MonsterAIController.h"
-#include "FrozenDread/Game/PlayGameMode.h"
+#include "FrozenDread/Game/GameTags.h"
 #include "FrozenDread/System/GameEventSubsystem.h"
 
 // Sets default values
@@ -31,6 +31,9 @@ AMonster::AMonster()
 	AttackSphere->SetSphereRadius(100.0F);
 	AttackSphere->SetupAttachment(GetRootComponent());
 	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AMonster::OnAttackSphereBeginOverlap);
+
+	// Game tag
+	Tags.Add(GameTag::MONSTER);
 
 	// Environment data component
 	EnvironmentDataComponent = CreateDefaultSubobject<UEnvironmentDataComponent>(TEXT("Environment Data Component"));
@@ -112,8 +115,7 @@ void AMonster::OnMontageCompleted(UAnimMontage* Montage, bool WasInterrupted)
 
 void AMonster::OnAttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	static const FName PlayerTag { "Player" };
-	if (OtherActor->ActorHasTag(PlayerTag))
+	if (OtherActor->ActorHasTag(GameTag::PLAYER))
 	{
 		// Report to the event subsystem that the player was caught
 		const UGameEventSubsystem* EventSubsystem { GetWorld()->GetSubsystem<UGameEventSubsystem>() };

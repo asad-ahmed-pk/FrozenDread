@@ -5,6 +5,7 @@
 
 #include "PlayerCharacter.h"
 
+#include "FrozenDread/Game/GameTags.h"
 #include "FrozenDread/Gameplay/InteractionComponent.h"
 #include "FrozenDread/Player/GamePlayerController.h"
 
@@ -53,7 +54,7 @@ APlayerCharacter::APlayerCharacter()
 	PerceptionStimuliSource->RegisterWithPerceptionSystem();
 
 	// Player Tag
-	Tags.Add(FName("Player"));
+	Tags.Add(GameTag::PLAYER);
 
 	// Other settings
 	PrimaryActorTick.bCanEverTick = true;

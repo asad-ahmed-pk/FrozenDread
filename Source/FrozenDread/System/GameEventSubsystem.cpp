@@ -9,6 +9,12 @@
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/Player/GamePlayerController.h"
 
+void UGameEventSubsystem::Setup(APlayerCharacter* PlayerCharacter, AMonster* MonsterCharacter)
+{
+	Player = PlayerCharacter;
+	Monster = MonsterCharacter;
+}
+
 void UGameEventSubsystem::PlayerInteractedWithExoSuit(const APlayerCharacter* PlayerCharacter)
 {
 	check(PlayerCharacter);
@@ -23,6 +29,16 @@ void UGameEventSubsystem::PlayerInteractedWithExoSuit(const APlayerCharacter* Pl
 
 void UGameEventSubsystem::PlayerWasCaught() const
 {
+	// Disable monster
+	check(Monster.IsValid());
+	Monster->Destroy();
+
+	// Disable player input
+	check(Player.IsValid());
+	APlayerController* PlayerController { CastChecked<APlayerController>(Player->GetController()) };
+	Player->DisableInput(PlayerController);
+	
+	// Notify level script actor that the player was caught
 	AGameLevelScriptActor* LevelScript { CastChecked<AGameLevelScriptActor>(GetWorld()->GetLevelScriptActor()) };
 	LevelScript->PlayerWasCaught();
 }

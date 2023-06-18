@@ -9,7 +9,10 @@
 
 #include "FrozenDread/AI/Monster.h"
 
-constexpr double MIN_GROUND_SPEED_TO_MOVE { 3.0 };
+namespace
+{
+	constexpr double MIN_GROUND_SPEED_TO_MOVE { 3.0 };
+}
 
 void UMonsterAnimInstance::NativeBeginPlay()
 {

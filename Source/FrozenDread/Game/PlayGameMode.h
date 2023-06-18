@@ -16,4 +16,6 @@ class APlayGameMode : public AGameModeBase
 
 public:
 	APlayGameMode();
+
+	virtual void BeginPlay() override;
 };
