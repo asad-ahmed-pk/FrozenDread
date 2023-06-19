@@ -13,6 +13,7 @@ class UUserWidget;
 class UInteractionWidget;
 class UInventoryWidget;
 class UDialogueWidget;
+class UGameOverWidget;
 
 /**
  * The main HUD to use during gameplay.
@@ -38,6 +39,9 @@ public:
 	/** Get the reference to the dialogue Widget */
 	UDialogueWidget* GetDialogueWidget() const;
 
+	/** Get the reference to the game over Widget */
+	UGameOverWidget* GetGameOverWidget() const;
+
 protected:
 	/** The BP class to use for the interaction widget */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -51,6 +55,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UUserWidget> DialogueWidgetClass;
 
+	/** The BP class to use for the game over widget */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UUserWidget> GameOverWidgetClass;
+
 private:
 	UPROPERTY()
 	UUserWidget* InteractionWidget;
@@ -60,4 +68,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> DialogueWidget;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> GameOverWidget;
 };

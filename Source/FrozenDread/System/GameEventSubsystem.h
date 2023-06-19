@@ -31,6 +31,11 @@ public:
 	// The player was caught by the monster
 	void PlayerWasCaught() const;
 
+public:
+	// To be called when the death level sequence is completed
+	UFUNCTION(BlueprintCallable, Category="Level Events")
+	void DeathLevelSequenceFinished();
+
 private:
 	TWeakObjectPtr<APlayerCharacter> Player;
 	TWeakObjectPtr<AMonster> Monster;

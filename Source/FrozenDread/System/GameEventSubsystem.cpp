@@ -8,6 +8,8 @@
 #include "FrozenDread/Gameplay/GameLevelScriptActor.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/Player/GamePlayerController.h"
+#include "FrozenDread/UI/GameHUD.h"
+#include "FrozenDread/UI/GameOverWidget.h"
 
 void UGameEventSubsystem::Setup(APlayerCharacter* PlayerCharacter, AMonster* MonsterCharacter)
 {
@@ -41,4 +43,12 @@ void UGameEventSubsystem::PlayerWasCaught() const
 	// Notify level script actor that the player was caught
 	AGameLevelScriptActor* LevelScript { CastChecked<AGameLevelScriptActor>(GetWorld()->GetLevelScriptActor()) };
 	LevelScript->PlayerWasCaught();
+}
+
+void UGameEventSubsystem::DeathLevelSequenceFinished()
+{
+	check(Player.IsValid());
+	const AGameHUD* GameHUD { Player->GetController<APlayerController>()->GetHUD<AGameHUD>() };
+	UGameOverWidget* GameOverWidget { GameHUD->GetGameOverWidget() };
+	GameOverWidget->Show();
 }

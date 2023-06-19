@@ -5,6 +5,7 @@
 
 #include "FrozenDread/UI/GameHUD.h"
 
+#include "GameOverWidget.h"
 #include "FrozenDread/UI/InteractionWidget.h"
 #include "FrozenDread/UI/InventoryWidget.h"
 #include "FrozenDread/UI/DialogueWidget.h"
@@ -32,6 +33,12 @@ void AGameHUD::InitAndAddToViewport()
 	DialogueWidget = CreateWidget<UUserWidget>(PlayerController, DialogueWidgetClass);
 	DialogueWidget->AddToViewport(2);
 	DialogueWidget->SetVisibility(ESlateVisibility::Collapsed);
+
+	// Game Over Widget
+	check(GameOverWidgetClass);
+	GameOverWidget = CreateWidget<UUserWidget>(PlayerController, GameOverWidgetClass);
+	GameOverWidget->AddToViewport(3);
+	GameOverWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void AGameHUD::SetInventoryWidgetVisible(bool IsVisible) const
@@ -56,4 +63,10 @@ UDialogueWidget* AGameHUD::GetDialogueWidget() const
 {
 	check(DialogueWidget);
 	return Cast<UDialogueWidget>(DialogueWidget);
+}
+
+UGameOverWidget* AGameHUD::GetGameOverWidget() const
+{
+	check(GameOverWidget);
+	return Cast<UGameOverWidget>(GameOverWidget);
 }
