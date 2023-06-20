@@ -9,10 +9,7 @@
 
 #include "FrozenDread/AI/Monster.h"
 
-namespace
-{
-	constexpr double MIN_GROUND_SPEED_TO_MOVE { 3.0 };
-}
+constexpr double MIN_MONSTER_GROUND_SPEED_TO_MOVE { 3.0 };
 
 void UMonsterAnimInstance::NativeBeginPlay()
 {
@@ -39,7 +36,7 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	const FVector GroundVelocity { Velocity.X, Velocity.Y, 0.0 };
 
 	GroundSpeed  =  GroundVelocity.Length();
-	ShouldMove = (GroundSpeed > MIN_GROUND_SPEED_TO_MOVE);
+	ShouldMove = (GroundSpeed > MIN_MONSTER_GROUND_SPEED_TO_MOVE);
 }
 
 EMonsterState UMonsterAnimInstance::GetMonsterState() const

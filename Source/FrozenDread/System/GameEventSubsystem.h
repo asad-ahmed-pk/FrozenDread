@@ -31,6 +31,12 @@ public:
 	// The player was caught by the monster
 	void PlayerWasCaught() const;
 
+	// The player requested to restart the level
+	void PlayerRequestedRestart() const;
+
+	// The player requested to quit the level and go back to the main menu
+	void PlayerRequestedLevelQuit() const;
+
 public:
 	// To be called when the death level sequence is completed
 	UFUNCTION(BlueprintCallable, Category="Level Events")

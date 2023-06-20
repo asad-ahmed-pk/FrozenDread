@@ -9,6 +9,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameOverWidget.generated.h"
 
+class UButton;
 class UCanvasPanel;
 class UWidgetAnimation;
 
@@ -21,8 +22,18 @@ class FROZENDREAD_API UGameOverWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	/** Constructor for this widget */
+	virtual void NativeConstruct() override;
+	
 	/** Display the widget and play the game over animation */
 	void Show();
+
+private:
+	UFUNCTION()
+	void QuitButtonClicked();
+
+	UFUNCTION()
+	void RestartButtonClicked();
 
 protected:
 	/** The main canvas for the widget */
@@ -32,4 +43,12 @@ protected:
 	/** The main animation to play */
 	UPROPERTY(Transient, meta=(BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> Animation;
+
+	/** The quit button that quits to the main menu */
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UButton> QuitButton;
+
+	/** The button to restart the level */
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UButton> RestartButton;
 };
