@@ -22,17 +22,17 @@ ADoor::ADoor()
 	RootComponent = SceneComponent;
 	
 	// Create the collision mesh for the interaction
-	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Interaction Box"));
+	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
 	InteractionBox->SetupAttachment(RootComponent);
 	
 	// Create the mesh
-	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Door Mesh"));
+	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	DoorMesh->SetupAttachment(RootComponent);
 
 	// World UMG widgets for the lock status
-	LockStatusWidgetFront = CreateDefaultSubobject<UWidgetComponent>(TEXT("Lock Status Widget (Front)"));
+	LockStatusWidgetFront = CreateDefaultSubobject<UWidgetComponent>(TEXT("FrontLockStatusWidget"));
 	LockStatusWidgetFront->SetupAttachment(DoorMesh);
-	LockStatusWidgetBack = CreateDefaultSubobject<UWidgetComponent>(TEXT("Lock Status Widget (Back)"));
+	LockStatusWidgetBack = CreateDefaultSubobject<UWidgetComponent>(TEXT("BackLockStatusWidget"));
 	LockStatusWidgetBack->SetupAttachment(DoorMesh);
 
 	// Other settings
@@ -124,7 +124,7 @@ bool ADoor::PlayerHasKeyCard(APlayerCharacter* PlayerCharacter) const
 	const UInventory* Inventory { PlayerCharacter->GetInventory() };
 	check(Inventory);
 
-	return (Inventory->HasItem(EGameItemType::KeyCard, static_cast<uint8>(KeyCardID)));
+	return Inventory->HasItem(EGameItemType::KeyCard, static_cast<uint8>(KeyCardID));
 }
 
 // Update the widget to show the locked the status
