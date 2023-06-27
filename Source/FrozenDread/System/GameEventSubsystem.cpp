@@ -18,18 +18,6 @@ void UGameEventSubsystem::Setup(APlayerCharacter* PlayerCharacter, AMonster* Mon
 	Monster = MonsterCharacter;
 }
 
-void UGameEventSubsystem::PlayerInteractedWithExoSuit(const APlayerCharacter* PlayerCharacter)
-{
-	check(PlayerCharacter);
-
-	const AGamePlayerController* PlayerController { PlayerCharacter->GetController<AGamePlayerController>() };
-	check(PlayerController);
-
-	PlayerController->SwitchPlayerSuit();
-
-	PlayerIsWearingExoSuit = true;
-}
-
 void UGameEventSubsystem::PlayerWasCaught() const
 {
 	// Disable monster

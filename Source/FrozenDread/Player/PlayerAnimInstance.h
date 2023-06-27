@@ -40,14 +40,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess = "true"))
 	double GroundSpeed { 0.0 };
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Suit", meta=(AllowPrivateAccess = "true"))
-	bool IsWearingExoSuit { false };
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sounds", meta=(AllowPrivateAccess = "true"))
-	TObjectPtr<UMetaSoundSource> ExoSuitWalkingSound;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sounds", meta=(AllowPrivateAccess = "true"))
-	TObjectPtr<UMetaSoundSource> ManWalkingSound;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sounds", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UMetaSoundSource> WalkingSound;
 
 private:
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter { nullptr };

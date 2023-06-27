@@ -54,25 +54,11 @@ void AGamePlayerController::BeginPlay()
 	// Setup dialogue subsystem
 	UPlayerDialogueSubsystem* DialogueSubsystem { GetWorld()->GetSubsystem<UPlayerDialogueSubsystem>() };
 	DialogueSubsystem->Setup(GameHUD->GetDialogueWidget());
-
-#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
-IsWearingSuitCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("game.debug.player.is_wearing_suit"));
-#endif
 }
 
 void AGamePlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
-	if (GamePlayerState.IsValid())
-	{
-		if (IsWearingSuitCVar->GetInt() == 1)
-		{
-			SwitchPlayerSuit();
-		}
-	}
-#endif
 }
 
 void AGamePlayerController::SetupInputComponent()
@@ -86,14 +72,6 @@ void AGamePlayerController::SetupInputComponent()
 		check(InventoryToggleAction);
 		EnhancedInputComponent->BindAction(InventoryToggleAction, ETriggerEvent::Triggered, this, &AGamePlayerController::ToggleInventory);
 	}
-}
-
-void AGamePlayerController::SwitchPlayerSuit() const
-{
-	check(PlayerCharacter.IsValid() && GamePlayerState.IsValid());
-	
-	PlayerCharacter->SwitchToExoSuit();
-	GamePlayerState->SetIsWearingSuit(true);
 }
 
 void AGamePlayerController::ToggleInventory()

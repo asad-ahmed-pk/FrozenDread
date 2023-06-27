@@ -27,19 +27,14 @@ void UPlayerAnimInstance::NativeBeginPlay()
 void UPlayerAnimInstance::PlayFootStepSound()
 {
 	check(PlayerCharacter.IsValid());
+	check(WalkingSound);
 
-	const AGamePlayerState* PlayerState { CastChecked<AGamePlayerState>(PlayerCharacter->GetPlayerState()) };
+	const FVector PlayerLocation { PlayerCharacter->GetActorLocation() };
+	FFindFloorResult FloorResult;
+	PlayerCharacter->GetCharacterMovement()->FindFloor(PlayerLocation, FloorResult, true);
+	const FVector SoundOriginLocation { PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z + FloorResult.FloorDist };
 
-	if (PlayerState->GetIsWearingSuit())
-	{
-		check(ExoSuitWalkingSound);
-		UGameplayStatics::PlaySound2D(this, ExoSuitWalkingSound);
-	}
-	else
-	{
-		check(ManWalkingSound);
-		UGameplayStatics::PlaySound2D(this, ManWalkingSound);
-	}
+	UGameplayStatics::PlaySoundAtLocation(this, WalkingSound, SoundOriginLocation);
 }
 
 void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -60,12 +55,5 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		
 		// Falling
 		IsFalling = MovementComponent->IsFalling();
-
-		// Is wearing the exo suit?
-		if (const APlayerState* PlayerState { PlayerCharacter->GetPlayerState() })
-		{
-			const AGamePlayerState* GamePlayerState = CastChecked<AGamePlayerState>(PlayerState);
-			IsWearingExoSuit = GamePlayerState->GetIsWearingSuit();
-		}
 	}
 }

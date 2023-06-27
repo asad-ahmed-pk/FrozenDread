@@ -24,9 +24,6 @@ class FROZENDREAD_API UGameEventSubsystem : public UWorldSubsystem
 public:
 	// Init
 	void Setup(APlayerCharacter* PlayerCharacter, AMonster* MonsterCharacter);
-	
-	// The player has interacted with the exo suit
-	void PlayerInteractedWithExoSuit(const APlayerCharacter* PlayerCharacter);
 
 	// The player was caught by the monster
 	void PlayerWasCaught() const;

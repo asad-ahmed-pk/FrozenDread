@@ -41,9 +41,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	// Switch the mesh to ExoSuit
-	void SwitchToExoSuit() const;
-
 	// Get a reference to the player's inventory system
 	UInventory* GetInventory() const;
 
@@ -64,10 +61,6 @@ private:
 	/** Main FPS Camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> MainCamera;
-
-	/** ExoSuit Mesh */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Mesh", meta=(AllowPrivateAccess = "true"))
-	TObjectPtr<USkeletalMeshComponent> ExoSuitMesh;
 
 	/** Interaction component for interacting with the world */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess = "true"))

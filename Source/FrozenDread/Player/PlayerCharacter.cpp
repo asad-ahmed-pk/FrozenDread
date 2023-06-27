@@ -40,10 +40,6 @@ APlayerCharacter::APlayerCharacter()
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	MainCamera->SetupAttachment(GetMesh(), TEXT("head"));
 
-	// ExoSuit mesh
-	ExoSuitMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ExoSuitMesh"));
-	ExoSuitMesh->SetupAttachment(GetCapsuleComponent());
-
 	// Interaction component
 	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>(TEXT("Interaction Component"));
 	AddOwnedComponent(InteractionComponent);
@@ -73,9 +69,6 @@ void APlayerCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-	// Hide the ExoSuit mesh
-	ExoSuitMesh->SetVisibility(false, true);
 }
 
 // Called every frame
@@ -147,13 +140,6 @@ void APlayerCharacter::Use(const FInputActionValue& Value)
 }
 
 //////////////////////////////////////////////// OTHER ////////////////////////////////////////////////
-
-void APlayerCharacter::SwitchToExoSuit() const
-{
-	MainCamera->AttachToComponent(ExoSuitMesh, FAttachmentTransformRules::KeepWorldTransform, TEXT("head"));
-	ExoSuitMesh->SetVisibility(true, true);
-	GetMesh()->SetVisibility(false, true);
-}
 
 UInventory* APlayerCharacter::GetInventory() const
 {

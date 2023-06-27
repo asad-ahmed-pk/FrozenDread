@@ -33,9 +33,6 @@ public:
 	
 	virtual void Tick(float DeltaTime) override;
 
-	// Switch to wearing the exo suit.
-	void SwitchPlayerSuit() const;
-
 	// Get a reference to the player's inventory system
 	FORCEINLINE UInventory* GetInventory() const { return Inventory; }
 
@@ -66,8 +63,4 @@ private:
 	TObjectPtr<UInventory> Inventory;
 
 	bool IsViewingInventory { false };
-
-#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
-	IConsoleVariable* IsWearingSuitCVar { nullptr };
-#endif
 };
