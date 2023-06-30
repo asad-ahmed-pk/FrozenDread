@@ -5,7 +5,6 @@
 
 #include "Monster.h"
 
-#include "EnvironmentDataComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -34,9 +33,6 @@ AMonster::AMonster()
 
 	// Game tag
 	Tags.Add(GameTag::MONSTER);
-
-	// Environment data component
-	EnvironmentDataComponent = CreateDefaultSubobject<UEnvironmentDataComponent>(TEXT("Environment Data Component"));
 	
 	// Other settings
 	PrimaryActorTick.bCanEverTick = true;
@@ -57,7 +53,7 @@ void AMonster::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// If chasing the player, increase speed every tick
-	if (MonsterState == EMonsterState::HuntingPlayer)
+	if (MonsterState == EMonsterState::ChasingPlayer)
 	{
 		check(MovementComponent);
 		if (MovementComponent->MaxWalkSpeed <= MaxHuntingSpeed)
@@ -77,7 +73,7 @@ void AMonster::SetMonsterState(const EMonsterState& State)
 
 	switch (State)
 	{
-	case EMonsterState::Idle:
+	case EMonsterState::Patrolling:
 		break;
 	
 	case EMonsterState::Alerted:
@@ -85,18 +81,15 @@ void AMonster::SetMonsterState(const EMonsterState& State)
 		PlayAnimMontage(RageMontage);
 		break;
 
-	case EMonsterState::Feeding:
-		break;
-
 	case EMonsterState::Searching:
 		break;
 
-	case EMonsterState::HuntingPlayer:
+	case EMonsterState::ChasingPlayer:
 		break;
 	}
 
 	// Set movement speed back to normal if not hunting player
-	if (State != EMonsterState::HuntingPlayer)
+	if (State != EMonsterState::ChasingPlayer)
 	{
 		MovementComponent->MaxWalkSpeed = DefaultMovementSpeed;
 	}

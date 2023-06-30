@@ -8,11 +8,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 
-#include "FrozenDread/Gameplay/Event.h"
-
 #include "Monster.generated.h"
 
-class UEnvironmentDataComponent;
+class APatrolWaypointSet;
 class UAnimMontage;
 class AMonsterAIController;
 class USphereComponent;
@@ -22,10 +20,9 @@ class UCharacterMovementComponent;
 UENUM(BlueprintType)
 enum class EMonsterState : uint8
 {
-	Idle					UMETA(DisplayName = "Idle"),
-	Feeding					UMETA(DisplayName = "Feeding"),
+	Patrolling				UMETA(DisplayName = "Patrolling"),
 	Alerted					UMETA(DisplayName = "Alerted"),
-	HuntingPlayer			UMETA(DisplayName = "Hunting Player"),
+	ChasingPlayer			UMETA(DisplayName = "Chasing Player"),
 	Searching				UMETA(DisplayName = "Searching")
 };
 
@@ -41,13 +38,12 @@ public:
 	// Sets default values for this character's properties
 	AMonster();
 
+	/** Get a reference to the waypoint set this monster is using */
+	FORCEINLINE const APatrolWaypointSet* GetPatrolWaypointSet() const { return PatrolWaypoints; }
+
 	/** Set the monster state */
 	UFUNCTION(BlueprintCallable)
 	void SetMonsterState(const EMonsterState& State);
-
-	/** Get a reference to the environment data component */
-	UFUNCTION(BlueprintCallable)
-	FORCEINLINE UEnvironmentDataComponent* GetEnvironmentDataComponent() const { return EnvironmentDataComponent; }
 
 	/** Get a reference to the monster's current state */
 	UFUNCTION(BlueprintCallable)
@@ -69,13 +65,13 @@ private:
 	void OnAttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
-	/** The component that queries for data in the monster's surroundings */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UEnvironmentDataComponent> EnvironmentDataComponent;
-
 	/** The sphere used to determine when the monster will attack */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<USphereComponent> AttackSphere;
+
+	/** The patrol waypoint set to use for patrolling */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<APatrolWaypointSet> PatrolWaypoints;
 
 	/** The montage to use for the rage animation */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
@@ -94,7 +90,7 @@ private:
 	float HuntingSpeedGainPerSecond { 5.0F };
 
 private:
-	EMonsterState MonsterState { EMonsterState::Idle };
+	EMonsterState MonsterState { EMonsterState::Patrolling };
 	AMonsterAIController* Controller { nullptr };
 	UCharacterMovementComponent* MovementComponent { nullptr };
 };

@@ -46,5 +46,5 @@ EMonsterState UMonsterAnimInstance::GetMonsterState() const
 		return Monster->GetMonsterState();
 	}
 
-	return EMonsterState::Idle;
+	return EMonsterState::Patrolling;
 }

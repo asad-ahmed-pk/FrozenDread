@@ -67,7 +67,7 @@ void AMonsterAIController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	
 	// Update the player's location if monster is currently chasing the player
-	if (Monster && Monster->GetMonsterState() == EMonsterState::HuntingPlayer)
+	if (Monster && Monster->GetMonsterState() == EMonsterState::ChasingPlayer)
 	{
 		if (const AActor* Player = GetPerceivedPlayerCharacter())
 		{
@@ -81,10 +81,10 @@ void AMonsterAIController::MonsterRageCompleted()
 {
 	if (GetPerceivedPlayerCharacter())
 	{
-		Monster->SetMonsterState(EMonsterState::HuntingPlayer);
+		Monster->SetMonsterState(EMonsterState::ChasingPlayer);
 
 		// MonsterState key is only used for debugging and not actually used by the BT
-		GetBlackboardComponent()->SetValueAsEnum(BlackBoardKey::MONSTER_STATE, static_cast<uint8>(EMonsterState::HuntingPlayer));
+		GetBlackboardComponent()->SetValueAsEnum(BlackBoardKey::MONSTER_STATE, static_cast<uint8>(EMonsterState::ChasingPlayer));
 	}
 }
 
