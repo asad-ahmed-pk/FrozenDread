@@ -38,13 +38,18 @@ AMonster::AMonster()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// Handle montage end event
 	Controller = GetController<AMonsterAIController>();
 	GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &AMonster::OnMontageCompleted);
+
+	// Override the movement component settings
+	MovementComponent->MaxWalkSpeed = DefaultMovementSpeed;
 }
 
 // Called every frame
