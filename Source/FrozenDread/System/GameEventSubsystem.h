@@ -39,6 +39,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Level Events")
 	void DeathLevelSequenceFinished();
 
+	// Enable or disable the player's input
+	UFUNCTION(BlueprintCallable, Category="Utility")
+	void SetPlayerInputEnabled(bool IsEnabled);
+
 private:
 	TWeakObjectPtr<APlayerCharacter> Player;
 	TWeakObjectPtr<AMonster> Monster;

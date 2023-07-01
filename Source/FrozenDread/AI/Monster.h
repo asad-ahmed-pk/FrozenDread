@@ -20,6 +20,7 @@ class UCharacterMovementComponent;
 UENUM(BlueprintType)
 enum class EMonsterState : uint8
 {
+	Idle					UMETA(DisplayName = "Idle"),
 	Patrolling				UMETA(DisplayName = "Patrolling"),
 	Alerted					UMETA(DisplayName = "Alerted"),
 	ChasingPlayer			UMETA(DisplayName = "Chasing Player"),

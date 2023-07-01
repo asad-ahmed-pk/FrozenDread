@@ -43,13 +43,18 @@ void UPlayerDialogueSubsystem::Setup(UDialogueWidget* DialogueWidgetPtr)
 	{
 		NextDialogueItemRequested();
 	});
-	
+
+	// Play any dialogue if it queue is not empty
+	if (!DialogueQueue.IsEmpty())
+	{
+		PlayNextDialogueText();
+	}
 }
 
 void UPlayerDialogueSubsystem::AddDialogueText(const FText& Text)
 {
 	DialogueQueue.Enqueue(Text);
-	if (!DialogueQueue.IsEmpty())
+	if (!DialogueQueue.IsEmpty() && DialogueWidget != nullptr)
 	{
 		PlayNextDialogueText();
 	}

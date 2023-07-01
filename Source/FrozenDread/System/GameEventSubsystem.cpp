@@ -67,3 +67,18 @@ void UGameEventSubsystem::DeathLevelSequenceFinished()
 	Player->GetController<APlayerController>()->SetInputMode(InputMode);
 	Player->GetController<APlayerController>()->SetShowMouseCursor(true);
 }
+
+void UGameEventSubsystem::SetPlayerInputEnabled(bool IsEnabled)
+{
+	check(Player.IsValid());
+	APlayerController* PlayerController { Player->GetController<APlayerController>() };
+
+	if (IsEnabled)
+	{
+		Player->EnableInput(PlayerController);
+	}
+	else
+	{
+		Player->DisableInput(PlayerController);
+	}
+}
