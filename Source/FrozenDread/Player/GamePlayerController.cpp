@@ -13,9 +13,10 @@
 #include "FrozenDread/Player/GamePlayerState.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/Player/Inventory.h"
-#include "FrozenDread/System/PlayerDialogueSubsystem.h"
 #include "FrozenDread/UI/GameHUD.h"
 #include "FrozenDread/UI/InventoryWidget.h"
+#include "FrozenDread/System/PlayerDialogueSubsystem.h"
+#include "FrozenDread/System/GameObjectiveSubsystem.h"
 
 AGamePlayerController::AGamePlayerController() : Inventory(CreateDefaultSubobject<UInventory>(TEXT("Inventory")))
 {
@@ -54,6 +55,10 @@ void AGamePlayerController::BeginPlay()
 	// Setup dialogue subsystem
 	UPlayerDialogueSubsystem* DialogueSubsystem { GetWorld()->GetSubsystem<UPlayerDialogueSubsystem>() };
 	DialogueSubsystem->Setup(GameHUD->GetDialogueWidget());
+
+	// Setup objectives subsystem
+	UGameObjectiveSubsystem* GameObjectiveSubsystem { GetWorld()->GetSubsystem<UGameObjectiveSubsystem>() };
+	GameObjectiveSubsystem->Setup(GameHUD->GetObjectiveWidget());
 }
 
 void AGamePlayerController::Tick(float DeltaTime)
