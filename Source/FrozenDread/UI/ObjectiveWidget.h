@@ -6,7 +6,6 @@
 #pragma once
 
 class UListView;
-class UVerticalBox;
 
 #include "FrozenDread/Game/Objective.h"
 

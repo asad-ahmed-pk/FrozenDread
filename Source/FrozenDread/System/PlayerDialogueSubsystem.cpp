@@ -4,11 +4,10 @@
 //
 
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
-
-#include "Kismet/KismetStringLibrary.h"
-
 #include "FrozenDread/UI/DialogueWidget.h"
+
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetStringLibrary.h"
 
 const FString GMain_Menu_Level_Name { "MainMenu" };
 
@@ -51,9 +50,9 @@ void UPlayerDialogueSubsystem::Setup(UDialogueWidget* DialogueWidgetPtr)
 	}
 }
 
-void UPlayerDialogueSubsystem::AddDialogueText(const FText& Text)
+void UPlayerDialogueSubsystem::AddDialogueItem(const FDialogueItem& DialogueItem)
 {
-	DialogueQueue.Enqueue(Text);
+	DialogueQueue.Enqueue(DialogueItem);
 	if (!DialogueQueue.IsEmpty() && DialogueWidget != nullptr)
 	{
 		PlayNextDialogueText();
@@ -80,7 +79,7 @@ void UPlayerDialogueSubsystem::TextTypeTimer()
 	check(DialogueWidget);
 
 	// Get the new updated text to display
-	const FString TextToPlay { DialogueQueue.Peek()->ToString() };
+	const FString TextToPlay { DialogueQueue.Peek()->DialogueText.ToString() };
 	CurrentTextLength += 1;
 
 	// Increase text size by 1 and display
@@ -101,8 +100,7 @@ void UPlayerDialogueSubsystem::TextTypeTimer()
 	{
 		DialogueWidget->SetToNextMode();
 
-		FText OutItem;
-		DialogueQueue.Dequeue(OutItem);
+		DialogueQueue.Dequeue(LastPlayedItem);
 
 		// Enable UI input
 		const FInputModeUIOnly UIInput;
@@ -136,5 +134,8 @@ void UPlayerDialogueSubsystem::NextDialogueItemRequested()
 		// Set back UI mode to game
 		const FInputModeGameOnly GameInput;
 		GetWorld()->GetFirstPlayerController()->SetInputMode(GameInput);
+
+		// Broadcast that the dialogue finished playing
+		OnDialogueFinished.Broadcast(LastPlayedItem);
 	}
 }

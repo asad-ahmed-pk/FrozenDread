@@ -9,11 +9,13 @@
 
 #include "UObject/Object.h"
 
-#include "FrozenDread/Gameplay/Event.h"
 #include "FrozenDread/Gameplay/GameItems.h"
 #include "FrozenDread/Gameplay/InventoryItem.h"
 
 #include "Inventory.generated.h"
+
+// Item was added to the player's inventory
+DECLARE_MULTICAST_DELEGATE_OneParam(FInventoryItemAddedEvent, AInventoryItem*);
 
 /**
  * Represents the player's inventory.
@@ -31,9 +33,9 @@ public:
 	bool HasItem(EGameItemType ItemType, uint8 ID) const;
 
 	/** Get a reference to the InventoryItemAddedEvent */
-	FORCEINLINE Event::Inventory::FInventoryItemAddedEvent& GetInventoryItemAddedEvent() { return InventoryItemAddedEvent; }
+	FORCEINLINE FInventoryItemAddedEvent& GetInventoryItemAddedEvent() { return InventoryItemAddedEvent; }
 	
 private:
 	TArray<TWeakObjectPtr<AInventoryItem>> Items;
-	Event::Inventory::FInventoryItemAddedEvent InventoryItemAddedEvent;
+	FInventoryItemAddedEvent InventoryItemAddedEvent;
 };

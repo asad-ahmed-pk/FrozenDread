@@ -8,7 +8,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 
-#include "FrozenDread/Gameplay/Event.h"
+#include "FrozenDread/Player/Inventory.h"
 
 #include "InventoryWidget.generated.h"
 
@@ -32,7 +32,7 @@ public:
 	void AddInventoryItem(AInventoryItem* InventoryItem) const;
 
 	/** Subscribe to the given inventory item added event */
-	void SubscribeToEvent(Event::Inventory::FInventoryItemAddedEvent& Event) const;
+	void SubscribeToEvent(FInventoryItemAddedEvent& Event) const;
 
 protected:
 	virtual void NativeConstruct() override;

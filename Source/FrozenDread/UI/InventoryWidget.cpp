@@ -7,10 +7,10 @@
 
 #include "Components/TextBlock.h"
 #include "Components/TileView.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "FrozenDread/Gameplay/InventoryItem.h"
 #include "FrozenDread/UI/InventoryItemWidget.h"
-#include "Kismet/GameplayStatics.h"
 
 void UInventoryWidget::NativeConstruct()
 {
@@ -78,7 +78,7 @@ void UInventoryWidget::AddInventoryItem(AInventoryItem* InventoryItem) const
 	ItemTileView->AddItem(InventoryItem);
 }
 
-void UInventoryWidget::SubscribeToEvent(Event::Inventory::FInventoryItemAddedEvent& Event) const
+void UInventoryWidget::SubscribeToEvent(FInventoryItemAddedEvent& Event) const
 {
 	Event.AddLambda([this](AInventoryItem* InventoryItem)
 	{
