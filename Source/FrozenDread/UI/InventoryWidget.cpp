@@ -27,8 +27,9 @@ void UInventoryWidget::NativeConstruct()
 			// Set title and description for the selected entry
 			const AInventoryItem* Item { Cast<AInventoryItem>(ListItem) };
 			check(Item);
-			CurrentSelectionTitle->SetText(Item->GetTitleText());
-			CurrentSelectionDescription->SetText(Item->GetDescriptionText());
+			const FInventoryItemInfo& ItemInfo { Item->GetInventoryInfo() };
+			CurrentSelectionTitle->SetText(ItemInfo.Title);
+			CurrentSelectionDescription->SetText(ItemInfo.Description);
 
 			// Set it as highlighted
 			UInventoryItemWidget* ItemWidget { CastChecked<UInventoryItemWidget>(ItemTileView->GetEntryWidgetFromItem(ListItem)) };

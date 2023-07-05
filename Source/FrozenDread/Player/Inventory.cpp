@@ -13,11 +13,11 @@ void UInventory::AddItemToInventory(AInventoryItem* InventoryItem)
 	InventoryItemAddedEvent.Broadcast(InventoryItem);
 }
 
-bool UInventory::HasItem(EGameItemType ItemType, uint8 ID) const
+bool UInventory::HasItem(uint8 ID) const
 {
 	for (const auto& Item : Items)
 	{
-		if (Item.IsValid() && Item->GetGameItemType() == ItemType && Item->GetItemID() == static_cast<int32>(ID))
+		if (Item.IsValid() && Item->GetInventoryInfo().ID == ID)
 		{
 			return true;
 		}

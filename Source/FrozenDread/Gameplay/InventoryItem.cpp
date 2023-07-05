@@ -8,13 +8,33 @@
 #include "FrozenDread/Player/Inventory.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 
+#include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AInventoryItem::AInventoryItem()
 {
+	// Mesh
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	Mesh->SetupAttachment(RootComponent);
+
+	// Interaction Box
+	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Interaction Box"));
+	InteractionBox->SetupAttachment(RootComponent);
+	
 	// Other settings
 	PrimaryActorTick.bCanEverTick = false;
+}
+
+void AInventoryItem::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Cache the item info
+	const FInventoryItemInfo* Item { InventoryItemInfo.GetRow<FInventoryItemInfo>("InventoryInfo") };
+	check(Item);
+	CachedItemInfo = *Item;
 }
 
 void AInventoryItem::Interact(APlayerCharacter* PlayerCharacter)

@@ -24,10 +24,11 @@ void UInventoryItemWidget::SetHighlighted(bool bIsHighlighted)
 void UInventoryItemWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	const AInventoryItem* Item { CastChecked<AInventoryItem>(ListItemObject) };
+	const FInventoryItemInfo& ItemInfo { Item->GetInventoryInfo() };
 	
-	TitleText->SetText(Item->GetTitleText());
+	TitleText->SetText(ItemInfo.Title);
 
-	UTexture2D* Texture { Item->GetInventoryIcon() };
+	UTexture2D* Texture { ItemInfo.Icon };
 	const FSlateBrush Brush { UWidgetBlueprintLibrary::MakeBrushFromTexture(Texture) };
 	IconImage->SetBrush(Brush);
 }

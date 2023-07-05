@@ -115,16 +115,16 @@ FText ADoor::DisplayText() const
 /////////////////////////////////////////// Door Functionality ///////////////////////////////////////////
 
 // Check if the player has the key card for unlocking this door
-bool ADoor::PlayerHasKeyCard(APlayerCharacter* PlayerCharacter) const
+bool ADoor::PlayerHasKeyCard(const APlayerCharacter* PlayerCharacter) const
 {
-	check(KeyCardID != EKeyCardID::None);
+	check(KeyCardID > 0);
 	
 	check(PlayerCharacter);
 
 	const UInventory* Inventory { PlayerCharacter->GetInventory() };
 	check(Inventory);
 
-	return Inventory->HasItem(EGameItemType::KeyCard, static_cast<uint8>(KeyCardID));
+	return Inventory->HasItem(KeyCardID);
 }
 
 // Update the widget to show the locked the status

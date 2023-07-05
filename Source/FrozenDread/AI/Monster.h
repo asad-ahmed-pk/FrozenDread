@@ -91,7 +91,7 @@ private:
 	float HuntingSpeedGainPerSecond { 5.0F };
 
 private:
-	EMonsterState MonsterState { EMonsterState::Patrolling };
+	EMonsterState MonsterState { EMonsterState::Idle };
 	AMonsterAIController* Controller { nullptr };
 	UCharacterMovementComponent* MovementComponent { nullptr };
 };

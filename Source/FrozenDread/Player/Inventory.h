@@ -29,8 +29,8 @@ public:
 	/** Add the given inventory item to this inventory */
 	void AddItemToInventory(AInventoryItem* InventoryItem);
 
-	/** Query inventory system to see if the player has the given item type of ID */
-	bool HasItem(EGameItemType ItemType, uint8 ID) const;
+	/** Query inventory system to see if the player has the given item of ID */
+	bool HasItem(uint8 ID) const;
 
 	/** Get a reference to the InventoryItemAddedEvent */
 	FORCEINLINE FInventoryItemAddedEvent& GetInventoryItemAddedEvent() { return InventoryItemAddedEvent; }

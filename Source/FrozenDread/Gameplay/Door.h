@@ -88,7 +88,7 @@ public:
 	FPlayerTriedLockedDoorEvent OnPlayerTriedLockedDoor;
 
 private:
-	bool PlayerHasKeyCard(APlayerCharacter* PlayerCharacter) const;
+	bool PlayerHasKeyCard(const APlayerCharacter* PlayerCharacter) const;
 	void CoolDownComplete() { CanInteract = true; }
 	void SetLockStatusWidgets(bool IsLocked) const;
 
@@ -103,7 +103,7 @@ private:
 
 	/** The (optional) ID for the key card needed to open this door (if state is RequiresKeyCard) */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess="true"))
-	EKeyCardID KeyCardID { EKeyCardID::None };
+	uint8 KeyCardID { 0 };
 
 	/** The sound that plays when the door is unlocked */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess="true"))
