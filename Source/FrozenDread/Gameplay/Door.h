@@ -9,19 +9,9 @@
 #include "GameFramework/Actor.h"
 #include "MetasoundSource.h"
 
-#include "FrozenDread/Gameplay/GameItems.h"
 #include "FrozenDread/Gameplay/InteractiveObject.h"
 
 #include "Door.generated.h"
-
-/** Event triggered when the door is successfully interacted with */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDoorInteractionEvent);
-
-/** Player tried to interact with a locked door */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerTriedLockedDoorEvent);
-
-/** Player tried to interact with a locked door without the required key card */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerTriedLockedDoorNoKeyCardEvent);
 
 /** The states for the door's lock state. */
 UENUM(BlueprintType)
@@ -74,18 +64,10 @@ public:
 	// The display text to show for the 
 	virtual FText DisplayText() const override;
 
-public:
-	/** Event for when the player interacts with a door */
-	UPROPERTY(BlueprintAssignable, Category="Interaction")
-	FDoorInteractionEvent DoorInteractionEvent;
-
-	/** Event for when the player tried to use a door for which there was no matching keycard */
-	UPROPERTY(BlueprintAssignable, Category="Interaction")
-	FPlayerTriedLockedDoorNoKeyCardEvent OnPlayerTriedLockedDoorNoKeyCard;
-
-	/** Event for when the player tried a door that was locked */
-	UPROPERTY(BlueprintAssignable, Category="Interaction")
-	FPlayerTriedLockedDoorEvent OnPlayerTriedLockedDoor;
+protected:
+	// The player interacted with the door 
+	UFUNCTION(BlueprintNativeEvent, Category="Interaction")
+	void PlayerInteractedWithDoor();
 
 private:
 	bool PlayerHasKeyCard(const APlayerCharacter* PlayerCharacter) const;

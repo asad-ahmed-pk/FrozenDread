@@ -12,6 +12,8 @@
 
 #include "FrozenDread/Player/Inventory.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
+#include "FrozenDread/Game/GameStatics.h"
+#include "FrozenDread/Gameplay/GameLevelScriptActor.h"
 #include "FrozenDread/UI/DoorLockStatusWidget.h"
 
 // Sets default values
@@ -63,13 +65,14 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 	switch (LockState)
 	{
 	case EDoorLockState::Unlocked:
-		DoorInteractionEvent.Broadcast();
+		PlayerInteractedWithDoor();
+		UGameStatics::GetLevelScript(this)->PlayerInteractedWithItem(this);
 		break;
 
 	case EDoorLockState::Locked:
 		// Access denied
 		check(AccessDeniedSound);
-		OnPlayerTriedLockedDoor.Broadcast();
+		UGameStatics::GetLevelScript(this)->PlayerTriedLockedDoor(this);
 		UGameplayStatics::PlaySoundAtLocation(this, AccessDeniedSound, GetActorLocation());
 		break;
 
@@ -84,7 +87,7 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 		}
 		else
 		{
-			OnPlayerTriedLockedDoorNoKeyCard.Broadcast();
+			UGameStatics::GetLevelScript(this)->PlayerTriedLockedDoor(this);
 			UGameplayStatics::PlaySoundAtLocation(this, AccessDeniedSound, GetActorLocation());
 		}
 		break;
@@ -110,6 +113,11 @@ FText ADoor::DisplayText() const
 	{
 		return ClosedStateText;
 	}
+}
+
+void ADoor::PlayerInteractedWithDoor_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Implement PlayerInteractedWithDoor() in BP"));
 }
 
 /////////////////////////////////////////// Door Functionality ///////////////////////////////////////////
