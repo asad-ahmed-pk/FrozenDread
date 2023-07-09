@@ -59,6 +59,10 @@ void UInteractionComponent::SetCurrentInteractiveObject(IInteractiveObject* Obje
 		{
 			CurrentObject->SetHighlighted(false);
 		}
+		else
+		{
+			CurrentObject->SetHighlighted(true);
+		}
 	}
 
 	CurrentObject = Object;

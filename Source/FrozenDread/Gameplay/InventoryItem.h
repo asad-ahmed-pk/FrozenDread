@@ -58,7 +58,7 @@ public:
 	const FInventoryItemInfo& GetInventoryInfo() const { return CachedItemInfo; }
 
 	// IInteractiveObject implementation
-	virtual void SetHighlighted(bool IsHighlighted) override {}
+	virtual void SetHighlighted(bool IsHighlighted) override;
 	virtual FText DisplayText() const override { return InteractionText; }
 	virtual void Interact(APlayerCharacter* PlayerCharacter) override;
 
@@ -82,6 +82,10 @@ private:
 	/** The box component that triggers the interaction system */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UBoxComponent> InteractionBox;
+
+	/** The highlight material to use when the player is looking at the item */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UMaterialInterface> HighlightMaterial;
 
 private:
 	FInventoryItemInfo CachedItemInfo{};

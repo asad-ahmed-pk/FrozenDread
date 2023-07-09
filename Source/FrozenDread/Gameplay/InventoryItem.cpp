@@ -37,6 +37,13 @@ void AInventoryItem::BeginPlay()
 	CachedItemInfo = *Item;
 }
 
+void AInventoryItem::SetHighlighted(bool IsHighlighted)
+{
+	check(Mesh);
+	check(HighlightMaterial);
+	Mesh->SetOverlayMaterial(IsHighlighted ? HighlightMaterial : nullptr);
+}
+
 void AInventoryItem::Interact(APlayerCharacter* PlayerCharacter)
 {
 	// Get the player's inventory and add this item to the inventory

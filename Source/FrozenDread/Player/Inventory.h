@@ -30,6 +30,7 @@ public:
 	void AddItemToInventory(AInventoryItem* InventoryItem);
 
 	/** Query inventory system to see if the player has the given item of ID */
+	UFUNCTION(BlueprintCallable, Category="Inventory")
 	bool HasItem(uint8 ID) const;
 
 	/** Get a reference to the InventoryItemAddedEvent */
