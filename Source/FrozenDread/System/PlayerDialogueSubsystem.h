@@ -37,10 +37,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Dialogue")
 	void AddDialogueItem(const FDialogueItem& DialogueItem);
 
-	/** Delegate for when the player dialogue item finishes playing */
-	UPROPERTY(BlueprintAssignable)
-	FPlayerDialogueFinishedPlaying OnDialogueFinished;
-
 private:
 	void PlayNextDialogueText();
 	void TextTypeTimer();

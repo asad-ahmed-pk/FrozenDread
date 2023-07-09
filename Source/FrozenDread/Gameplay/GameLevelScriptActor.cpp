@@ -4,10 +4,16 @@
 //
 
 #include "FrozenDread/Gameplay/GameLevelScriptActor.h"
+#include "FrozenDread/Game/Dialogue.h"
 
 void AGameLevelScriptActor::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AGameLevelScriptActor::PlayerDialogueFinishedPlaying_Implementation(const FDialogueItem& DialogueItem)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Implement PlayerDialogueFinishedPlaying() in BP"));
 }
 
 void AGameLevelScriptActor::PlayerTriedLockedDoor_Implementation(ADoor* Door)

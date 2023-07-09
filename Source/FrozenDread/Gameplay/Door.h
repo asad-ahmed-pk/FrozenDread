@@ -51,6 +51,7 @@ public:
 	virtual void BeginPlay() override;
 
 	// Unlock the door (can only be done if state is locked)
+	UFUNCTION(BlueprintCallable, Category="Gameplay")
 	void Unlock();
 
 	// IInteractiveObject implementation

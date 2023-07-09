@@ -22,7 +22,7 @@ struct FDialogueItem : public FTableRowBase
 	uint8 ID;
 
 	/** The text of the dialogue */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(MultiLine="true"))
 	FText DialogueText;
 
 	FORCEINLINE bool operator==(const FDialogueItem& Other) const { return ID == Other.ID; }

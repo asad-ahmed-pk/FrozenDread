@@ -42,6 +42,7 @@ protected:
 
 public:
 	// Get a reference to the player's inventory system
+	UFUNCTION(BlueprintCallable, Category="Player Inventory")
 	UInventory* GetInventory() const;
 
 	// Get a reference to the interaction component

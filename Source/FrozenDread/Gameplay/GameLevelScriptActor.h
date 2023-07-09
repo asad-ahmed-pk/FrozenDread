@@ -10,6 +10,7 @@
 #include "GameLevelScriptActor.generated.h"
 
 class ADoor;
+struct FDialogueItem;
 
 /**
  * Game level script
@@ -32,6 +33,10 @@ public:
 	void PlayerInteractedWithItem(AActor* Actor);
 
 	// The player tried to open a locked door
-	UFUNCTION(BlueprintNativeEvent,Category="Player Events")
+	UFUNCTION(BlueprintNativeEvent, Category="Player Events")
 	void PlayerTriedLockedDoor(ADoor* Door);
+
+	// The following dialogue finished playing
+	UFUNCTION(BlueprintNativeEvent, Category="Player Events")
+	void PlayerDialogueFinishedPlaying(const FDialogueItem& DialogueItem);
 };

@@ -4,6 +4,8 @@
 //
 
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
+#include "FrozenDread/Game/GameStatics.h"
+#include "FrozenDread/Gameplay/GameLevelScriptActor.h"
 #include "FrozenDread/UI/DialogueWidget.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -136,6 +138,7 @@ void UPlayerDialogueSubsystem::NextDialogueItemRequested()
 		GetWorld()->GetFirstPlayerController()->SetInputMode(GameInput);
 
 		// Broadcast that the dialogue finished playing
-		OnDialogueFinished.Broadcast(LastPlayedItem);
+		AGameLevelScriptActor* LevelScript { CastChecked<AGameLevelScriptActor>(GetWorld()->GetLevelScriptActor()) };
+		LevelScript->PlayerDialogueFinishedPlaying(LastPlayedItem);
 	}
 }
