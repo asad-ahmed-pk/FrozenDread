@@ -3,13 +3,12 @@
 // Implementation of the UInventoryItemWidget class.
 //
 
-#include "InventoryItemWidget.h"
+#include "FrozenDread/UI/InventoryItemWidget.h"
+#include "FrozenDread/Game/InventoryItemInfo.h"
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-
-#include "FrozenDread/Gameplay/InventoryItem.h"
 
 void UInventoryItemWidget::SetHighlighted(bool bIsHighlighted)
 {
@@ -23,8 +22,8 @@ void UInventoryItemWidget::SetHighlighted(bool bIsHighlighted)
 
 void UInventoryItemWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
-	const AInventoryItem* Item { CastChecked<AInventoryItem>(ListItemObject) };
-	const FInventoryItemInfo& ItemInfo { Item->GetInventoryInfo() };
+	const UInventoryEntry* Entry { CastChecked<UInventoryEntry>(ListItemObject) };
+	const FInventoryItemInfo& ItemInfo { Entry->GetItemInfo() };
 	
 	TitleText->SetText(ItemInfo.Title);
 

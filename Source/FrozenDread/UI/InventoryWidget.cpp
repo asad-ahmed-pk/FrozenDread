@@ -9,7 +9,7 @@
 #include "Components/TileView.h"
 #include "Kismet/GameplayStatics.h"
 
-#include "FrozenDread/Gameplay/InventoryItem.h"
+#include "FrozenDread/Game/InventoryItemInfo.h"
 #include "FrozenDread/UI/InventoryItemWidget.h"
 
 void UInventoryWidget::NativeConstruct()
@@ -25,9 +25,8 @@ void UInventoryWidget::NativeConstruct()
 		ItemTileView->OnItemClicked().AddLambda([this](UObject* ListItem)
 		{
 			// Set title and description for the selected entry
-			const AInventoryItem* Item { Cast<AInventoryItem>(ListItem) };
-			check(Item);
-			const FInventoryItemInfo& ItemInfo { Item->GetInventoryInfo() };
+			const UInventoryEntry* Entry { CastChecked<UInventoryEntry>(ListItem) };
+			const FInventoryItemInfo& ItemInfo { Entry->GetItemInfo() };
 			CurrentSelectionTitle->SetText(ItemInfo.Title);
 			CurrentSelectionDescription->SetText(ItemInfo.Description);
 
@@ -74,15 +73,10 @@ void UInventoryWidget::NativeConstruct()
 	}
 }
 
-void UInventoryWidget::AddInventoryItem(AInventoryItem* InventoryItem) const
-{
-	ItemTileView->AddItem(InventoryItem);
-}
-
 void UInventoryWidget::SubscribeToEvent(FInventoryItemAddedEvent& Event) const
 {
-	Event.AddLambda([this](AInventoryItem* InventoryItem)
+	Event.AddLambda([this](UInventoryEntry* InventoryItem)
 	{
-		AddInventoryItem(InventoryItem);
+		ItemTileView->AddItem(InventoryItem);
 	});
 }

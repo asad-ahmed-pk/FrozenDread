@@ -17,7 +17,7 @@ class UTileView;
 class UTextBlock;
 class UButton;
 class UInventoryItemWidget;
-class UMetaSoundSource;
+class USoundBase;
 
 /**
  * UMG Widget for presenting the player's inventory.
@@ -28,9 +28,6 @@ class FROZENDREAD_API UInventoryWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	/** Add the given inventory item data to this widget */
-	void AddInventoryItem(AInventoryItem* InventoryItem) const;
-
 	/** Subscribe to the given inventory item added event */
 	void SubscribeToEvent(FInventoryItemAddedEvent& Event) const;
 
@@ -57,11 +54,11 @@ protected:
 private:
 	/** The sound to play when the user hovers over an item */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sound", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UMetaSoundSource> HoverSound;
+	TObjectPtr<USoundBase> HoverSound;
 
 	/** The sound to play when the user selects an item */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sound", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UMetaSoundSource> SelectionSound;
+	TObjectPtr<USoundBase> SelectionSound;
 
 private:
     UInventoryItemWidget* CurrentSelectedItemWidget { nullptr };

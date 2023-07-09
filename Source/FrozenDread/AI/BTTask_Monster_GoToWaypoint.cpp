@@ -4,12 +4,11 @@
 //
 
 #include "FrozenDread/AI/BTTask_Monster_GoToWaypoint.h"
+#include "FrozenDread/AI/Monster.h"
+#include "FrozenDread/AI/PatrolWaypointSet.h"
 
 #include "AIController.h"
-#include "Monster.h"
-#include "PatrolWaypointSet.h"
 #include "BehaviorTree/BlackboardComponent.h"
-
 
 UBTTask_Monster_GoToWaypoint::UBTTask_Monster_GoToWaypoint()
 {
@@ -47,4 +46,9 @@ EBTNodeResult::Type UBTTask_Monster_GoToWaypoint::ExecuteTask(UBehaviorTreeCompo
 void UBTTask_Monster_GoToWaypoint::OnGameplayTaskActivated(UGameplayTask& Task)
 {
 	Super::OnGameplayTaskActivated(Task);
+}
+
+void UBTTask_Monster_GoToWaypoint::OnGameplayTaskDeactivated(UGameplayTask& Task)
+{
+	Super::OnGameplayTaskDeactivated(Task);
 }

@@ -3,21 +3,22 @@
 // Implementation of the UInventory class.
 //
 
-#include "Inventory.h"
+#include "FrozenDread/Player/Inventory.h"
+#include "FrozenDread/Game/InventoryItemInfo.h"
 
-#include "FrozenDread/Gameplay/InventoryItem.h"
-
-void UInventory::AddItemToInventory(AInventoryItem* InventoryItem)
+void UInventory::AddItemToInventory(const FInventoryItemInfo* ItemInfo)
 {
-	Items.Add(InventoryItem);
-	InventoryItemAddedEvent.Broadcast(InventoryItem);
+	UInventoryEntry* Entry { NewObject<UInventoryEntry>(this) };
+	Entry->SetItemInfo(ItemInfo);
+	Items.Add(Entry);
+	InventoryItemAddedEvent.Broadcast(Entry);
 }
 
 bool UInventory::HasItem(uint8 ID) const
 {
-	for (const auto& Item : Items)
+	for (const auto Item : Items)
 	{
-		if (Item.IsValid() && Item->GetInventoryInfo().ID == ID)
+		if (Item && Item->GetItemInfo().ID == ID)
 		{
 			return true;
 		}

@@ -51,13 +51,13 @@ void AInventoryItem::Interact(APlayerCharacter* PlayerCharacter)
 
 	// Add to inventory
 	UInventory* Inventory { PlayerCharacter->GetInventory() };
-	Inventory->AddItemToInventory(this);
+	const FInventoryItemInfo* ItemInfo { InventoryItemInfo.GetRow<FInventoryItemInfo>("Interaction") };
+	Inventory->AddItemToInventory(ItemInfo);
 
 	// Play pickup sound
 	check(InteractionSound);
 	UGameplayStatics::PlaySoundAtLocation(this, InteractionSound, GetActorLocation());
 
 	// Remove from game world
-	SetActorHiddenInGame(true);
-	SetActorEnableCollision(false);
+	Destroy();
 }

@@ -11,7 +11,7 @@
 #include "MetasoundSource.h"
 #include "Engine/DataTable.h"
 
-#include "FrozenDread/Gameplay/GameItems.h"
+#include "FrozenDread/Game/InventoryItemInfo.h"
 #include "FrozenDread/Gameplay/InteractiveObject.h"
 
 #include "InventoryItem.generated.h"
@@ -20,28 +20,6 @@ class UBoxComponent;
 class UStaticMeshComponent;
 class UMetaSoundSource;
 class UTexture2D;
-
-USTRUCT(BlueprintType)
-struct FInventoryItemInfo : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	// The unique ID of the item
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	uint8 ID;
-
-	// The display title in the inventory for the item
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Title;
-
-	// The description text for the item in the inventory
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Description;
-
-	// The Icon to use for the item in the inventory
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UTexture2D> Icon;
-};
 
 UCLASS()
 class FROZENDREAD_API AInventoryItem : public AActor, public IInteractiveObject

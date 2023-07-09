@@ -24,5 +24,5 @@ protected:
 	virtual FString GetStaticDescription() const override;
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual void OnGameplayTaskActivated(UGameplayTask& Task) override;
-	
+	virtual void OnGameplayTaskDeactivated(UGameplayTask& Task) override;
 };

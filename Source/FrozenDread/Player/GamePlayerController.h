@@ -16,7 +16,7 @@ class IConsoleVariable;
 class UInputMappingContext;
 class UInputAction;
 class UInventory;
-class UMetaSoundSource;
+class USoundBase;
 
 /**
  * Main player controller class for the game
@@ -53,14 +53,16 @@ private:
 	
 	/** Sound to play when the player opens or closes the inventory */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sound", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UMetaSoundSource> InventoryToggleSound;
+	TObjectPtr<USoundBase> InventoryToggleSound;
+
+	/** The player's inventory */
+	UPROPERTY(Transient)
+	TObjectPtr<UInventory> Inventory;
 
 private:
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter;
 	TWeakObjectPtr<AGamePlayerState> GamePlayerState;
 	TWeakObjectPtr<AGameHUD> GameHUD;
-
-	TObjectPtr<UInventory> Inventory;
-
+	
 	bool IsViewingInventory { false };
 };
