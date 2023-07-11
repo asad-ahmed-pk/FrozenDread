@@ -36,6 +36,8 @@ class UStaticMeshComponent;
 class UWidgetComponent;
 class UTimelineComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDoorInteractionDelegate);
+
 UCLASS()
 class FROZENDREAD_API ADoor : public AActor, public IInteractiveObject
 {
@@ -65,8 +67,18 @@ public:
 	// The display text to show for the 
 	virtual FText DisplayText() const override;
 
+public:
+	/** This door was successfully interacted with and opened or closed */
+	UPROPERTY(BlueprintAssignable, Category="Interaction")
+	FDoorInteractionDelegate OnDoorWasInteractedWith;
+
+	/** This door was interacted with while being locked */
+	UPROPERTY(BlueprintAssignable, Category="Interaction")
+	FDoorInteractionDelegate OnLockedDoorWasInteractedWith;
+
 protected:
-	// The player interacted with the door 
+	// The player interacted with the door (for internal use)
+	// TODO: Remove this and favour using the public one?
 	UFUNCTION(BlueprintNativeEvent, Category="Interaction")
 	void PlayerInteractedWithDoor();
 

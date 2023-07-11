@@ -13,6 +13,9 @@
 class UBoxComponent;
 class USceneComponent;
 
+// Delegate for interaction with this item
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInteractionDelegate);
+
 /**
  * Represents an Actor that can be interacted with and triggers an interaction event.
  */
@@ -35,6 +38,11 @@ public:
 
 	// The display text to show when the player is looking at this actor
 	virtual FText DisplayText() const override;
+
+public:
+	/** Called when the player interacts with this item */
+	UPROPERTY(BlueprintAssignable, Category="Interaction")
+	FInteractionDelegate OnInteractedWith;
 
 private:
 	/** The text to display when the player looks at this actor */

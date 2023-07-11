@@ -4,8 +4,6 @@
 //
 
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
-#include "FrozenDread/Game/GameStatics.h"
-#include "FrozenDread/Gameplay/GameLevelScriptActor.h"
 #include "FrozenDread/UI/DialogueWidget.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -25,7 +23,6 @@ bool UPlayerDialogueSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 	{
 		if (const UWorld* World = GEngine->GetWorldFromContextObject(Outer, EGetWorldErrorMode::LogAndReturnNull))
 		{
-			// Change "YourMainMenuLevel" to the name or class of your main menu level
 			if (const FString LevelName = World->GetMapName(); LevelName.Equals(GMain_Menu_Level_Name))
 			{
 				return false;
@@ -52,11 +49,12 @@ void UPlayerDialogueSubsystem::Setup(UDialogueWidget* DialogueWidgetPtr)
 	}
 }
 
-void UPlayerDialogueSubsystem::AddDialogueItem(const FDialogueItem& DialogueItem)
+void UPlayerDialogueSubsystem::AddDialogueItem(const FDialogueItem& DialogueItem, const FDialogueCallBack& CallBackRef)
 {
 	DialogueQueue.Enqueue(DialogueItem);
 	if (!DialogueQueue.IsEmpty() && DialogueWidget != nullptr)
 	{
+		CallBack = CallBackRef;
 		PlayNextDialogueText();
 	}
 }
@@ -137,8 +135,11 @@ void UPlayerDialogueSubsystem::NextDialogueItemRequested()
 		const FInputModeGameOnly GameInput;
 		GetWorld()->GetFirstPlayerController()->SetInputMode(GameInput);
 
-		// Broadcast that the dialogue finished playing
-		AGameLevelScriptActor* LevelScript { CastChecked<AGameLevelScriptActor>(GetWorld()->GetLevelScriptActor()) };
-		LevelScript->PlayerDialogueFinishedPlaying(LastPlayedItem);
+		// Call the callback function to notify that the dialog finished playing
+		// ReSharper disable once CppExpressionWithoutSideEffects
+		if (CallBack.IsSet())
+		{
+			CallBack->ExecuteIfBound();
+		}
 	}
 }

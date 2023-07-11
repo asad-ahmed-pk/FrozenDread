@@ -14,8 +14,8 @@
 
 class UDialogueWidget;
 
-// Player dialogue finished playing (with the unique name of the dialogue)
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerDialogueFinishedPlaying, FDialogueItem, DialogueItem);
+// Callback for dialogue completion
+DECLARE_DYNAMIC_DELEGATE(FDialogueCallBack);
 
 /**
  * Subsystem for displaying player dialogue during gameplay
@@ -34,8 +34,8 @@ public:
 	void Setup(UDialogueWidget* DialogueWidgetPtr);
 
 	/** Add text to the dialogue queue */
-	UFUNCTION(BlueprintCallable, Category="Dialogue")
-	void AddDialogueItem(const FDialogueItem& DialogueItem);
+	UFUNCTION(BlueprintCallable, Category="Dialogue", meta=(AutoCreateRefTerm="CallBackRef"))
+	void AddDialogueItem(const FDialogueItem& DialogueItem, const FDialogueCallBack& CallBackRef);
 
 private:
 	void PlayNextDialogueText();
@@ -48,4 +48,5 @@ private:
 	UDialogueWidget* DialogueWidget { nullptr };
 	uint32 CurrentTextLength { 0 };
 	FDialogueItem LastPlayedItem;
+	TOptional<const FDialogueCallBack> CallBack {};
 };

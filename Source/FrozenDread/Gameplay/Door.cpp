@@ -3,18 +3,15 @@
 // Implementation of the ADoor class.
 //
 
-#include "Door.h"
+#include "FrozenDread/Gameplay/Door.h"
+#include "FrozenDread/Player/Inventory.h"
+#include "FrozenDread/Player/PlayerCharacter.h"
+#include "FrozenDread/UI/DoorLockStatusWidget.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
-
-#include "FrozenDread/Player/Inventory.h"
-#include "FrozenDread/Player/PlayerCharacter.h"
-#include "FrozenDread/Game/GameStatics.h"
-#include "FrozenDread/Gameplay/GameLevelScriptActor.h"
-#include "FrozenDread/UI/DoorLockStatusWidget.h"
 
 // Sets default values
 ADoor::ADoor()
@@ -61,18 +58,20 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 	{
 		return;
 	}
+
+	OnDoorWasInteractedWith.Broadcast();
 	
 	switch (LockState)
 	{
 	case EDoorLockState::Unlocked:
 		PlayerInteractedWithDoor();
-		UGameStatics::GetLevelScript(this)->PlayerInteractedWithItem(this);
+		OnDoorWasInteractedWith.Broadcast();
 		break;
 
 	case EDoorLockState::Locked:
 		// Access denied
 		check(AccessDeniedSound);
-		UGameStatics::GetLevelScript(this)->PlayerTriedLockedDoor(this);
+		OnLockedDoorWasInteractedWith.Broadcast();
 		UGameplayStatics::PlaySoundAtLocation(this, AccessDeniedSound, GetActorLocation());
 		break;
 
@@ -87,7 +86,7 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 		}
 		else
 		{
-			UGameStatics::GetLevelScript(this)->PlayerTriedLockedDoor(this);
+			OnLockedDoorWasInteractedWith.Broadcast();
 			UGameplayStatics::PlaySoundAtLocation(this, AccessDeniedSound, GetActorLocation());
 		}
 		break;
@@ -100,7 +99,7 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 
 void ADoor::SetHighlighted(bool IsHighlighted)
 {
-	
+	// Do nothing, as doors do not need to be highlighted
 }
 
 FText ADoor::DisplayText() const

@@ -27,16 +27,4 @@ public:
 	// Trigger game over since player was caught
 	UFUNCTION(BlueprintNativeEvent, Category="Player Events")
 	void PlayerWasCaught();
-
-	// An interactive item was interacted with by the player
-	UFUNCTION(BlueprintNativeEvent, Category="Player Events")
-	void PlayerInteractedWithItem(AActor* Actor);
-
-	// The player tried to open a locked door
-	UFUNCTION(BlueprintNativeEvent, Category="Player Events")
-	void PlayerTriedLockedDoor(ADoor* Door);
-
-	// The following dialogue finished playing
-	UFUNCTION(BlueprintNativeEvent, Category="Player Events")
-	void PlayerDialogueFinishedPlaying(const FDialogueItem& DialogueItem);
 };

@@ -4,8 +4,6 @@
 //
 
 #include "FrozenDread/Gameplay/InteractionItem.h"
-#include "FrozenDread/Game/GameStatics.h"
-#include "FrozenDread/Gameplay/GameLevelScriptActor.h"
 
 #include "Components/BoxComponent.h"
 
@@ -27,12 +25,12 @@ AInteractionItem::AInteractionItem()
 void AInteractionItem::Interact(APlayerCharacter* PlayerCharacter)
 {
 	// Notify the level script that this actor was interacted with
-	UGameStatics::GetLevelScript(this)->PlayerInteractedWithItem(this);
+	OnInteractedWith.Broadcast();
 }
 
 void AInteractionItem::SetHighlighted(bool IsHighlighted)
 {
-	
+	// Do nothing as this is a generic item
 }
 
 FText AInteractionItem::DisplayText() const
