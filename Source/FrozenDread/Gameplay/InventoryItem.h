@@ -17,9 +17,12 @@
 #include "InventoryItem.generated.h"
 
 class UBoxComponent;
+class USceneComponent;
 class UStaticMeshComponent;
 class UMetaSoundSource;
 class UTexture2D;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPickedUpItemDelegate);
 
 UCLASS()
 class FROZENDREAD_API AInventoryItem : public AActor, public IInteractiveObject
@@ -40,7 +43,16 @@ public:
 	virtual FText DisplayText() const override { return InteractionText; }
 	virtual void Interact(APlayerCharacter* PlayerCharacter) override;
 
+public:
+	/** Player picks up this item */
+	UPROPERTY(BlueprintAssignable, Category="Interaction")
+	FPickedUpItemDelegate OnPickedUp;
+
 private:
+	/** The root component of the mesh */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Root", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<USceneComponent> RootSceneComponent;
+	
 	/** The data table row corresponding to this inventory item */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true", RequiredAssetDataTags="RowStructure=/Script/FrozenDread.InventoryItemInfo"))
 	FDataTableRowHandle InventoryItemInfo;

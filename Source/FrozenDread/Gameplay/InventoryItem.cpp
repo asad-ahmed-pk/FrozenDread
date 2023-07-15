@@ -15,6 +15,10 @@
 // Sets default values
 AInventoryItem::AInventoryItem()
 {
+	// Root Component
+	RootSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	SetRootComponent(RootSceneComponent);
+	
 	// Mesh
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
@@ -57,6 +61,9 @@ void AInventoryItem::Interact(APlayerCharacter* PlayerCharacter)
 	// Play pickup sound
 	check(InteractionSound);
 	UGameplayStatics::PlaySoundAtLocation(this, InteractionSound, GetActorLocation());
+
+	// Notify delegates
+	OnPickedUp.Broadcast();
 
 	// Remove from game world
 	Destroy();
