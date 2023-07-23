@@ -4,6 +4,8 @@
 //
 
 #include "FrozenDread/Game/GameStatics.h"
+
+#include "AIController.h"
 #include "FrozenDread/Gameplay/GameLevelScriptActor.h"
 
 AGameLevelScriptActor* UGameStatics::GetLevelScript(const AActor* ContextActor)
@@ -12,4 +14,14 @@ AGameLevelScriptActor* UGameStatics::GetLevelScript(const AActor* ContextActor)
 	const ULevel* Level { ContextActor->GetWorld()->GetCurrentLevel() };
 	check(Level);
 	return CastChecked<AGameLevelScriptActor>(Level->LevelScriptActor);
+}
+
+UBlackboardComponent* UGameStatics::GetCharacterBlackBoardComponent(const APawn* Pawn)
+{
+	if (AAIController* AIController { Pawn->GetController<AAIController>() })
+	{
+		return AIController->GetBlackboardComponent();
+	}
+
+	return nullptr;
 }

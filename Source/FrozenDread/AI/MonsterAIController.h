@@ -7,6 +7,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "GenericTeamAgentInterface.h"
 #include "MonsterAIController.generated.h"
 
 struct FAIStimulus;
@@ -28,8 +29,7 @@ class FROZENDREAD_API AMonsterAIController : public AAIController
 public:
 	AMonsterAIController();
 
-	/** Call when monster has completed the rage animation sequence */
-	void MonsterRageCompleted();
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -57,4 +57,5 @@ private:
 
 private:
 	AMonster* Monster { nullptr };
+	FVector LastKnownPlayerLocation;
 };

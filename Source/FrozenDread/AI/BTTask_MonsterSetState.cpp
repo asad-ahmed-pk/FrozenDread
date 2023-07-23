@@ -1,21 +1,21 @@
 //
-// MonsterBTTask_UpdateState.cpp
-// Implementation of the UMonsterBTTask_UpdateState class.
+// BTTask_MonsterSetState.cpp
+// Implementation of the UBTTask_MonsterSetState class.
 //
 
-#include "FrozenDread/AI/MonsterBTTask_UpdateState.h"
+#include "BTTask_MonsterSetState.h"
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "FrozenDread/AI/Monster.h"
 
-UMonsterBTTask_UpdateState::UMonsterBTTask_UpdateState()
+UBTTask_MonsterSetState::UBTTask_MonsterSetState()
 {
-	NodeName = TEXT("Update Monster State");
-	BlackboardKey.AddEnumFilter(this, GET_MEMBER_NAME_CHECKED(UMonsterBTTask_UpdateState, BlackboardKey), StaticEnum<EMonsterState>());
+	NodeName = TEXT("Set Monster State");
+	BlackboardKey.AddEnumFilter(this, GET_MEMBER_NAME_CHECKED(UBTTask_MonsterSetState, BlackboardKey), StaticEnum<EMonsterState>());
 }
 
-EBTNodeResult::Type UMonsterBTTask_UpdateState::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_MonsterSetState::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	// Update blackboard key
 	OwnerComp.GetBlackboardComponent()->SetValueAsEnum(BlackboardKey.SelectedKeyName, static_cast<uint8>(NewState));
@@ -33,12 +33,12 @@ EBTNodeResult::Type UMonsterBTTask_UpdateState::ExecuteTask(UBehaviorTreeCompone
 	return EBTNodeResult::Succeeded;
 }
 
-void UMonsterBTTask_UpdateState::OnGameplayTaskActivated(UGameplayTask& Task)
+void UBTTask_MonsterSetState::OnGameplayTaskActivated(UGameplayTask& Task)
 {
 	Super::OnGameplayTaskActivated(Task);
 }
 
-FString UMonsterBTTask_UpdateState::GetStaticDescription() const
+FString UBTTask_MonsterSetState::GetStaticDescription() const
 {
 	return FString::Printf(TEXT("Set Monster State To: %s"), *BlackboardKey.SelectedKeyName.ToString());
 }

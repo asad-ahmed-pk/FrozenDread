@@ -1,6 +1,6 @@
 //
-// MonsterBTTask_UpdateState.h
-// Definition of the UMonsterBTTask_UpdateState class.
+// BTTask_MonsterSetState.h
+// Definition of the UBTTask_MonsterSetState class.
 //
 
 #pragma once
@@ -8,7 +8,7 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 
-#include "MonsterBTTask_UpdateState.generated.h"
+#include "BTTask_MonsterSetState.generated.h"
 
 enum class EMonsterState : uint8;
 
@@ -16,12 +16,12 @@ enum class EMonsterState : uint8;
  * Blackboard Task for updating the monster's state.
  */
 UCLASS()
-class FROZENDREAD_API UMonsterBTTask_UpdateState : public UBTTask_BlackboardBase
+class FROZENDREAD_API UBTTask_MonsterSetState : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 
 public:
-	UMonsterBTTask_UpdateState();
+	UBTTask_MonsterSetState();
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

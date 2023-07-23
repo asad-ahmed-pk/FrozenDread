@@ -5,11 +5,14 @@
 
 #include "Monster.h"
 
+#include "BlackboardKeys.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "FrozenDread/AI/MonsterAIController.h"
+#include "FrozenDread/Game/GameStatics.h"
 #include "FrozenDread/Game/GameTags.h"
 #include "FrozenDread/System/GameEventSubsystem.h"
 
@@ -44,10 +47,6 @@ void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Handle montage end event
-	Controller = GetController<AMonsterAIController>();
-	GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &AMonster::OnMontageCompleted);
-
 	// Override the movement component settings
 	MovementComponent->MaxWalkSpeed = DefaultMovementSpeed;
 }
@@ -58,7 +57,7 @@ void AMonster::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// If chasing the player, increase speed every tick
-	if (MonsterState == EMonsterState::ChasingPlayer)
+	if (MonsterState == EMonsterState::ChasingPlayer || MonsterState == EMonsterState::Searching)
 	{
 		check(MovementComponent);
 		if (MovementComponent->MaxWalkSpeed <= MaxHuntingSpeed)
@@ -76,39 +75,18 @@ void AMonster::SetMonsterState(const EMonsterState& State)
 		return;
 	}
 
-	switch (State)
-	{
-	case EMonsterState::Patrolling:
-		break;
-	
-	case EMonsterState::Alerted:
-		check(RageMontage);
-		PlayAnimMontage(RageMontage);
-		break;
-
-	case EMonsterState::Searching:
-		break;
-
-	case EMonsterState::ChasingPlayer:
-		break;
-	}
-
 	// Set movement speed back to normal if not hunting player
-	if (State != EMonsterState::ChasingPlayer)
+	if (State == EMonsterState::Patrolling || State == EMonsterState::Idle)
 	{
 		MovementComponent->MaxWalkSpeed = DefaultMovementSpeed;
 	}
 	
 	MonsterState = State;
-}
 
-void AMonster::OnMontageCompleted(UAnimMontage* Montage, bool WasInterrupted)
-{
-	if (Montage == RageMontage)
-	{
-		check(Controller);
-		Controller->MonsterRageCompleted();
-	}
+	// Notify blackboard that state was updated
+	UBlackboardComponent* BlackboardComponent { UGameStatics::GetCharacterBlackBoardComponent(this) };
+	check(BlackboardComponent);
+	BlackboardComponent->SetValueAsEnum(BlackBoardKey::MONSTER_STATE, static_cast<uint8>(MonsterState));
 }
 
 void AMonster::OnAttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

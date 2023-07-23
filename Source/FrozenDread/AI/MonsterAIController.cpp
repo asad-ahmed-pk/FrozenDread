@@ -13,6 +13,7 @@
 
 #include "FrozenDread/AI/Monster.h"
 #include "FrozenDread/AI/BlackboardKeys.h"
+#include "FrozenDread/Game/GameTags.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 
 AMonsterAIController::AMonsterAIController()
@@ -30,11 +31,21 @@ AMonsterAIController::AMonsterAIController()
 	SightConfig->LoseSightRadius = SightConfig->SightRadius + 500.0F;
 	SightConfig->PeripheralVisionAngleDegrees = 90.0F;
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
-	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
-	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	SightConfig->DetectionByAffiliation.bDetectFriendlies = false;
+	SightConfig->DetectionByAffiliation.bDetectNeutrals = false;
 
 	PerceptionComponent->SetDominantSense(*SightConfig->GetSenseImplementation());
 	PerceptionComponent->ConfigureSense(*SightConfig);
+}
+
+ETeamAttitude::Type AMonsterAIController::GetTeamAttitudeTowards(const AActor& Other) const
+{
+	if (Other.ActorHasTag(GameTag::PLAYER))
+	{
+		return ETeamAttitude::Hostile;
+	}
+	
+	return ETeamAttitude::Neutral;
 }
 
 void AMonsterAIController::BeginPlay()
@@ -70,21 +81,10 @@ void AMonsterAIController::Tick(float DeltaSeconds)
 	if (Monster && Monster->GetMonsterState() == EMonsterState::ChasingPlayer)
 	{
 		if (const AActor* Player = GetPerceivedPlayerCharacter())
-		{
+		{ 
 			const FVector TargetLocation { Player->GetActorLocation() };
 			GetBlackboardComponent()->SetValueAsVector(BlackBoardKey::TARGET_LOCATION, TargetLocation);
 		}
-	}
-}
-
-void AMonsterAIController::MonsterRageCompleted()
-{
-	if (GetPerceivedPlayerCharacter())
-	{
-		Monster->SetMonsterState(EMonsterState::ChasingPlayer);
-
-		// MonsterState key is only used for debugging and not actually used by the BT
-		GetBlackboardComponent()->SetValueAsEnum(BlackBoardKey::MONSTER_STATE, static_cast<uint8>(EMonsterState::ChasingPlayer));
 	}
 }
 
@@ -95,20 +95,20 @@ void AMonsterAIController::OnSightPerceptionUpdate(AActor* Actor, FAIStimulus St
 		APlayerCharacter* Player { Cast<APlayerCharacter>(Actor) };
 		if (Player != nullptr)
 		{
-			Monster->SetMonsterState(EMonsterState::Alerted);
-			GetBlackboardComponent()->SetValueAsVector(BlackBoardKey::TARGET_LOCATION, Player->GetActorLocation());
+			Monster->SetMonsterState(EMonsterState::ChasingPlayer);
+			GetBlackboardComponent()->SetValueAsObject(BlackBoardKey::TARGET_PLAYER, Player);
 			SetFocus(Player);
 		}
 	}
 	else
 	{
 		SetFocus(nullptr);
+		GetBlackboardComponent()->SetValueAsVector(BlackBoardKey::TARGET_LOCATION, Actor->GetActorLocation());
+		GetBlackboardComponent()->ClearValue(BlackBoardKey::TARGET_PLAYER);
 		Monster->SetMonsterState(EMonsterState::Searching);
 	}
 
-	// Setting enum value of the monster state for debugging only
-	const uint8 EnumValue { static_cast<uint8>(Monster->GetMonsterState()) };
-	GetBlackboardComponent()->SetValueAsEnum(BlackBoardKey::MONSTER_STATE, EnumValue);
+	LastKnownPlayerLocation = Actor->GetActorLocation();
 }
 
 AActor* AMonsterAIController::GetPerceivedPlayerCharacter() const

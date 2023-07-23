@@ -22,7 +22,6 @@ enum class EMonsterState : uint8
 {
 	Idle					UMETA(DisplayName = "Idle"),
 	Patrolling				UMETA(DisplayName = "Patrolling"),
-	Alerted					UMETA(DisplayName = "Alerted"),
 	ChasingPlayer			UMETA(DisplayName = "Chasing Player"),
 	Searching				UMETA(DisplayName = "Searching")
 };
@@ -38,9 +37,6 @@ class FROZENDREAD_API AMonster : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AMonster();
-
-	/** Get a reference to the waypoint set this monster is using */
-	FORCEINLINE const APatrolWaypointSet* GetPatrolWaypointSet() const { return PatrolWaypoints; }
 
 	/** Set the monster state */
 	UFUNCTION(BlueprintCallable)
@@ -60,19 +56,12 @@ public:
 
 private:
 	UFUNCTION()
-	void OnMontageCompleted(UAnimMontage* Montage, bool WasInterrupted);
-
-	UFUNCTION()
 	void OnAttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
 	/** The sphere used to determine when the monster will attack */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<USphereComponent> AttackSphere;
-
-	/** The patrol waypoint set to use for patrolling */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<APatrolWaypointSet> PatrolWaypoints;
 
 	/** The montage to use for the rage animation */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animation", meta=(AllowPrivateAccess="true"))
