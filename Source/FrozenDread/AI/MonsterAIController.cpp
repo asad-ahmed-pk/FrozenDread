@@ -16,6 +16,8 @@
 #include "FrozenDread/Game/GameTags.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 
+constexpr float CHASE_SIGHT_RADIUS_INCREASE_FACTOR { 2.0F };
+
 AMonsterAIController::AMonsterAIController()
 {
 	// Setup behaviour tree and blackboard
@@ -55,6 +57,10 @@ void AMonsterAIController::BeginPlay()
 	// Cache ref to monster character
 	Monster = CastChecked<AMonster>(GetPawn());
 
+	// Cache default sight radius settings
+	DefaultSightRadiusSettings.Get<0>() = SightConfig->SightRadius;
+	DefaultSightRadiusSettings.Get<1>() = SightConfig->LoseSightRadius;
+
 	// Run behaviour tree
 	check(BehaviorTree);
 	RunBehaviorTree(BehaviorTree.Get());
@@ -92,21 +98,28 @@ void AMonsterAIController::OnSightPerceptionUpdate(AActor* Actor, FAIStimulus St
 {
 	if (Stimulus.WasSuccessfullySensed() && Actor)
 	{
-		APlayerCharacter* Player { Cast<APlayerCharacter>(Actor) };
-		if (Player != nullptr)
-		{
-			Monster->SetMonsterState(EMonsterState::ChasingPlayer);
-			GetBlackboardComponent()->SetValueAsObject(BlackBoardKey::TARGET_PLAYER, Player);
-			SetFocus(Player);
-		}
+		APlayerCharacter* Player { CastChecked<APlayerCharacter>(Actor) };
+		
+		Monster->SetMonsterState(EMonsterState::ChasingPlayer);
+		GetBlackboardComponent()->SetValueAsObject(BlackBoardKey::TARGET_PLAYER, Player);
+		SetFocus(Player);
+		
+		SightConfig->SightRadius = DefaultSightRadiusSettings.Get<0>() * CHASE_SIGHT_RADIUS_INCREASE_FACTOR;
+		SightConfig->LoseSightRadius = DefaultSightRadiusSettings.Get<1>() * CHASE_SIGHT_RADIUS_INCREASE_FACTOR;
 	}
 	else
 	{
 		SetFocus(nullptr);
 		GetBlackboardComponent()->SetValueAsVector(BlackBoardKey::TARGET_LOCATION, Actor->GetActorLocation());
 		GetBlackboardComponent()->ClearValue(BlackBoardKey::TARGET_PLAYER);
+		
 		Monster->SetMonsterState(EMonsterState::Searching);
+
+		SightConfig->SightRadius = DefaultSightRadiusSettings.Get<0>();
+		SightConfig->LoseSightRadius = DefaultSightRadiusSettings.Get<1>();
 	}
+
+	PerceptionComponent->ConfigureSense(*SightConfig);
 
 	LastKnownPlayerLocation = Actor->GetActorLocation();
 }

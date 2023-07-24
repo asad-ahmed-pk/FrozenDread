@@ -58,4 +58,5 @@ private:
 private:
 	AMonster* Monster { nullptr };
 	FVector LastKnownPlayerLocation;
+	TTuple<float, float> DefaultSightRadiusSettings;
 };

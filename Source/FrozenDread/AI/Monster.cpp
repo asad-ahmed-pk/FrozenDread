@@ -11,7 +11,6 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-#include "FrozenDread/AI/MonsterAIController.h"
 #include "FrozenDread/Game/GameStatics.h"
 #include "FrozenDread/Game/GameTags.h"
 #include "FrozenDread/System/GameEventSubsystem.h"
