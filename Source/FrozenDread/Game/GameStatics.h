@@ -9,6 +9,7 @@
 
 class AGameLevelScriptActor;
 class UBlackboardComponent;
+class UMusicPlayerSubsystem;
 
 /**
  * Static class for static helper functions
@@ -21,4 +22,7 @@ public:
 
 	/** Get the given blackboard for the AI pawn */
 	static UBlackboardComponent* GetCharacterBlackBoardComponent(const APawn* Pawn);
+
+	/** Get a reference to the Music Subsystem */
+	static UMusicPlayerSubsystem* GetMusicSubsystem(const AActor* ContextActor);
 };

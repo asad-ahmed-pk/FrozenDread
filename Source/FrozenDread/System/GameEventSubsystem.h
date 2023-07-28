@@ -13,6 +13,8 @@
 class APlayerCharacter;
 class AMonster;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerChaseStatusDelegate, bool, IsChased);
+
 /**
  * Subsystem responsible for handling key events and triggers in the game.
  */
@@ -34,6 +36,13 @@ public:
 	// The player requested to quit the level and go back to the main menu
 	void PlayerRequestedLevelQuit() const;
 
+	// A monster is chasing the player
+	void PlayerIsBeingChased(bool IsChased) const;
+
+public:
+	UPROPERTY(BlueprintAssignable, Category="Game Events")
+	FPlayerChaseStatusDelegate OnPlayerBeingChased;
+
 public:
 	// To be called when the death level sequence is completed
 	UFUNCTION(BlueprintCallable, Category="Level Events")
@@ -46,5 +55,6 @@ public:
 private:
 	TWeakObjectPtr<APlayerCharacter> Player;
 	TWeakObjectPtr<AMonster> Monster;
-	bool PlayerIsWearingExoSuit { false };
+
+	bool IsMonsterChasingPlayer { false };
 };

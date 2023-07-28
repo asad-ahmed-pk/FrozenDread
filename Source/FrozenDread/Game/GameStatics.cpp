@@ -7,6 +7,7 @@
 
 #include "AIController.h"
 #include "FrozenDread/Gameplay/GameLevelScriptActor.h"
+#include "FrozenDread/System/MusicPlayerSubsystem.h"
 
 AGameLevelScriptActor* UGameStatics::GetLevelScript(const AActor* ContextActor)
 {
@@ -24,4 +25,14 @@ UBlackboardComponent* UGameStatics::GetCharacterBlackBoardComponent(const APawn*
 	}
 
 	return nullptr;
+}
+
+UMusicPlayerSubsystem* UGameStatics::GetMusicSubsystem(const AActor* ContextActor)
+{
+	const UGameInstance* GameInstance { ContextActor->GetGameInstance() };
+	UMusicPlayerSubsystem* MusicPlayerSubsystem { GameInstance->GetSubsystem<UMusicPlayerSubsystem>() };
+
+	check(MusicPlayerSubsystem);
+
+	return MusicPlayerSubsystem;
 }

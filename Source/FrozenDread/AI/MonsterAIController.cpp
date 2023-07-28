@@ -15,6 +15,7 @@
 #include "FrozenDread/AI/BlackboardKeys.h"
 #include "FrozenDread/Game/GameTags.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
+#include "FrozenDread/System/GameEventSubsystem.h"
 
 constexpr float CHASE_SIGHT_RADIUS_INCREASE_FACTOR { 2.0F };
 
@@ -106,6 +107,9 @@ void AMonsterAIController::OnSightPerceptionUpdate(AActor* Actor, FAIStimulus St
 		
 		SightConfig->SightRadius = DefaultSightRadiusSettings.Get<0>() * CHASE_SIGHT_RADIUS_INCREASE_FACTOR;
 		SightConfig->LoseSightRadius = DefaultSightRadiusSettings.Get<1>() * CHASE_SIGHT_RADIUS_INCREASE_FACTOR;
+
+		UGameEventSubsystem* GameEventSubsystem { GetWorld()->GetSubsystem<UGameEventSubsystem>() };
+		GameEventSubsystem->PlayerIsBeingChased(true);
 	}
 	else
 	{
@@ -117,6 +121,9 @@ void AMonsterAIController::OnSightPerceptionUpdate(AActor* Actor, FAIStimulus St
 
 		SightConfig->SightRadius = DefaultSightRadiusSettings.Get<0>();
 		SightConfig->LoseSightRadius = DefaultSightRadiusSettings.Get<1>();
+
+		UGameEventSubsystem* GameEventSubsystem { GetWorld()->GetSubsystem<UGameEventSubsystem>() };
+		GameEventSubsystem->PlayerIsBeingChased(true);
 	}
 
 	PerceptionComponent->ConfigureSense(*SightConfig);

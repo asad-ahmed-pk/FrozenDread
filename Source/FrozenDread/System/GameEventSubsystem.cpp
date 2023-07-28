@@ -5,12 +5,15 @@
 
 #include "FrozenDread/System/GameEventSubsystem.h"
 
+#include "MusicPlayerSubsystem.h"
+#include "FrozenDread/Game/GameStatics.h"
 #include "FrozenDread/Gameplay/GameLevelScriptActor.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
-#include "FrozenDread/Player/GamePlayerController.h"
 #include "FrozenDread/UI/GameHUD.h"
 #include "FrozenDread/UI/GameOverWidget.h"
 #include "Kismet/GameplayStatics.h"
+
+constexpr int32 GAME_MUSIC_TRACK_CHASE_INDEX { 1 };
 
 void UGameEventSubsystem::Setup(APlayerCharacter* PlayerCharacter, AMonster* MonsterCharacter)
 {
@@ -28,6 +31,9 @@ void UGameEventSubsystem::PlayerWasCaught() const
 	check(Player.IsValid());
 	APlayerController* PlayerController { CastChecked<APlayerController>(Player->GetController()) };
 	Player->DisableInput(PlayerController);
+
+	// Stop all music
+	UGameStatics::GetMusicSubsystem(Player.Get())->Stop();
 	
 	// Notify level script actor that the player was caught
 	AGameLevelScriptActor* LevelScript { CastChecked<AGameLevelScriptActor>(GetWorld()->GetLevelScriptActor()) };
@@ -51,6 +57,11 @@ void UGameEventSubsystem::PlayerRequestedLevelQuit() const
 	// TODO: Go back to the main menu once main menu is implemented
 	check(Player.IsValid());
 	UKismetSystemLibrary::QuitGame(this, Player->GetController<APlayerController>(), EQuitPreference::Quit, false);
+}
+
+void UGameEventSubsystem::PlayerIsBeingChased(bool IsChased) const
+{
+	OnPlayerBeingChased.Broadcast(IsChased);
 }
 
 void UGameEventSubsystem::DeathLevelSequenceFinished()
