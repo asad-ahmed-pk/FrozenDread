@@ -5,27 +5,30 @@
 
 #include "FrozenDread/System/GameEventSubsystem.h"
 
-#include "MusicPlayerSubsystem.h"
+#include "FrozenDread/System/MusicPlayerSubsystem.h"
 #include "FrozenDread/Game/GameStatics.h"
 #include "FrozenDread/Gameplay/GameLevelScriptActor.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/UI/GameHUD.h"
 #include "FrozenDread/UI/GameOverWidget.h"
+
 #include "Kismet/GameplayStatics.h"
 
-constexpr int32 GAME_MUSIC_TRACK_CHASE_INDEX { 1 };
-
-void UGameEventSubsystem::Setup(APlayerCharacter* PlayerCharacter, AMonster* MonsterCharacter)
+void UGameEventSubsystem::Setup(APlayerCharacter* PlayerCharacter)
 {
 	Player = PlayerCharacter;
-	Monster = MonsterCharacter;
 }
 
 void UGameEventSubsystem::PlayerWasCaught() const
 {
-	// Disable monster
-	check(Monster.IsValid());
-	Monster->Destroy();
+	// Destroy monsters
+	for (auto Monster : Monsters)
+	{
+		if (Monster.IsValid())
+		{
+			Monster->Destroy();
+		}
+	}
 
 	// Disable player input
 	check(Player.IsValid());
@@ -92,4 +95,11 @@ void UGameEventSubsystem::SetPlayerInputEnabled(bool IsEnabled)
 	{
 		Player->DisableInput(PlayerController);
 	}
+}
+
+void UGameEventSubsystem::SpawnMonster(TSubclassOf<AMonster> MonsterClass, const FVector& Location)
+{
+	AMonster* Monster { GetWorld()->SpawnActor<AMonster>(MonsterClass, Location, FRotator::ZeroRotator) };
+	Monster->Init();
+	Monsters.Add(Monster);
 }

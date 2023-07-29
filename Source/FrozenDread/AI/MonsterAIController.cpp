@@ -54,6 +54,11 @@ ETeamAttitude::Type AMonsterAIController::GetTeamAttitudeTowards(const AActor& O
 void AMonsterAIController::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AMonsterAIController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
 
 	// Cache ref to monster character
 	Monster = CastChecked<AMonster>(GetPawn());
@@ -66,11 +71,6 @@ void AMonsterAIController::BeginPlay()
 	check(BehaviorTree);
 	RunBehaviorTree(BehaviorTree.Get());
 	BehaviorTreeComponent->StartTree(*BehaviorTree.Get());
-}
-
-void AMonsterAIController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
 
 	if (Blackboard && BehaviorTree)
 	{

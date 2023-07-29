@@ -40,14 +40,18 @@ AMonster::AMonster()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+void AMonster::Init()
+{
+	// Override the movement component settings
+	MovementComponent->MaxWalkSpeed = DefaultMovementSpeed;
+}
+
 
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// Override the movement component settings
-	MovementComponent->MaxWalkSpeed = DefaultMovementSpeed;
+	Init();
 }
 
 // Called every frame

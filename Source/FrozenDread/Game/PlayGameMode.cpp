@@ -34,13 +34,5 @@ void APlayGameMode::BeginPlay()
 	check(EventSubsystem);
 
 	APlayerCharacter* Player { CastChecked<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)) };
-
-	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(this, GameTag::MONSTER, Actors);
-
-	// Expecting only 1 tag
-	check(Actors.Num() == 1);
-	AMonster* Monster { CastChecked<AMonster>(Actors[0]) };
-	
-	EventSubsystem->Setup(Player, Monster);
+	EventSubsystem->Setup(Player);
 }

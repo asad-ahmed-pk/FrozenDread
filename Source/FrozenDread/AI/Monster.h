@@ -38,6 +38,10 @@ public:
 	// Sets default values for this character's properties
 	AMonster();
 
+	/** Called after spawning to init monster state */
+	void Init();
+
+public:
 	/** Set the monster state */
 	UFUNCTION(BlueprintCallable)
 	void SetMonsterState(const EMonsterState& State);

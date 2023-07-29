@@ -25,7 +25,7 @@ class FROZENDREAD_API UGameEventSubsystem : public UWorldSubsystem
 
 public:
 	// Init
-	void Setup(APlayerCharacter* PlayerCharacter, AMonster* MonsterCharacter);
+	void Setup(APlayerCharacter* PlayerCharacter);
 
 	// The player was caught by the monster
 	void PlayerWasCaught() const;
@@ -52,9 +52,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Utility")
 	void SetPlayerInputEnabled(bool IsEnabled);
 
+	// Spawn a monster at the given location
+	UFUNCTION(BlueprintCallable, Category="Level Events")
+	void SpawnMonster(TSubclassOf<AMonster> MonsterClass, const FVector& Location);
+
 private:
 	TWeakObjectPtr<APlayerCharacter> Player;
-	TWeakObjectPtr<AMonster> Monster;
-
+	TArray<TWeakObjectPtr<AMonster>> Monsters;
 	bool IsMonsterChasingPlayer { false };
 };
