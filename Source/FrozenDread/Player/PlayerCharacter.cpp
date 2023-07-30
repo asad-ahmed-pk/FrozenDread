@@ -14,9 +14,12 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "FlashLightComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+
+const FName FLASHLIGHT_SOCKET_NAME { TEXT("FlashLight_Socket") };
 
 //////////////////////////////////////////////// UE FUNCTIONS ////////////////////////////////////////////////
 
@@ -48,6 +51,10 @@ APlayerCharacter::APlayerCharacter()
 	PerceptionStimuliSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("PerceptionStimuliComponent"));
 	PerceptionStimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
 	PerceptionStimuliSource->RegisterWithPerceptionSystem();
+
+	// Flashlight component
+	FlashLightComponent = CreateDefaultSubobject<UFlashLightComponent>(TEXT("FlashLightComponent"));
+	FlashLightComponent->SetupAttachment(GetMesh(), FLASHLIGHT_SOCKET_NAME);
 
 	// Player Tag
 	Tags.Add(GameTag::PLAYER);
@@ -95,6 +102,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Use Action
 		EnhancedInputComponent->BindAction(UseAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Use);
+
+		// Flashlight toggle action
+		EnhancedInputComponent->BindAction(FlashLightAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ToggleFlashLight);
 	}
 }
 
@@ -137,6 +147,12 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 void APlayerCharacter::Use(const FInputActionValue& Value)
 {
 	InteractionComponent->InteractWithCurrentItem();
+}
+
+void APlayerCharacter::ToggleFlashLight(const FInputActionValue& Value)
+{
+	check(FlashLightComponent);
+	FlashLightComponent->Toggle();
 }
 
 //////////////////////////////////////////////// OTHER ////////////////////////////////////////////////

@@ -20,6 +20,7 @@ class UInteractionComponent;
 class UInventory;
 class UAISense;
 class UAIPerceptionStimuliSourceComponent;
+class UFlashLightComponent;
 
 UCLASS()
 class FROZENDREAD_API APlayerCharacter : public ACharacter
@@ -58,6 +59,9 @@ private:
 	/** Called for pressing the 'use' key */
 	void Use(const FInputActionValue& Value);
 
+	/** Called for pressing the 'toggle flashlight' key */
+	void ToggleFlashLight(const FInputActionValue& Value);
+
 private:
 	/** Main FPS Camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
@@ -66,6 +70,10 @@ private:
 	/** Interaction component for interacting with the world */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UInteractionComponent> InteractionComponent;
+
+	/** The flashlight component */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UFlashLightComponent> FlashLightComponent;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta = (AllowPrivateAccess = "true"))
@@ -82,6 +90,10 @@ private:
 	/** Use Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> UseAction;
+
+	/** Flashlight Toggle Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> FlashLightAction;
 
 	/** The perception stimulant to get the player detected by the monster */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
