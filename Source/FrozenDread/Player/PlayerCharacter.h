@@ -21,6 +21,7 @@ class UInventory;
 class UAISense;
 class UAIPerceptionStimuliSourceComponent;
 class UFlashLightComponent;
+class USpringArmComponent;
 
 UCLASS()
 class FROZENDREAD_API APlayerCharacter : public ACharacter
@@ -66,6 +67,10 @@ private:
 	/** Main FPS Camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> MainCamera;
+
+	/** Spring arm for flashlight */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
 	/** Interaction component for interacting with the world */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess = "true"))

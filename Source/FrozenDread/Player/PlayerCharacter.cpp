@@ -16,10 +16,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "FlashLightComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
-
-const FName FLASHLIGHT_SOCKET_NAME { TEXT("FlashLight_Socket") };
 
 //////////////////////////////////////////////// UE FUNCTIONS ////////////////////////////////////////////////
 
@@ -52,9 +51,17 @@ APlayerCharacter::APlayerCharacter()
 	PerceptionStimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
 	PerceptionStimuliSource->RegisterWithPerceptionSystem();
 
+	// Spring arm for flashlight
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SprintArmComponent"));
+	SpringArmComponent->bInheritPitch = true;
+	SpringArmComponent->TargetArmLength = 0;
+	SpringArmComponent->bEnableCameraRotationLag = true;
+	SpringArmComponent->CameraLagSpeed = 10.0F;
+	SpringArmComponent->SetupAttachment(MainCamera);
+
 	// Flashlight component
 	FlashLightComponent = CreateDefaultSubobject<UFlashLightComponent>(TEXT("FlashLightComponent"));
-	FlashLightComponent->SetupAttachment(GetMesh(), FLASHLIGHT_SOCKET_NAME);
+	FlashLightComponent->SetupAttachment(SpringArmComponent);
 
 	// Player Tag
 	Tags.Add(GameTag::PLAYER);
