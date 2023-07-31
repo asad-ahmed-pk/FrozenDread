@@ -51,9 +51,14 @@ ETeamAttitude::Type AMonsterAIController::GetTeamAttitudeTowards(const AActor& O
 	return ETeamAttitude::Neutral;
 }
 
-void AMonsterAIController::BeginPlay()
+void AMonsterAIController::MonsterIsInFlashLightCone(APlayerCharacter* PlayerCharacter)
 {
-	Super::BeginPlay();
+	check(Monster);
+	const EMonsterState MonsterState { Monster->GetMonsterState() };
+	if (MonsterState == EMonsterState::Patrolling || MonsterState == EMonsterState::Searching)
+	{
+		SetFocus(PlayerCharacter);
+	}
 }
 
 void AMonsterAIController::OnPossess(APawn* InPawn)

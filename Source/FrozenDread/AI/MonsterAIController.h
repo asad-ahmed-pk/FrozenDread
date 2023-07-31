@@ -13,6 +13,7 @@
 struct FAIStimulus;
 
 class AMonster;
+class APlayerCharacter;
 class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
 class UBehaviorTreeComponent;
@@ -27,12 +28,16 @@ class FROZENDREAD_API AMonsterAIController : public AAIController
 	GENERATED_BODY()
 
 public:
+	/** Default constructor */
 	AMonsterAIController();
 
+	/** Return the team attitude towards the given actor */
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
+	/** The controlled monster is in the player's flash light range / cone */
+	void MonsterIsInFlashLightCone(APlayerCharacter* PlayerCharacter);
+
 protected:
-	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void Tick(float DeltaSeconds) override;
 

@@ -3,7 +3,6 @@
 // Implementation of the UFlashLightComponent class.
 //
 
-
 #include "FlashLightComponent.h"
 
 #include "Components/SpotLightComponent.h"
@@ -36,6 +35,49 @@ void UFlashLightComponent::PostInitProperties()
 	Super::PostInitProperties();
 	OuterSpotLightComponent->SetupAttachment(this);
 	InnerSpotLightComponent->SetupAttachment(this);
+}
+
+AActor* UFlashLightComponent::GetActorInRange() const
+{
+	check(OuterSpotLightComponent);
+	check(LightSweepChannel);
+	
+	FHitResult HitResult;
+
+	const float Range { static_cast<float>(OuterSpotLightComponent->GetBoundingSphere().W * 2) };
+	const FVector Direction { OuterSpotLightComponent->GetForwardVector() };
+	
+	const FVector Start { OuterSpotLightComponent->GetComponentLocation() };
+	const FVector End { Start + (Direction * (Range/2)) };
+
+	FCollisionShape CollisionShape;
+	const FVector3f HalfExtent { Range / 2, Range / 2, 200.0F };
+	CollisionShape.SetBox(HalfExtent);
+
+	const bool bHit { GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, LightSweepChannel, CollisionShape) };
+
+	bool bIsInLightRange { false };
+	if (bHit)
+	{
+		// Ensure hit actor is within the cone based on angle
+		const FVector ToHitActor { HitResult.GetActor()->GetActorLocation() - GetComponentLocation() };
+		const FVector ToHitActorDirection { ToHitActor.GetSafeNormal() };
+		const FVector Forward { OuterSpotLightComponent->GetForwardVector() };
+
+		const double AngleBetween { FMath::Acos(Forward.Dot(ToHitActorDirection)) };
+		
+		if (AngleBetween < OuterSpotLightComponent->GetHalfConeAngle())
+		{
+			bIsInLightRange = true;
+		}
+	}
+
+	// Uncomment for debugging
+#if !(UE_BUILD_SHIPPING | UE_BUILD_TEST)
+	//DrawDebugCone(GetWorld(), Start, Direction, Range, OuterSpotLightComponent->GetHalfConeAngle(), OuterSpotLightComponent->GetHalfConeAngle(), 4, bIsInLightRange ? FColor::Blue : FColor::Red, false, 0, 0);
+#endif
+
+	return (bIsInLightRange ? HitResult.GetActor() : nullptr);
 }
 
 void UFlashLightComponent::Toggle()

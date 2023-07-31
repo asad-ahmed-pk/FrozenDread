@@ -15,6 +15,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FlashLightComponent.h"
+#include "FrozenDread/AI/Monster.h"
+#include "FrozenDread/AI/MonsterAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
@@ -89,6 +91,14 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// Check if monster is in the player's flashlight
+	check(FlashLightComponent);
+	if (AActor* Actor { FlashLightComponent->GetActorInRange() })
+	{
+		const AMonster* Monster { CastChecked<AMonster>(Actor) };
+		Monster->GetController<AMonsterAIController>()->MonsterIsInFlashLightCone(this);
+	}
 }
 
 //////////////////////////////////////////////// INPUT ////////////////////////////////////////////////

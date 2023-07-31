@@ -21,10 +21,17 @@ class FROZENDREAD_API UFlashLightComponent : public USceneComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
+	/** Sets default values for this component's properties */
 	UFlashLightComponent();
 
+	/** Called after all properties have been initialised in the constructor */
 	virtual void PostInitProperties() override;
+
+	/** Return the first actor currently within the flashlight range */
+	AActor* GetActorInRange() const;
+
+	/** Get the on/off state */
+	FORCEINLINE bool GetIsOn() const { return IsOn; }
 
 	/** Toggle the flashlight on or off */
 	void Toggle();
@@ -41,6 +48,10 @@ private:
 	/** The inner spotlight for this flashlight */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Light", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<USpotLightComponent> InnerSpotLightComponent;
+
+	/** The collision channel on which light sweeps are conducted */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Collision", meta=(AllowPrivateAccess="true"))
+	TEnumAsByte<ECollisionChannel> LightSweepChannel;
 
 private:
 	bool IsOn { false }; 
