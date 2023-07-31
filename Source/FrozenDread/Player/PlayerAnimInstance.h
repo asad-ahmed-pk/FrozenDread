@@ -13,6 +13,7 @@
 
 class APlayerCharacter;
 class UMetaSoundSource;
+class USoundAttenuation;
 
 /**
  * Animation instance for the player.
@@ -42,6 +43,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sounds", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UMetaSoundSource> WalkingSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sounds", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<USoundAttenuation> FootStepSoundAttenuationSettings;
 
 private:
 	TWeakObjectPtr<APlayerCharacter> PlayerCharacter { nullptr };

@@ -41,6 +41,9 @@ public:
 	/** Called after spawning to init monster state */
 	void Init();
 
+	/** Get the eyes location that is to be used for the perception viewpoint */
+	virtual void GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const override;
+
 public:
 	/** Set the monster state */
 	UFUNCTION(BlueprintCallable)

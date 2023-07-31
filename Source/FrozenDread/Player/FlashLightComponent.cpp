@@ -77,7 +77,7 @@ AActor* UFlashLightComponent::GetActorInRange() const
 	//DrawDebugCone(GetWorld(), Start, Direction, Range, OuterSpotLightComponent->GetHalfConeAngle(), OuterSpotLightComponent->GetHalfConeAngle(), 4, bIsInLightRange ? FColor::Blue : FColor::Red, false, 0, 0);
 #endif
 
-	return (bIsInLightRange ? HitResult.GetActor() : nullptr);
+	return (bIsInLightRange && IsOn ? HitResult.GetActor() : nullptr);
 }
 
 void UFlashLightComponent::Toggle()

@@ -15,6 +15,8 @@
 #include "FrozenDread/Game/GameTags.h"
 #include "FrozenDread/System/GameEventSubsystem.h"
 
+const FName EYES_SOCKET_NAME { "Eyes_Socket" };
+
 // Sets default values
 AMonster::AMonster()
 {
@@ -46,6 +48,11 @@ void AMonster::Init()
 	MovementComponent->MaxWalkSpeed = DefaultMovementSpeed;
 }
 
+void AMonster::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const
+{
+	OutLocation = GetMesh()->GetSocketLocation(EYES_SOCKET_NAME);
+	OutRotation = GetMesh()->GetSocketRotation(EYES_SOCKET_NAME);
+}
 
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()

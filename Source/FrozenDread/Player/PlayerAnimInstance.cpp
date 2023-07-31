@@ -28,13 +28,14 @@ void UPlayerAnimInstance::PlayFootStepSound()
 {
 	check(PlayerCharacter.IsValid());
 	check(WalkingSound);
+	check(FootStepSoundAttenuationSettings);
 
 	const FVector PlayerLocation { PlayerCharacter->GetActorLocation() };
 	FFindFloorResult FloorResult;
 	PlayerCharacter->GetCharacterMovement()->FindFloor(PlayerLocation, FloorResult, true);
 	const FVector SoundOriginLocation { PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z + FloorResult.FloorDist };
 
-	UGameplayStatics::PlaySoundAtLocation(this, WalkingSound, SoundOriginLocation);
+	UGameplayStatics::PlaySoundAtLocation(this, WalkingSound, SoundOriginLocation, 1, 1, 0, FootStepSoundAttenuationSettings);
 }
 
 void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
