@@ -15,6 +15,8 @@ class UAnimMontage;
 class AMonsterAIController;
 class USphereComponent;
 class UCharacterMovementComponent;
+class USoundBase;
+class USoundAttenuation;
 
 /** Enum for representing the monster's state */
 UENUM(BlueprintType)
@@ -65,6 +67,8 @@ private:
 	UFUNCTION()
 	void OnAttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	void MakeGrowlSound();
+
 private:
 	/** The sphere used to determine when the monster will attack */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
@@ -86,9 +90,22 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement", meta=(AllowPrivateAccess="true"))
 	float HuntingSpeedGainPerSecond { 5.0F };
 
+	/** The sound the monster makes occasionally */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sounds", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<USoundBase> GrowlSound;
+
+	/** The attenuation settings to use for monster sounds */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sounds", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<USoundAttenuation> SoundAttenuationSettings;
+
+	/** The (min, max) time range in seconds for randomly playing the growl sound */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sounds", meta=(AllowPrivateAccess="true"))
+	FVector2f GrowlRandomIntervalRange;
+
 private:
 	EMonsterState MonsterState { EMonsterState::Idle };
 	AMonsterAIController* Controller { nullptr };
 	UCharacterMovementComponent* MovementComponent { nullptr };
+	FTimerHandle GrowlSoundTimerHandle;
 };
 

@@ -14,6 +14,7 @@
 #include "FrozenDread/Game/GameStatics.h"
 #include "FrozenDread/Game/GameTags.h"
 #include "FrozenDread/System/GameEventSubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
 const FName EYES_SOCKET_NAME { "Eyes_Socket" };
 
@@ -59,6 +60,7 @@ void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
 	Init();
+	MakeGrowlSound();
 }
 
 // Called every frame
@@ -113,4 +115,20 @@ void AMonster::OnAttackSphereBeginOverlap(UPrimitiveComponent* OverlappedCompone
 		check(EventSubsystem);
 		EventSubsystem->PlayerWasCaught();
 	}
+}
+
+void AMonster::MakeGrowlSound()
+{
+	const UAnimInstance* AnimInstance { GetMesh()->GetAnimInstance() };
+	check(AnimInstance);
+	
+	if (!AnimInstance->IsAnyMontagePlaying())
+	{
+		check(GrowlSound);
+		UGameplayStatics::PlaySoundAtLocation(this, GrowlSound, GetActorLocation(), GetActorRotation(), 1, 1, 0, SoundAttenuationSettings);
+	}
+
+	// Set timer for next growl sound play
+	const float Time { FMath::RandRange(GrowlRandomIntervalRange.X, GrowlRandomIntervalRange.Y) };
+	GetWorld()->GetTimerManager().SetTimer(GrowlSoundTimerHandle, this, &AMonster::MakeGrowlSound, Time);
 }
