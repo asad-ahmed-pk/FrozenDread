@@ -97,6 +97,11 @@ void AMonster::SetMonsterState(const EMonsterState& State)
 	UBlackboardComponent* BlackboardComponent { UGameStatics::GetCharacterBlackBoardComponent(this) };
 	check(BlackboardComponent);
 	BlackboardComponent->SetValueAsEnum(BlackBoardKey::MONSTER_STATE, static_cast<uint8>(MonsterState));
+
+	// Notify game event subsystem if monster is chasing the player or not
+	const bool PlayerIsChased { MonsterState == EMonsterState::ChasingPlayer || MonsterState == EMonsterState::Searching };
+	UGameEventSubsystem* GameEventSubsystem { GetWorld()->GetSubsystem<UGameEventSubsystem>() };
+	GameEventSubsystem->PlayerIsBeingChased(PlayerIsChased);
 }
 
 void AMonster::OnAttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -37,7 +37,7 @@ public:
 	void PlayerRequestedLevelQuit() const;
 
 	// A monster is chasing the player
-	void PlayerIsBeingChased(bool IsChased) const;
+	void PlayerIsBeingChased(bool IsChased);
 
 public:
 	UPROPERTY(BlueprintAssignable, Category="Game Events")

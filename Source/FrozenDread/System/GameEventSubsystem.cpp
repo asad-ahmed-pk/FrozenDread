@@ -62,9 +62,13 @@ void UGameEventSubsystem::PlayerRequestedLevelQuit() const
 	UKismetSystemLibrary::QuitGame(this, Player->GetController<APlayerController>(), EQuitPreference::Quit, false);
 }
 
-void UGameEventSubsystem::PlayerIsBeingChased(bool IsChased) const
+void UGameEventSubsystem::PlayerIsBeingChased(bool IsChased)
 {
-	OnPlayerBeingChased.Broadcast(IsChased);
+	if (IsChased != IsMonsterChasingPlayer)
+	{
+		IsMonsterChasingPlayer = IsChased;
+		OnPlayerBeingChased.Broadcast(IsChased);
+	}
 }
 
 void UGameEventSubsystem::DeathLevelSequenceFinished()

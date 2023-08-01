@@ -112,9 +112,6 @@ void AMonsterAIController::OnSightPerceptionUpdate(AActor* Actor, FAIStimulus St
 		
 		SightConfig->SightRadius = DefaultSightRadiusSettings.Get<0>() * CHASE_SIGHT_RADIUS_INCREASE_FACTOR;
 		SightConfig->LoseSightRadius = DefaultSightRadiusSettings.Get<1>() * CHASE_SIGHT_RADIUS_INCREASE_FACTOR;
-
-		UGameEventSubsystem* GameEventSubsystem { GetWorld()->GetSubsystem<UGameEventSubsystem>() };
-		GameEventSubsystem->PlayerIsBeingChased(true);
 	}
 	else
 	{
@@ -127,8 +124,7 @@ void AMonsterAIController::OnSightPerceptionUpdate(AActor* Actor, FAIStimulus St
 		SightConfig->SightRadius = DefaultSightRadiusSettings.Get<0>();
 		SightConfig->LoseSightRadius = DefaultSightRadiusSettings.Get<1>();
 
-		UGameEventSubsystem* GameEventSubsystem { GetWorld()->GetSubsystem<UGameEventSubsystem>() };
-		GameEventSubsystem->PlayerIsBeingChased(true);
+		const UGameEventSubsystem* GameEventSubsystem { GetWorld()->GetSubsystem<UGameEventSubsystem>() };
 	}
 
 	PerceptionComponent->ConfigureSense(*SightConfig);
