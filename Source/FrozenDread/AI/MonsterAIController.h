@@ -18,6 +18,7 @@ class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
 class UBehaviorTreeComponent;
 class UBehaviorTree;
+class APatrolWaypointSet;
 
 /**
  * AI controller class for the game monster.
@@ -36,6 +37,12 @@ public:
 
 	/** The controlled monster is in the player's flash light range / cone */
 	void MonsterIsInFlashLightCone(APlayerCharacter* PlayerCharacter);
+
+	/** Set the waypoints that the controller will make the pawn follow */
+	FORCEINLINE void SetWaypoints(APatrolWaypointSet* WaypointSet) { Waypoints = WaypointSet; }
+
+	/** Get the waypoints that the controlled pawn is following */
+	FORCEINLINE APatrolWaypointSet* GetWaypoints() const { return Waypoints; }
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
@@ -64,4 +71,5 @@ private:
 	AMonster* Monster { nullptr };
 	FVector LastKnownPlayerLocation;
 	TTuple<float, float> DefaultSightRadiusSettings;
+	APatrolWaypointSet* Waypoints { nullptr };
 };

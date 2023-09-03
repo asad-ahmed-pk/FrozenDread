@@ -5,6 +5,7 @@
 
 #include "FrozenDread/System/GameEventSubsystem.h"
 
+#include "FrozenDread/AI/MonsterAIController.h"
 #include "FrozenDread/System/MusicPlayerSubsystem.h"
 #include "FrozenDread/Game/GameStatics.h"
 #include "FrozenDread/Gameplay/GameLevelScriptActor.h"
@@ -101,9 +102,18 @@ void UGameEventSubsystem::SetPlayerInputEnabled(bool IsEnabled)
 	}
 }
 
-void UGameEventSubsystem::SpawnMonster(TSubclassOf<AMonster> MonsterClass, const FVector& Location)
+void UGameEventSubsystem::SpawnMonster(TSubclassOf<AMonster> MonsterClass, const FVector& Location, APatrolWaypointSet* WaypointSet)
 {
+	// Spawn monster
 	AMonster* Monster { GetWorld()->SpawnActor<AMonster>(MonsterClass, Location, FRotator::ZeroRotator) };
 	Monster->Init();
 	Monsters.Add(Monster);
+
+	// Set monster waypoints
+	AMonsterAIController* MonsterController { Monster->GetController<AMonsterAIController>() };
+	check(MonsterController);
+	if (WaypointSet)
+	{
+		MonsterController->SetWaypoints(WaypointSet);
+	}
 }

@@ -15,7 +15,6 @@
 #include "FrozenDread/AI/BlackboardKeys.h"
 #include "FrozenDread/Game/GameTags.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
-#include "FrozenDread/System/GameEventSubsystem.h"
 
 constexpr float CHASE_SIGHT_RADIUS_INCREASE_FACTOR { 2.0F };
 
@@ -116,15 +115,13 @@ void AMonsterAIController::OnSightPerceptionUpdate(AActor* Actor, FAIStimulus St
 	else
 	{
 		SetFocus(nullptr);
-		GetBlackboardComponent()->SetValueAsVector(BlackBoardKey::TARGET_LOCATION, Actor->GetActorLocation());
+		GetBlackboardComponent()->SetValueAsVector(BlackBoardKey::LAST_KNOWN_PLAYER_LOCATION, Actor->GetActorLocation());
 		GetBlackboardComponent()->ClearValue(BlackBoardKey::TARGET_PLAYER);
 		
 		Monster->SetMonsterState(EMonsterState::Searching);
 
 		SightConfig->SightRadius = DefaultSightRadiusSettings.Get<0>();
 		SightConfig->LoseSightRadius = DefaultSightRadiusSettings.Get<1>();
-
-		const UGameEventSubsystem* GameEventSubsystem { GetWorld()->GetSubsystem<UGameEventSubsystem>() };
 	}
 
 	PerceptionComponent->ConfigureSense(*SightConfig);

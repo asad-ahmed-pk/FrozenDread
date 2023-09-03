@@ -26,7 +26,7 @@ public:
 	/** The current total number of waypoints */
 	int32 GetNumPoints() const;
 
-	/** Get the location of the waypoint at the given index */
+	/** Get the world location of the waypoint at the given index */
 	FVector GetWaypointLocation(int32 Index) const;
 
 private:

@@ -12,6 +12,7 @@
 
 class APlayerCharacter;
 class AMonster;
+class APatrolWaypointSet;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerChaseStatusDelegate, bool, IsChased);
 
@@ -54,7 +55,7 @@ public:
 
 	// Spawn a monster at the given location
 	UFUNCTION(BlueprintCallable, Category="Level Events")
-	void SpawnMonster(TSubclassOf<AMonster> MonsterClass, const FVector& Location);
+	void SpawnMonster(TSubclassOf<AMonster> MonsterClass, const FVector& Location, APatrolWaypointSet* WaypointSet = nullptr);
 
 private:
 	TWeakObjectPtr<APlayerCharacter> Player;
