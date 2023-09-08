@@ -4,16 +4,16 @@
 //
 
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
-#include "FrozenDread/UI/DialogueWidget.h"
 
+#include "FrozenDread/UI/DialogueWidget.h"
 #include "Kismet/GameplayStatics.h"
+
 #include "Kismet/KismetStringLibrary.h"
 
 const FString GMain_Menu_Level_Name { "MainMenu" };
 
 // Settings for this subsystem
-// Since it is not possible (or hacky) to make a BP child class Subsystem
-constexpr float TextTypeInterval { 0.02F };
+constexpr float TEXT_TYPING_INTERVAL { 0.02F };
 
 bool UPlayerDialogueSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -59,18 +59,44 @@ void UPlayerDialogueSubsystem::AddDialogueItem(const FDialogueItem& DialogueItem
 	}
 }
 
+bool UPlayerDialogueSubsystem::IsTickableWhenPaused() const
+{
+	return true;
+}
+
+TStatId UPlayerDialogueSubsystem::GetStatId() const
+{
+	return TStatId();
+}
+
+void UPlayerDialogueSubsystem::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	static float AccumulatedTime { 0.0F };
+
+	if (IsCurrentlyPlaying)
+	{
+		AccumulatedTime += DeltaTime;
+		if (AccumulatedTime >= TEXT_TYPING_INTERVAL) {
+			AccumulatedTime = 0.0F;
+			TextTypeTimer();
+		}
+	}
+}
+
 void UPlayerDialogueSubsystem::PlayNextDialogueText()
 {
 	// Reset the length to 0
 	CurrentTextLength = 0;
 	
-	// Start timer for the text typing and show dialogue widget
+	// Set the flag for text typing and show dialogue widget
 	if (!DialogueWidget->IsVisible())
 	{
 		DialogueWidget->SetVisibility(ESlateVisibility::Visible);
 	}
-	
-	GetWorld()->GetTimerManager().SetTimer(DialogueTextTimer, this, &UPlayerDialogueSubsystem::TextTypeTimer, TextTypeInterval);
+
+	IsCurrentlyPlaying = true;
 }
 
 void UPlayerDialogueSubsystem::TextTypeTimer()
@@ -88,12 +114,10 @@ void UPlayerDialogueSubsystem::TextTypeTimer()
 
 	// TODO: Figure out if this is possible. Pausing the game currently stops this subsystem's timer :(
 	// Pause the game if not already paused so player can focus on dialogue
-	/*
 	if (!UGameplayStatics::IsGamePaused(this))
 	{
 		UGameplayStatics::SetGamePaused(this, true);
 	}
-	*/
 
 	// If all text is complete, show the "next" icon and wait for player input
 	if (CurrentTextLength == TextToPlay.Len())
@@ -102,13 +126,11 @@ void UPlayerDialogueSubsystem::TextTypeTimer()
 
 		DialogueQueue.Dequeue(LastPlayedItem);
 
+		IsCurrentlyPlaying = false;
+
 		// Enable UI input
 		const FInputModeUIOnly UIInput;
 		GetWorld()->GetFirstPlayerController()->SetInputMode(UIInput);
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().SetTimer(DialogueTextTimer, this, &UPlayerDialogueSubsystem::TextTypeTimer, TextTypeInterval);
 	}
 }
 

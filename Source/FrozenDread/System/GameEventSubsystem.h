@@ -57,6 +57,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Level Events")
 	void SpawnMonster(TSubclassOf<AMonster> MonsterClass, const FVector& Location, APatrolWaypointSet* WaypointSet = nullptr);
 
+
 private:
 	TWeakObjectPtr<APlayerCharacter> Player;
 	TArray<TWeakObjectPtr<AMonster>> Monsters;
