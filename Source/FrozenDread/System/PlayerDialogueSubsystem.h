@@ -30,9 +30,12 @@ public:
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
 	/** Determine if this subsystem is tickable when paused */
-	virtual bool IsTickableWhenPaused() const override;
+	virtual bool IsTickableWhenPaused() const override { return true; }
 
-	virtual TStatId GetStatId() const override;
+	virtual bool IsTickable() const override { return IsCurrentlyPlaying; }
+
+	/** Required override for tickable sub-system */
+	virtual TStatId GetStatId() const override { return TStatId(); }
 
 	/** Called every frame */
 	virtual void Tick(float DeltaTime) override;
@@ -45,16 +48,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Dialogue", meta=(AutoCreateRefTerm="CallBackRef"))
 	void AddDialogueItem(const FDialogueItem& DialogueItem, const FDialogueCallBack& CallBackRef);
 
-
 private:
-	void PlayNextDialogueText();
-	void TextTypeTimer();
+	void BeginDialogueMode();
+	void EndDialogueMode();
+	void UpdateUI();
 	void NextDialogueItemRequested();
 
 private:
 	TQueue<FDialogueItem, EQueueMode::Mpsc> DialogueQueue;
 	UDialogueWidget* DialogueWidget { nullptr };
-	uint32 CurrentTextLength { 0 };
 	FDialogueItem LastPlayedItem;
 	TOptional<const FDialogueCallBack> CallBack {};
 

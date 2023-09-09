@@ -10,7 +10,7 @@
 
 #include "Kismet/KismetStringLibrary.h"
 
-const FString GMain_Menu_Level_Name { "MainMenu" };
+const FString MAIN_MENU_LEVEL_NAME { "MainMenu" };
 
 // Settings for this subsystem
 constexpr float TEXT_TYPING_INTERVAL { 0.02F };
@@ -23,7 +23,7 @@ bool UPlayerDialogueSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 	{
 		if (const UWorld* World = GEngine->GetWorldFromContextObject(Outer, EGetWorldErrorMode::LogAndReturnNull))
 		{
-			if (const FString LevelName = World->GetMapName(); LevelName.Equals(GMain_Menu_Level_Name))
+			if (const FString LevelName = World->GetMapName(); LevelName.Equals(MAIN_MENU_LEVEL_NAME))
 			{
 				return false;
 			}
@@ -42,10 +42,10 @@ void UPlayerDialogueSubsystem::Setup(UDialogueWidget* DialogueWidgetPtr)
 		NextDialogueItemRequested();
 	});
 
-	// Play any dialogue if it queue is not empty
+	// Play any dialogue if the queue is not empty
 	if (!DialogueQueue.IsEmpty())
 	{
-		PlayNextDialogueText();
+		BeginDialogueMode();
 	}
 }
 
@@ -55,18 +55,56 @@ void UPlayerDialogueSubsystem::AddDialogueItem(const FDialogueItem& DialogueItem
 	if (!DialogueQueue.IsEmpty() && DialogueWidget != nullptr)
 	{
 		CallBack = CallBackRef;
-		PlayNextDialogueText();
+		BeginDialogueMode();
 	}
 }
 
-bool UPlayerDialogueSubsystem::IsTickableWhenPaused() const
+// Move the game into dialogue mode
+void UPlayerDialogueSubsystem::BeginDialogueMode()
 {
-	return true;
+	// Set flag so that this sub-system can begin ticking
+	IsCurrentlyPlaying = true;
+
+	// Display dialogue widget
+	if (!DialogueWidget->IsVisible())
+	{
+		DialogueWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	// Enable UI input
+	const FInputModeUIOnly UIInput;
+	GetWorld()->GetFirstPlayerController()->SetInputMode(UIInput);
+
+	// Pause the game if not already paused so player can focus on dialogue
+	if (!UGameplayStatics::IsGamePaused(this))
+	{
+		UGameplayStatics::SetGamePaused(this, true);
+	}
 }
 
-TStatId UPlayerDialogueSubsystem::GetStatId() const
+// Exit the dialogue mode and go back to game mode
+void UPlayerDialogueSubsystem::EndDialogueMode()
 {
-	return TStatId();
+	// Hide dialogue
+	DialogueWidget->SetText(TEXT(""));
+	DialogueWidget->SetVisibility(ESlateVisibility::Collapsed);
+
+	// Set back UI mode to game
+	const FInputModeGameOnly GameInput;
+	GetWorld()->GetFirstPlayerController()->SetInputMode(GameInput);
+
+	// Unpause game
+	if (UGameplayStatics::IsGamePaused(this))
+	{
+		UGameplayStatics::SetGamePaused(this, false);
+	}
+
+	// Call the callback function to notify that the dialog finished playing
+	// ReSharper disable once CppExpressionWithoutSideEffects
+	if (CallBack.IsSet())
+	{
+		CallBack->ExecuteIfBound();
+	}
 }
 
 void UPlayerDialogueSubsystem::Tick(float DeltaTime)
@@ -80,29 +118,18 @@ void UPlayerDialogueSubsystem::Tick(float DeltaTime)
 		AccumulatedTime += DeltaTime;
 		if (AccumulatedTime >= TEXT_TYPING_INTERVAL) {
 			AccumulatedTime = 0.0F;
-			TextTypeTimer();
+			UpdateUI();
 		}
 	}
 }
 
-void UPlayerDialogueSubsystem::PlayNextDialogueText()
-{
-	// Reset the length to 0
-	CurrentTextLength = 0;
-	
-	// Set the flag for text typing and show dialogue widget
-	if (!DialogueWidget->IsVisible())
-	{
-		DialogueWidget->SetVisibility(ESlateVisibility::Visible);
-	}
-
-	IsCurrentlyPlaying = true;
-}
-
-void UPlayerDialogueSubsystem::TextTypeTimer()
+// Update the UI to show the next text character
+void UPlayerDialogueSubsystem::UpdateUI()
 {
 	check(!DialogueQueue.IsEmpty());
 	check(DialogueWidget);
+
+	static int32 CurrentTextLength { 0 };
 
 	// Get the new updated text to display
 	const FString TextToPlay { DialogueQueue.Peek()->DialogueText.ToString() };
@@ -112,25 +139,13 @@ void UPlayerDialogueSubsystem::TextTypeTimer()
 	const FString DisplayText { UKismetStringLibrary::GetSubstring(TextToPlay, 0, CurrentTextLength) };
 	DialogueWidget->SetText(DisplayText);
 
-	// TODO: Figure out if this is possible. Pausing the game currently stops this subsystem's timer :(
-	// Pause the game if not already paused so player can focus on dialogue
-	if (!UGameplayStatics::IsGamePaused(this))
-	{
-		UGameplayStatics::SetGamePaused(this, true);
-	}
-
-	// If all text is complete, show the "next" icon and wait for player input
+	// Text is complete
 	if (CurrentTextLength == TextToPlay.Len())
 	{
 		DialogueWidget->SetToNextMode();
-
 		DialogueQueue.Dequeue(LastPlayedItem);
-
+		CurrentTextLength = 0;
 		IsCurrentlyPlaying = false;
-
-		// Enable UI input
-		const FInputModeUIOnly UIInput;
-		GetWorld()->GetFirstPlayerController()->SetInputMode(UIInput);
 	}
 }
 
@@ -139,29 +154,10 @@ void UPlayerDialogueSubsystem::NextDialogueItemRequested()
 	// If we have an item in the queue, process that
 	if (!DialogueQueue.IsEmpty())
 	{
-		PlayNextDialogueText();
+		IsCurrentlyPlaying = true;
 	}
 	else
 	{
-		// Hide dialogue
-		DialogueWidget->SetText(TEXT(""));
-		DialogueWidget->SetVisibility(ESlateVisibility::Collapsed);
-
-		// Unpause game
-		if (UGameplayStatics::IsGamePaused(this))
-		{
-			UGameplayStatics::SetGamePaused(this, false);
-		}
-
-		// Set back UI mode to game
-		const FInputModeGameOnly GameInput;
-		GetWorld()->GetFirstPlayerController()->SetInputMode(GameInput);
-
-		// Call the callback function to notify that the dialog finished playing
-		// ReSharper disable once CppExpressionWithoutSideEffects
-		if (CallBack.IsSet())
-		{
-			CallBack->ExecuteIfBound();
-		}
+		EndDialogueMode();
 	}
 }
