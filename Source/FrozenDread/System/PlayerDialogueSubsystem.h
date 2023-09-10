@@ -9,10 +9,12 @@
 #include "Subsystems/WorldSubsystem.h"
 
 #include "FrozenDread/Game/Dialogue.h"
+#include "FrozenDread/Player/GamePlayerController.h"
 
 #include "PlayerDialogueSubsystem.generated.h"
 
 class UDialogueWidget;
+class AGamePlayerController;
 
 // Callback for dialogue completion
 DECLARE_DYNAMIC_DELEGATE(FDialogueCallBack);
@@ -42,7 +44,7 @@ public:
 
 	/** Setup this subsystem with the given dialogue widget to manage */
 	UFUNCTION(BlueprintCallable, Category="Setup")
-	void Setup(UDialogueWidget* DialogueWidgetPtr);
+	void Setup(UDialogueWidget* DialogueWidgetPtr, AGamePlayerController* LocalPlayerController);
 
 	/** Add text to the dialogue queue */
 	UFUNCTION(BlueprintCallable, Category="Dialogue", meta=(AutoCreateRefTerm="CallBackRef"))
@@ -59,6 +61,8 @@ private:
 	UDialogueWidget* DialogueWidget { nullptr };
 	FDialogueItem LastPlayedItem;
 	TOptional<const FDialogueCallBack> CallBack {};
+
+	TWeakObjectPtr<AGamePlayerController> PlayerController;
 
 	bool IsCurrentlyPlaying { false };
 };

@@ -30,10 +30,11 @@ public:
 	AGamePlayerController();
 	
 	virtual void BeginPlay() override;
-	
-	virtual void Tick(float DeltaTime) override;
 
-	// Get a reference to the player's inventory system
+	/** Set the mouse pointer on the center of the view port */
+	void SetMousePointerOnCenter();
+
+	/** Get a reference to the player's inventory system */
 	FORCEINLINE UInventory* GetInventory() const { return Inventory; }
 
 protected:

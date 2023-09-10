@@ -33,8 +33,10 @@ bool UPlayerDialogueSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 	return true;
 }
 
-void UPlayerDialogueSubsystem::Setup(UDialogueWidget* DialogueWidgetPtr)
+void UPlayerDialogueSubsystem::Setup(UDialogueWidget* DialogueWidgetPtr, AGamePlayerController* LocalPlayerController)
 {
+	PlayerController = LocalPlayerController;
+	
 	DialogueWidget = DialogueWidgetPtr;
 	DialogueWidget->SetVisibility(ESlateVisibility::Collapsed);
 	DialogueWidget->GetNextEventRef().AddLambda([this]()
@@ -46,6 +48,22 @@ void UPlayerDialogueSubsystem::Setup(UDialogueWidget* DialogueWidgetPtr)
 	if (!DialogueQueue.IsEmpty())
 	{
 		BeginDialogueMode();
+	}
+}
+
+void UPlayerDialogueSubsystem::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	static float AccumulatedTime { 0.0F };
+
+	if (IsCurrentlyPlaying)
+	{
+		AccumulatedTime += DeltaTime;
+		if (AccumulatedTime >= TEXT_TYPING_INTERVAL) {
+			AccumulatedTime = 0.0F;
+			UpdateUI();
+		}
 	}
 }
 
@@ -74,6 +92,12 @@ void UPlayerDialogueSubsystem::BeginDialogueMode()
 	// Enable UI input
 	const FInputModeUIOnly UIInput;
 	GetWorld()->GetFirstPlayerController()->SetInputMode(UIInput);
+
+	// Set mouse onto the dialogue widget
+	if (PlayerController.IsValid())
+	{
+		PlayerController->SetMousePointerOnCenter();
+	}
 
 	// Pause the game if not already paused so player can focus on dialogue
 	if (!UGameplayStatics::IsGamePaused(this))
@@ -104,22 +128,6 @@ void UPlayerDialogueSubsystem::EndDialogueMode()
 	if (CallBack.IsSet())
 	{
 		CallBack->ExecuteIfBound();
-	}
-}
-
-void UPlayerDialogueSubsystem::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	static float AccumulatedTime { 0.0F };
-
-	if (IsCurrentlyPlaying)
-	{
-		AccumulatedTime += DeltaTime;
-		if (AccumulatedTime >= TEXT_TYPING_INTERVAL) {
-			AccumulatedTime = 0.0F;
-			UpdateUI();
-		}
 	}
 }
 
