@@ -7,6 +7,9 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/SlateBlueprintLibrary.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "FrozenDread/Gameplay/InteractionComponent.h"
@@ -54,16 +57,21 @@ void AGamePlayerController::BeginPlay()
 
 	// Setup dialogue subsystem
 	UPlayerDialogueSubsystem* DialogueSubsystem { GetWorld()->GetSubsystem<UPlayerDialogueSubsystem>() };
-	DialogueSubsystem->Setup(GameHUD->GetDialogueWidget());
+	DialogueSubsystem->Setup(GameHUD->GetDialogueWidget(), this);
 
 	// Setup objectives subsystem
 	UGameObjectiveSubsystem* GameObjectiveSubsystem { GetWorld()->GetSubsystem<UGameObjectiveSubsystem>() };
 	GameObjectiveSubsystem->Setup(GameHUD->GetObjectiveWidget());
 }
 
-void AGamePlayerController::Tick(float DeltaTime)
+void AGamePlayerController::SetMousePointerOnCenter()
 {
-	Super::Tick(DeltaTime);
+	FViewport* Viewport { GetLocalPlayer()->ViewportClient->Viewport };
+	if (Viewport)
+	{
+		const FIntPoint ViewportSize {Viewport->GetSizeXY() };
+		Viewport->SetMouse(ViewportSize.X / 2, ViewportSize.Y / 2);
+	} 
 }
 
 void AGamePlayerController::SetupInputComponent()
