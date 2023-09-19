@@ -106,7 +106,6 @@ void UGameEventSubsystem::SpawnMonster(TSubclassOf<AMonster> MonsterClass, const
 {
 	// Spawn monster
 	AMonster* Monster { GetWorld()->SpawnActor<AMonster>(MonsterClass, Location, FRotator::ZeroRotator) };
-	Monster->Init();
 	Monsters.Add(Monster);
 
 	// Set monster waypoints

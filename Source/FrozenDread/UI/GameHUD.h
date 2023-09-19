@@ -15,6 +15,7 @@ class UInventoryWidget;
 class UDialogueWidget;
 class UGameOverWidget;
 class UObjectiveWidget;
+class UCinematicWidget;
 
 /**
  * The main HUD to use during gameplay.
@@ -46,6 +47,9 @@ public:
 	/** Get the reference to the objectives Widget */
 	UObjectiveWidget* GetObjectiveWidget() const;
 
+	/** Get the reference to the cinematic Widget */
+	UCinematicWidget* GetCinematicWidget() const;
+
 protected:
 	/** The BP class to use for the interaction widget */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widgets")
@@ -67,6 +71,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widgets")
 	TSubclassOf<UUserWidget> ObjectiveWidgetClass;
 
+	/** The BP class to use for the cinematic widget */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widgets")
+	TSubclassOf<UUserWidget> CinematicWidgetClass;
+
 private:
 	UPROPERTY()
 	UUserWidget* InteractionWidget;
@@ -82,4 +90,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> ObjectiveWidget;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> CinematicWidget;
 };

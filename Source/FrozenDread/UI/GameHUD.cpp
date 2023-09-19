@@ -5,6 +5,7 @@
 
 #include "FrozenDread/UI/GameHUD.h"
 
+#include "CinematicWidget.h"
 #include "GameOverWidget.h"
 #include "ObjectiveWidget.h"
 #include "FrozenDread/UI/InteractionWidget.h"
@@ -17,6 +18,12 @@ void AGameHUD::InitAndAddToViewport()
 	check(InteractionWidgetClass);
 
 	AGamePlayerController* PlayerController { Cast<AGamePlayerController>(GetOwner()) };
+
+	// Cinematic Widget
+	check(CinematicWidgetClass);
+	CinematicWidget = CreateWidget<UCinematicWidget>(PlayerController, CinematicWidgetClass);
+	CinematicWidget->AddToViewport(-1);
+	CinematicWidget->SetVisibility(ESlateVisibility::Collapsed);
 
 	// Objectives Widget
 	check(ObjectiveWidgetClass);
@@ -82,4 +89,10 @@ UObjectiveWidget* AGameHUD::GetObjectiveWidget() const
 {
 	check(ObjectiveWidget);
 	return Cast<UObjectiveWidget>(ObjectiveWidget);
+}
+
+UCinematicWidget* AGameHUD::GetCinematicWidget() const
+{
+	check(CinematicWidget);
+	return Cast<UCinematicWidget>(CinematicWidget);
 }

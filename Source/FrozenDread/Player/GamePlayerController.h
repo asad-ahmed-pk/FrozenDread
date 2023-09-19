@@ -18,6 +18,9 @@ class UInputAction;
 class UInventory;
 class USoundBase;
 
+/** Delegate that is called once the HUD and player UI is setup and ready */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerUIReadyDelegate);
+
 /**
  * Main player controller class for the game
  */
@@ -34,8 +37,17 @@ public:
 	/** Set the mouse pointer on the center of the view port */
 	void SetMousePointerOnCenter();
 
+	// Play the intro sequence through the UI
+	UFUNCTION(BlueprintCallable, Category="Level Events")
+	void PlayIntro();
+
 	/** Get a reference to the player's inventory system */
 	FORCEINLINE UInventory* GetInventory() const { return Inventory; }
+
+	/** Delegate that is called once the HUD and player UI is setup and ready */
+	UPROPERTY(BlueprintAssignable, Category="Events")
+	FPlayerUIReadyDelegate OnPlayerUIReady;
+	
 
 protected:
 	UFUNCTION(BlueprintCallable, Category="Inventory")

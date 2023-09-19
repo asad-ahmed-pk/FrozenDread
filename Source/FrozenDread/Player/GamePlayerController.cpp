@@ -7,9 +7,6 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Blueprint/SlateBlueprintLibrary.h"
-#include "Blueprint/WidgetLayoutLibrary.h"
-#include "Components/CanvasPanelSlot.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "FrozenDread/Gameplay/InteractionComponent.h"
@@ -20,6 +17,7 @@
 #include "FrozenDread/UI/InventoryWidget.h"
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
 #include "FrozenDread/System/GameObjectiveSubsystem.h"
+#include "FrozenDread/UI/CinematicWidget.h"
 
 AGamePlayerController::AGamePlayerController() : Inventory(CreateDefaultSubobject<UInventory>(TEXT("Inventory")))
 {
@@ -62,6 +60,9 @@ void AGamePlayerController::BeginPlay()
 	// Setup objectives subsystem
 	UGameObjectiveSubsystem* GameObjectiveSubsystem { GetWorld()->GetSubsystem<UGameObjectiveSubsystem>() };
 	GameObjectiveSubsystem->Setup(GameHUD->GetObjectiveWidget());
+
+	// Notify that UI is now ready
+	OnPlayerUIReady.Broadcast();
 }
 
 void AGamePlayerController::SetMousePointerOnCenter()
@@ -116,4 +117,11 @@ void AGamePlayerController::ToggleInventory()
 	// Play inventory toggle sound
 	check(InventoryToggleSound);
 	UGameplayStatics::PlaySound2D(this, InventoryToggleSound);
+}
+
+void AGamePlayerController::PlayIntro()
+{
+	check(GameHUD.IsValid());
+	UCinematicWidget* CinematicWidget { GameHUD->GetCinematicWidget() };
+	CinematicWidget->PlayFadeInAnimation();
 }
