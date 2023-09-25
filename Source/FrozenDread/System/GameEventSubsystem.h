@@ -14,6 +14,8 @@ class APlayerCharacter;
 class AMonster;
 class APatrolWaypointSet;
 
+enum class EDoorLockState : uint8;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerChaseStatusDelegate, bool, IsChased);
 
 /**
@@ -27,6 +29,9 @@ class FROZENDREAD_API UGameEventSubsystem : public UWorldSubsystem
 public:
 	// Init
 	void Setup(APlayerCharacter* PlayerCharacter);
+
+	// The player interacted with the door
+	void PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState);
 
 	// The player was caught by the monster
 	void PlayerWasCaught() const;

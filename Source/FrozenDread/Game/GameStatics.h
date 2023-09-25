@@ -10,6 +10,9 @@
 class AGameLevelScriptActor;
 class UBlackboardComponent;
 class UMusicPlayerSubsystem;
+class UPlayerDialogueSubsystem;
+class UGameEventSubsystem;
+class APlayerCharacter;
 
 /**
  * Static class for static helper functions
@@ -25,4 +28,7 @@ public:
 
 	/** Get a reference to the Music Subsystem */
 	static UMusicPlayerSubsystem* GetMusicSubsystem(const AActor* ContextActor);
+
+	/** Get a reference the player character */
+	static APlayerCharacter* GetPlayer(const AActor* ContextActor);
 };

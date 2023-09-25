@@ -92,6 +92,9 @@ void ADoor::Interact(APlayerCharacter* PlayerCharacter)
 		break;
 	}
 
+	// Fire event to notify that door was interacted with
+	OnDoorInteractedWith.Broadcast(static_cast<uint8>(InteractionItemID), LockState);
+
 	// Start the cooldown timer so the player cannot interact for some time
 	CanInteract = false;
 	GetWorldTimerManager().SetTimer(CoolDownTimer, this, &ADoor::CoolDownComplete, CoolDownTimeSeconds, false);
