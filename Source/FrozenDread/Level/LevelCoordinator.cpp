@@ -14,3 +14,8 @@ void ALevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState Do
 {
 	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::PlayerInteractedWithDoor called. Please override in child class."));
 }
+
+void ALevelCoordinator::PlayerInteractedWithItem(uint8 ItemID, AInteractionItem* Item)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::PlayerInteractedWithItem called. Please override in child class."));
+}

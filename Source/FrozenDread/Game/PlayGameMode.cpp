@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "FrozenDread/Gameplay/Door.h"
+#include "FrozenDread/Gameplay/InteractionItem.h"
 #include "FrozenDread/Level/MainLevelCoordinator.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/System/GameEventSubsystem.h"
@@ -47,6 +48,7 @@ void APlayGameMode::InitGame(const FString& MapName, const FString& Options, FSt
 
 	// Setup the game events
 	SetupDoorInteractionEvents();
+	SetupItemInteractionEvents();
 }
 
 void APlayGameMode::SetupSubsystems()
@@ -89,3 +91,20 @@ void APlayGameMode::SetupDoorInteractionEvents()
 		}
 	}
 }
+
+void APlayGameMode::SetupItemInteractionEvents()
+{
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsWithInterface(this, UInteractiveObject::StaticClass(), Actors);
+
+	check(LevelCoordinator.IsValid());
+
+	for (AActor* Actor : Actors)
+	{
+		if (AInteractionItem* InteractionItem { Cast<AInteractionItem>(Actor)} )
+		{
+			InteractionItem->OnInteractedWith.AddUObject(LevelCoordinator.Get(), &ALevelCoordinator::PlayerInteractedWithItem);
+		}
+	}
+}
+

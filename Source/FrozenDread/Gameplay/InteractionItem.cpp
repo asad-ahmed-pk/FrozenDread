@@ -25,7 +25,7 @@ AInteractionItem::AInteractionItem()
 void AInteractionItem::Interact(APlayerCharacter* PlayerCharacter)
 {
 	// Notify the level script that this actor was interacted with
-	OnInteractedWith.Broadcast();
+	OnInteractedWith.Broadcast(static_cast<uint8>(ItemID), this);
 }
 
 void AInteractionItem::SetHighlighted(bool IsHighlighted)

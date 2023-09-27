@@ -9,6 +9,7 @@
 #include "GameFramework/Info.h"
 #include "LevelCoordinator.generated.h"
 
+class AInteractionItem;
 enum class EDoorLockState : uint8;
 
 class UPlayerDialogueSubsystem;
@@ -39,6 +40,9 @@ public:
 	
 	/** The player interacted with a door in the level */
 	virtual void PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState);
+
+	/** The player interacted with an interactive item in the level */
+	virtual void PlayerInteractedWithItem(uint8 ItemID, AInteractionItem* Item);
 
 protected:
 	FSubsystemCache SubsystemCache;
