@@ -29,7 +29,6 @@ enum class InventoryItemID : uint8
 /** ID Tags for trigger volumes and boxes */
 namespace Tags
 {
-	constexpr char* TAG_TRIGGER_JUMP_SCARE { "JumpScareTrigger" };
 	constexpr char* TAG_TRIGGER_EARLY_EXIT { "EarlyExitTrigger" };
 	constexpr char* TAG_TRIGGER_RED_ALERT { "RedAlertTrigger" };
 	constexpr char* TAG_TRIGGER_MUSIC_START { "MusicStartTrigger" };

@@ -174,10 +174,6 @@ void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor,
 		// TODO: Refactor MusicSubsystem to play track of type rather than taking raw index
 		//SubsystemCache.MusicPlayerSubsystem->PlayTrack(0);
 	}
-	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_JUMP_SCARE))
-	{
-		// TODO: Play jump scare
-	}
 	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_EARLY_EXIT))
 	{
 		check(EarlyExitDialogueOptions.Num() > 0);
