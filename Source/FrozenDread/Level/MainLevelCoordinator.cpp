@@ -3,9 +3,15 @@
 // Implementation of the AMainLevelCoordinator class.
 //
 
-
 #include "FrozenDread/Level/MainLevelCoordinator.h"
 
+#include "Components/RectLightComponent.h"
+#include "Engine/RectLight.h"
+#include "Engine/TriggerVolume.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/AmbientSound.h"
+
+#include "FrozenDread/AI/PatrolWaypointSet.h"
 #include "FrozenDread/Game/GameStatics.h"
 #include "FrozenDread/Game/InventoryItemInfo.h"
 #include "FrozenDread/Gameplay/Door.h"
@@ -13,8 +19,9 @@
 #include "FrozenDread/Level/LevelObjects.h"
 #include "FrozenDread/Player/Inventory.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
+#include "FrozenDread/System/GameEventSubsystem.h"
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
-#include "Kismet/GameplayStatics.h"
+
 
 constexpr char* ACTOR_TAG_DOOR_WITH_REPAIR_PANEL { "BrokenPanelDoor" };
 
@@ -30,10 +37,32 @@ void AMainLevelCoordinator::SetupReferences()
 	Player = UGameStatics::GetPlayer(this);
 	
 	// Cache the reference for the door with the repair panel
-	TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsWithTag(this, { ACTOR_TAG_DOOR_WITH_REPAIR_PANEL }, Actors);
-	check(Actors.Num() == 1);
-	RepairPanelDoor = Cast<ADoor>(Actors[0]);
+	RepairPanelDoor = UGameStatics::GetActorInLevel<ADoor>(ACTOR_TAG_DOOR_WITH_REPAIR_PANEL, GetWorld());
+
+	// Cache the reference for the red alert sequence
+	RedAlertSound = UGameStatics::GetActorInLevel<AAmbientSound>(Tags::TAG_ACTOR_AMBIENT_SOUND_RED_ALERT, GetWorld());
+
+	// Cache the reference for the red alert light
+	RedAlertLight = UGameStatics::GetActorInLevel<ARectLight>(Tags::TAG_ACTOR_RECT_LIGHT_RED_ALERT, GetWorld());
+
+	// Setup the monster spawns
+	SetupMonsterSpawns();
+}
+
+void AMainLevelCoordinator::SetupMonsterSpawns()
+{
+	UWorld* World { GetWorld() };
+	
+	// Monster 1
+	FVector Monster1Location { UGameStatics::GetActorInLevel<AActor>(Tags::TAG_MONSTER_1_SPAWN_LOCATION, World)->GetActorLocation() };
+	APatrolWaypointSet* Monster1Waypoints { UGameStatics::GetActorInLevel<APatrolWaypointSet>(Tags::TAG_MONSTER_1_Waypoints, World) };
+
+	// Monster 2
+	FVector Monster2Location { UGameStatics::GetActorInLevel<AActor>(Tags::TAG_MONSTER_2_SPAWN_LOCATION, World)->GetActorLocation() };
+	APatrolWaypointSet* Monster2Waypoints { UGameStatics::GetActorInLevel<APatrolWaypointSet>(Tags::TAG_MONSTER_2_Waypoints, World) };
+
+	MonsterSpawnInfoList.Add({ Monster1Location, Monster1Waypoints });
+	MonsterSpawnInfoList.Add({ Monster2Location, Monster2Waypoints });
 }
 
 void AMainLevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState)
@@ -92,6 +121,68 @@ void AMainLevelCoordinator::PlayInteractionSoundAtLocation(USoundBase* Sound, co
 	check(Sound);
 	check(ItemInteractionSoundAttenuation);
 	UGameplayStatics::PlaySoundAtLocation(this, Sound, Location, FRotator::ZeroRotator);
+}
+
+void AMainLevelCoordinator::SpawnMonster(int32 Index)
+{
+	check(Index < MonsterSpawnInfoList.Num());
+	check(MonsterClass);
+	const FMonsterSpawnInfo& SpawnInfo { MonsterSpawnInfoList[0] };
+	SubsystemCache.GameEventSubsystem->SpawnMonster(MonsterClass, SpawnInfo.SpawnLocation, SpawnInfo.Waypoints.Get());
+}
+
+void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	// Ensure that it is the player that is overlapping with the trigger volume
+	if (!Cast<APlayerCharacter>(OtherActor))
+	{
+		return;
+	}
+
+	ATriggerVolume* TriggerVolume { CastChecked<ATriggerVolume>(OverlappedActor) };
+
+	// Red alert trigger volume
+	if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_RED_ALERT))
+	{
+		check(Player.IsValid());
+		check(!InventoryItemToRepairDoor.IsNull());
+		const uint8 ItemID { InventoryItemToRepairDoor.GetRow<FInventoryItemInfo>("AMainLevelCoordinator::OnTriggerVolumeBeginOverlap")->ID };
+		if (Player->GetInventory()->HasItem(ItemID))
+		{
+			TriggerVolume->Destroy();
+
+			// Camera shake and sound for impact
+			check(RedAlertCameraShakeClass);
+			check(RedAlertImpactSound);
+			UGameplayStatics::PlaySound2D(this, RedAlertImpactSound);
+			Player->GetController<APlayerController>()->ClientStartCameraShake(RedAlertCameraShakeClass);
+
+			// Start red alert sequence after 2 seconds
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([this]
+			{
+				// Play the red alert alarm
+				RedAlertSound->Play();
+				RedAlertLight->RectLightComponent->SetVisibility(true, true);
+
+				// Spawn the first monster
+				SpawnMonster(0);
+			}), 2.0F, false);
+		}
+	}
+	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_MUSIC_START))
+	{
+		// TODO: Refactor MusicSubsystem to play track of type rather than taking raw index
+		//SubsystemCache.MusicPlayerSubsystem->PlayTrack(0);
+	}
+	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_JUMP_SCARE))
+	{
+		// TODO: Play jump scare
+	}
+	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_EARLY_EXIT))
+	{
+		check(EarlyExitDialogueOptions.Num() > 0);
+		PlayDialogue(EarlyExitDialogueOptions);
+	}
 }
 
 void AMainLevelCoordinator::PlayerInteractedWithItem(uint8 ItemID, AInteractionItem* Item)

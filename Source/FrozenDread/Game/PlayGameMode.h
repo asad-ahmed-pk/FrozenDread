@@ -30,6 +30,7 @@ private:
 	void SetupSubsystems();
 	void SetupDoorInteractionEvents();
 	void SetupItemInteractionEvents();
+	void SetupTriggerEvents();
 
 private:
 	/** The level coordinator class to use for the main level */

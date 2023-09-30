@@ -7,6 +7,7 @@
 #include "FrozenDread/Game/PlayGameMode.h"
 
 #include "GameStatics.h"
+#include "Engine/TriggerVolume.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "FrozenDread/Gameplay/Door.h"
@@ -49,6 +50,7 @@ void APlayGameMode::InitGame(const FString& MapName, const FString& Options, FSt
 	// Setup the game events
 	SetupDoorInteractionEvents();
 	SetupItemInteractionEvents();
+	SetupTriggerEvents();
 }
 
 void APlayGameMode::SetupSubsystems()
@@ -105,6 +107,21 @@ void APlayGameMode::SetupItemInteractionEvents()
 		{
 			InteractionItem->OnInteractedWith.AddUObject(LevelCoordinator.Get(), &ALevelCoordinator::PlayerInteractedWithItem);
 		}
+	}
+}
+
+void APlayGameMode::SetupTriggerEvents()
+{
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsOfClass(this, ATriggerVolume::StaticClass(), Actors);
+
+	check(LevelCoordinator.IsValid());
+	
+	for (AActor* Actor : Actors)
+	{
+		// Subscribe the current level coordinator to the volume's OnActorOverlap and OnActorEndOverlap events
+		ATriggerVolume* TriggerVolume { CastChecked<ATriggerVolume>(Actor) };
+		TriggerVolume->OnActorBeginOverlap.AddDynamic(LevelCoordinator.Get(), &ALevelCoordinator::OnTriggerVolumeBeginOverlap);
 	}
 }
 

@@ -9,6 +9,7 @@
 #include "GameFramework/Info.h"
 #include "LevelCoordinator.generated.h"
 
+class APatrolWaypointSet;
 class AInteractionItem;
 enum class EDoorLockState : uint8;
 
@@ -24,6 +25,16 @@ struct FSubsystemCache
 	UGameObjectiveSubsystem* GameObjectiveSubsystem;
 	UPlayerDialogueSubsystem* DialogueSubsystem;
 	UMusicPlayerSubsystem* MusicPlayerSubsystem;
+};
+
+/** Contains info on the monster's spawn location and waypoints */
+struct FMonsterSpawnInfo
+{
+	/** The location of the monster's initial spawn point */
+	FVector SpawnLocation;
+
+	/** The waypoint set for the monster to follow after spawning */
+	TWeakObjectPtr<APatrolWaypointSet> Waypoints;
 };
 
 /*
@@ -43,6 +54,10 @@ public:
 
 	/** The player interacted with an interactive item in the level */
 	virtual void PlayerInteractedWithItem(uint8 ItemID, AInteractionItem* Item);
+
+public:
+	UFUNCTION()
+	virtual void OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 protected:
 	FSubsystemCache SubsystemCache;
