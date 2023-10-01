@@ -13,6 +13,14 @@
 
 #include "Door.generated.h"
 
+class UBoxComponent;
+class USceneComponent;
+class UStaticMeshComponent;
+class UWidgetComponent;
+class UTimelineComponent;
+
+enum class EInteractionItemID : uint8;
+
 /** The states for the door's lock state. */
 UENUM(BlueprintType)
 enum class EDoorLockState : uint8
@@ -30,13 +38,8 @@ enum class EDoorMoveDirection : uint8
 	Up
 };
 
-class UBoxComponent;
-class USceneComponent;
-class UStaticMeshComponent;
-class UWidgetComponent;
-class UTimelineComponent;
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDoorInteractionDelegate);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FDoorInteractDelegate, uint8, EDoorLockState);
 
 UCLASS()
 class FROZENDREAD_API ADoor : public AActor, public IInteractiveObject
@@ -76,6 +79,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Interaction")
 	FDoorInteractionDelegate OnLockedDoorWasInteractedWith;
 
+	/** This door was interacted with */
+	FDoorInteractDelegate OnDoorInteractedWith;
+
 protected:
 	// The player interacted with the door (for internal use)
 	// TODO: Remove this and favour using the public one?
@@ -88,6 +94,10 @@ private:
 	void SetLockStatusWidgets(bool IsLocked) const;
 
 private:
+	/** The ID of the door */
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess="true"))
+	EInteractionItemID InteractionItemID;
+	
 	/** The direction the door moves in when opened */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess="true"))
 	EDoorMoveDirection MoveDirection { EDoorMoveDirection::Right };

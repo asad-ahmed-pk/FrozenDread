@@ -7,6 +7,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Misc/Optional.h"
 
 #include "FrozenDread/Game/Dialogue.h"
 #include "FrozenDread/Player/GamePlayerController.h"
@@ -47,8 +48,7 @@ public:
 	void Setup(UDialogueWidget* DialogueWidgetPtr, AGamePlayerController* LocalPlayerController);
 
 	/** Add text to the dialogue queue */
-	UFUNCTION(BlueprintCallable, Category="Dialogue", meta=(AutoCreateRefTerm="CallBackRef"))
-	void AddDialogueItem(const FDialogueItem& DialogueItem, const FDialogueCallBack& CallBackRef);
+	void AddDialogueItem(const FDialogueItem& DialogueItem, const TOptional<const FDialogueCallBack>& CallBackRef);
 
 private:
 	void BeginDialogueMode();

@@ -5,9 +5,12 @@
 
 #include "FrozenDread/Game/GameStatics.h"
 
-#include "AIController.h"
 #include "FrozenDread/Gameplay/GameLevelScriptActor.h"
 #include "FrozenDread/System/MusicPlayerSubsystem.h"
+#include "FrozenDread/Player/PlayerCharacter.h"
+
+#include "AIController.h"
+#include "Kismet/GameplayStatics.h"
 
 AGameLevelScriptActor* UGameStatics::GetLevelScript(const AActor* ContextActor)
 {
@@ -31,8 +34,14 @@ UMusicPlayerSubsystem* UGameStatics::GetMusicSubsystem(const AActor* ContextActo
 {
 	const UGameInstance* GameInstance { ContextActor->GetGameInstance() };
 	UMusicPlayerSubsystem* MusicPlayerSubsystem { GameInstance->GetSubsystem<UMusicPlayerSubsystem>() };
-
 	check(MusicPlayerSubsystem);
-
 	return MusicPlayerSubsystem;
+}
+
+APlayerCharacter* UGameStatics::GetPlayer(const AActor* ContextActor)
+{
+	const APlayerController* PlayerController { UGameplayStatics::GetPlayerController(ContextActor, 0) };
+	check(PlayerController);
+	APlayerCharacter* PlayerCharacter { PlayerController->GetPawn<APlayerCharacter>() };
+	return PlayerCharacter;
 }

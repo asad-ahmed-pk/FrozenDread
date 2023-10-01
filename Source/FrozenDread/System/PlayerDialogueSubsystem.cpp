@@ -67,7 +67,7 @@ void UPlayerDialogueSubsystem::Tick(float DeltaTime)
 	}
 }
 
-void UPlayerDialogueSubsystem::AddDialogueItem(const FDialogueItem& DialogueItem, const FDialogueCallBack& CallBackRef)
+void UPlayerDialogueSubsystem::AddDialogueItem(const FDialogueItem& DialogueItem, const TOptional<const FDialogueCallBack>& CallBackRef)
 {
 	DialogueQueue.Enqueue(DialogueItem);
 	if (!DialogueQueue.IsEmpty() && DialogueWidget != nullptr)
