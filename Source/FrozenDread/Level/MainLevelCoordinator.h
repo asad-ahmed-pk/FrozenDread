@@ -30,7 +30,11 @@ class FROZENDREAD_API AMainLevelCoordinator : public ALevelCoordinator
 	GENERATED_BODY()
 
 public:
+	/** Called when the game begins */
 	virtual void BeginPlay() override;
+
+	/** Called when the game mode inits this level coordinator */
+	virtual void Init(const FSubsystemCache& SubsystemCacheRef) override;
 	
 	/** The player interacted with a door in the level */
 	virtual void PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState) override;
@@ -47,6 +51,7 @@ private:
 	void PlayDialogue(const TArray<FDataTableRowHandle>& DialogueRowHandles) const;
 	void PlayInteractionSoundAtLocation(USoundBase* Sound, const FVector& Location) const;
 	void SpawnMonster(int32 Index);
+	void UpdatePlayerChaseStatus(bool IsChased) const;
 
 
 private:

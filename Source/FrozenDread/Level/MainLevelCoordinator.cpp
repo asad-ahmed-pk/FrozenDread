@@ -14,12 +14,14 @@
 #include "FrozenDread/AI/PatrolWaypointSet.h"
 #include "FrozenDread/Game/GameStatics.h"
 #include "FrozenDread/Game/InventoryItemInfo.h"
+#include "FrozenDread/Game/MusicData.h"
 #include "FrozenDread/Gameplay/Door.h"
 #include "FrozenDread/Gameplay/InteractionItem.h"
 #include "FrozenDread/Level/LevelObjects.h"
 #include "FrozenDread/Player/Inventory.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/System/GameEventSubsystem.h"
+#include "FrozenDread/System/MusicPlayerSubsystem.h"
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
 
 
@@ -29,6 +31,14 @@ void AMainLevelCoordinator::BeginPlay()
 {
 	Super::BeginPlay();
 	SetupReferences();
+}
+
+void AMainLevelCoordinator::Init(const FSubsystemCache& SubsystemCacheRef)
+{
+	Super::Init(SubsystemCacheRef);
+
+	// Subscribe to the game event sub-system's player chase event
+	SubsystemCache.GameEventSubsystem->OnPlayerBeingChased.AddUObject(this, &AMainLevelCoordinator::UpdatePlayerChaseStatus);
 }
 
 void AMainLevelCoordinator::SetupReferences()
@@ -54,11 +64,11 @@ void AMainLevelCoordinator::SetupMonsterSpawns()
 	UWorld* World { GetWorld() };
 	
 	// Monster 1
-	FVector Monster1Location { UGameStatics::GetActorInLevel<AActor>(Tags::TAG_MONSTER_1_SPAWN_LOCATION, World)->GetActorLocation() };
+	const FVector Monster1Location { UGameStatics::GetActorInLevel<AActor>(Tags::TAG_MONSTER_1_SPAWN_LOCATION, World)->GetActorLocation() };
 	APatrolWaypointSet* Monster1Waypoints { UGameStatics::GetActorInLevel<APatrolWaypointSet>(Tags::TAG_MONSTER_1_Waypoints, World) };
 
 	// Monster 2
-	FVector Monster2Location { UGameStatics::GetActorInLevel<AActor>(Tags::TAG_MONSTER_2_SPAWN_LOCATION, World)->GetActorLocation() };
+	const FVector Monster2Location { UGameStatics::GetActorInLevel<AActor>(Tags::TAG_MONSTER_2_SPAWN_LOCATION, World)->GetActorLocation() };
 	APatrolWaypointSet* Monster2Waypoints { UGameStatics::GetActorInLevel<APatrolWaypointSet>(Tags::TAG_MONSTER_2_Waypoints, World) };
 
 	MonsterSpawnInfoList.Add({ Monster1Location, Monster1Waypoints });
@@ -131,6 +141,11 @@ void AMainLevelCoordinator::SpawnMonster(int32 Index)
 	SubsystemCache.GameEventSubsystem->SpawnMonster(MonsterClass, SpawnInfo.SpawnLocation, SpawnInfo.Waypoints.Get());
 }
 
+void AMainLevelCoordinator::UpdatePlayerChaseStatus(bool IsChased) const
+{
+	SubsystemCache.MusicPlayerSubsystem->PlayRandomTrack(IsChased ? EMusicTrackType::MonsterChase : EMusicTrackType::Gameplay);
+}
+
 void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	// Ensure that it is the player that is overlapping with the trigger volume
@@ -171,8 +186,7 @@ void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor,
 	}
 	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_MUSIC_START))
 	{
-		// TODO: Refactor MusicSubsystem to play track of type rather than taking raw index
-		//SubsystemCache.MusicPlayerSubsystem->PlayTrack(0);
+		SubsystemCache.MusicPlayerSubsystem->PlayRandomTrack(EMusicTrackType::Gameplay);
 	}
 	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_EARLY_EXIT))
 	{

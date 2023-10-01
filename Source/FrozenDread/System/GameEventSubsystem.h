@@ -16,7 +16,7 @@ class APatrolWaypointSet;
 
 enum class EDoorLockState : uint8;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerChaseStatusDelegate, bool, IsChased);
+DECLARE_MULTICAST_DELEGATE_OneParam(FPlayerChaseStatusDelegate, bool);
 
 /**
  * Subsystem responsible for handling key events and triggers in the game.
@@ -46,7 +46,6 @@ public:
 	void PlayerIsBeingChased(bool IsChased);
 
 public:
-	UPROPERTY(BlueprintAssignable, Category="Game Events")
 	FPlayerChaseStatusDelegate OnPlayerBeingChased;
 
 public:

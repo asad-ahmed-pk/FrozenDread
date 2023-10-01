@@ -9,6 +9,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MusicPlayerSubsystem.generated.h"
 
+enum class EMusicTrackType : uint8;
 class UMusicTrackDataAsset;
 class USoundBase;
 
@@ -24,19 +25,22 @@ public:
 	/** Setup with the track list */
 	void SetupWithTrackList(const TArray<UMusicTrackDataAsset*>& TrackList);
 
-	/** Play track at the given index */
-	UFUNCTION(BlueprintCallable, Category="Music Subsystem")
-	void PlayTrack(int32 TrackIndex);
+	/** Play a random track of the given type */
+	void PlayRandomTrack(EMusicTrackType TrackType);
 
 	/** Stop playing music */
-	UFUNCTION(BlueprintCallable, Category="Music Subsystem")
-	void Stop();
+	void Stop() const;
+
+private:
+	void PlayTrackAsset(const UMusicTrackDataAsset* TrackAsset);
 
 private:
 	UPROPERTY()
 	TObjectPtr<UAudioComponent> AudioPlayer { nullptr };
 
 private:
-	int32 CurrentTrack { -1 };
+	FName CurrentTrackName;
 	const TArray<UMusicTrackDataAsset*>* MusicTrackList;
 };
+
+
