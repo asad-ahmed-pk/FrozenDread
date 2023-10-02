@@ -23,7 +23,7 @@ class FROZENDREAD_API AInteractionItem : public AActor, public IInteractiveObjec
 	GENERATED_BODY()
 
 	// Delegate for interaction with this item
-	DECLARE_MULTICAST_DELEGATE_TwoParams(FInteractionDelegate, uint8, AInteractionItem*);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInteractionDelegate, uint8, ItemID, AInteractionItem*, Item);
 
 public:
 	// Sets default values for this actor's properties
@@ -42,6 +42,7 @@ public:
 
 public:
 	/** Called when the player interacts with this item */
+	UPROPERTY(BlueprintAssignable, Category="Events")
 	FInteractionDelegate OnInteractedWith;
 
 private:

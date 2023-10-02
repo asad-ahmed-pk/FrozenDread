@@ -26,14 +26,19 @@ public:
 	/** Setup this sub system with the given objectives widget */
 	void Setup(UObjectiveWidget* ObjectiveWidget);
 
+	/** Returns true if the given objective has been added */
+	bool IsObjectiveAdded(const FGameObjective& Objective) const;
+
 	/** Add the given objective to the list of objectives */
 	UFUNCTION(BlueprintPure=false, Category="Objectives")
-	void AddObjective(const FGameObjective& Objective) const;
+	void AddObjective(const FGameObjective& Objective);
 
 	/** Mark the given objective as complete */
 	UFUNCTION(BlueprintPure=false, Category="Objectives")
-	void CompleteObjective(const FGameObjective& Objective) const;
+	void CompleteObjective(const FGameObjective& Objective);
 
 private:
 	UObjectiveWidget* Widget { nullptr };
+	TMap<uint8, bool> CurrentObjectives;
+	TArray<FGameObjective> PendingObjectives;
 };

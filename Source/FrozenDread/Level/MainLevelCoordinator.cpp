@@ -6,6 +6,7 @@
 #include "FrozenDread/Level/MainLevelCoordinator.h"
 
 #include "Components/RectLightComponent.h"
+#include "Engine/BlockingVolume.h"
 #include "Engine/RectLight.h"
 #include "Engine/TriggerVolume.h"
 #include "Kismet/GameplayStatics.h"
@@ -21,16 +22,15 @@
 #include "FrozenDread/Player/Inventory.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/System/GameEventSubsystem.h"
+#include "FrozenDread/System/GameObjectiveSubsystem.h"
 #include "FrozenDread/System/MusicPlayerSubsystem.h"
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
-
-
-constexpr char* ACTOR_TAG_DOOR_WITH_REPAIR_PANEL { "BrokenPanelDoor" };
 
 void AMainLevelCoordinator::BeginPlay()
 {
 	Super::BeginPlay();
 	SetupReferences();
+	StartLevel();
 }
 
 void AMainLevelCoordinator::Init(const FSubsystemCache& SubsystemCacheRef)
@@ -47,13 +47,17 @@ void AMainLevelCoordinator::SetupReferences()
 	Player = UGameStatics::GetPlayer(this);
 	
 	// Cache the reference for the door with the repair panel
-	RepairPanelDoor = UGameStatics::GetActorInLevel<ADoor>(ACTOR_TAG_DOOR_WITH_REPAIR_PANEL, GetWorld());
+	RepairPanelDoor = UGameStatics::GetActorInLevel<ADoor>(Tags::TAG_ACTOR_DOOR_REPAIR_PANEL, GetWorld());
 
 	// Cache the reference for the red alert sequence
 	RedAlertSound = UGameStatics::GetActorInLevel<AAmbientSound>(Tags::TAG_ACTOR_AMBIENT_SOUND_RED_ALERT, GetWorld());
 
 	// Cache the reference for the red alert light
 	RedAlertLight = UGameStatics::GetActorInLevel<ARectLight>(Tags::TAG_ACTOR_RECT_LIGHT_RED_ALERT, GetWorld());
+
+	// Cache the reference for the exit trigger and blocking volumes
+	ExitTriggerVolume = UGameStatics::GetActorInLevel<ATriggerVolume>(Tags::TAG_TRIGGER_EARLY_EXIT, GetWorld());
+	ExitBlockingVolume = UGameStatics::GetActorInLevel<ABlockingVolume>(Tags::TAG_ACTOR_EXIT_BLOCKING_VOLUME, GetWorld());
 
 	// Setup the monster spawns
 	SetupMonsterSpawns();
@@ -75,14 +79,19 @@ void AMainLevelCoordinator::SetupMonsterSpawns()
 	MonsterSpawnInfoList.Add({ Monster2Location, Monster2Waypoints });
 }
 
+void AMainLevelCoordinator::StartLevel()
+{
+	// Add main objective and primary objective
+	AddObjectiveOnce(MainObjective);
+	AddObjectiveOnce(OverrideLockDownObjective);
+}
+
 void AMainLevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState)
 {
 	// If any of the doors is the control room door
 	switch (static_cast<EInteractionItemID>(DoorID))
 	{
-	case EInteractionItemID::ControlRoomMainDoor:
-	case EInteractionItemID::ControlRoomTopDoor:
-	case EInteractionItemID::ControlRoomBottomDoor:
+	case EInteractionItemID::ControlRoomDoor:
 		{
 			// If door is locked with keycard, play locked dialogue item at random
 			if (DoorLockState == EDoorLockState::RequiresKeyCard)
@@ -91,6 +100,9 @@ void AMainLevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockStat
 				const int32 Index { FMath::RandRange(0, LockedDoorDialogueOptions.Num()) };
 				const FDialogueItem* DialogueItem { LockedDoorDialogueOptions[Index].GetRow<FDialogueItem>(TEXT("MainLevelCoordinator::PlayerInteractedWithDoor")) };
 				SubsystemCache.DialogueSubsystem->AddDialogueItem(*DialogueItem, {});
+
+				// Add objective for keycard
+				AddObjectiveOnce(FindKeyCardObjective);
 			}
 
 			break;
@@ -102,6 +114,7 @@ void AMainLevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockStat
 			if (DoorLockState == EDoorLockState::Locked)
 			{
 				PlayDialogue(BrokenPanelDialogueOptions);
+				AddObjectiveOnce(DoorRepairObjective);
 			}
 			break;
 		}
@@ -137,13 +150,33 @@ void AMainLevelCoordinator::SpawnMonster(int32 Index)
 {
 	check(Index < MonsterSpawnInfoList.Num());
 	check(MonsterClass);
-	const FMonsterSpawnInfo& SpawnInfo { MonsterSpawnInfoList[0] };
+	const FMonsterSpawnInfo& SpawnInfo { MonsterSpawnInfoList[Index] };
 	SubsystemCache.GameEventSubsystem->SpawnMonster(MonsterClass, SpawnInfo.SpawnLocation, SpawnInfo.Waypoints.Get());
 }
 
 void AMainLevelCoordinator::UpdatePlayerChaseStatus(bool IsChased) const
 {
 	SubsystemCache.MusicPlayerSubsystem->PlayRandomTrack(IsChased ? EMusicTrackType::MonsterChase : EMusicTrackType::Gameplay);
+}
+
+void AMainLevelCoordinator::AddObjectiveOnce(const FDataTableRowHandle& RowHandle) const
+{
+	check(!RowHandle.IsNull());
+	const FGameObjective* Objective { RowHandle.GetRow<FGameObjective>("AMainLevelCoordinator::AddObjective") };
+	if (!SubsystemCache.GameObjectiveSubsystem->IsObjectiveAdded(*Objective))
+	{
+		SubsystemCache.GameObjectiveSubsystem->AddObjective(*Objective);
+	}
+}
+
+void AMainLevelCoordinator::MarkObjectiveCompleted(const FDataTableRowHandle& RowHandle) const
+{
+	check(!RowHandle.IsNull());
+	const FGameObjective* Objective { RowHandle.GetRow<FGameObjective>("AMainLevelCoordinator::MarkObjectiveCompleted") };
+	if (SubsystemCache.GameObjectiveSubsystem->IsObjectiveAdded(*Objective))
+	{
+		SubsystemCache.GameObjectiveSubsystem->CompleteObjective(*Objective);
+	}
 }
 
 void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
@@ -184,6 +217,17 @@ void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor,
 			}), 2.0F, false);
 		}
 	}
+	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_2ND_MONSTER_SPAWN))
+	{
+		// Spawn the 2nd monster if player has picked up keycard
+		check(Player.IsValid());
+		check(!InventoryItemToUnlockControlRoom.IsNull());
+		const uint8 ItemID { InventoryItemToUnlockControlRoom.GetRow<FInventoryItemInfo>("AMainLevelCoordinator::OnTriggerVolumeBeginOverlap")->ID };
+		if (Player->GetInventory()->HasItem(ItemID))
+		{
+			SpawnMonster(1);
+		}
+	}
 	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_MUSIC_START))
 	{
 		SubsystemCache.MusicPlayerSubsystem->PlayRandomTrack(EMusicTrackType::Gameplay);
@@ -216,11 +260,31 @@ void AMainLevelCoordinator::PlayerInteractedWithItem(uint8 ItemID, AInteractionI
 				// Unlock the repair panel door
 				check(RepairPanelDoor.IsValid());
 				RepairPanelDoor->Unlock();
+
+				// Complete the objective
+				MarkObjectiveCompleted(DoorRepairObjective);
 			}
 			else
 			{
 				PlayDialogue(BrokenPanelDialogueOptions);
+				AddObjectiveOnce(DoorRepairObjective);
 			}
+
+			break;
+		}
+
+	case EInteractionItemID::ControlRoomPanel:
+		{
+			// Complete the objective
+			MarkObjectiveCompleted(OverrideLockDownObjective);
+
+			// Remove the blocking and trigger volume so player can exit
+			check(ExitBlockingVolume.IsValid());
+			ExitBlockingVolume->Destroy();
+			check(ExitTriggerVolume.IsValid());
+			ExitTriggerVolume->Destroy();
+			
+			break;
 		}
 
 		default:

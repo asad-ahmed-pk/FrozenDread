@@ -53,6 +53,7 @@ public:
 	virtual void PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState);
 
 	/** The player interacted with an interactive item in the level */
+	UFUNCTION()
 	virtual void PlayerInteractedWithItem(uint8 ItemID, AInteractionItem* Item);
 
 public:

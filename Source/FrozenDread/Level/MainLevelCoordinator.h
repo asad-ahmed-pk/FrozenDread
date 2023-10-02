@@ -12,6 +12,8 @@
 
 #include "MainLevelCoordinator.generated.h"
 
+class ATriggerVolume;
+class ABlockingVolume;
 class AMonster;
 class ARectLight;
 class AAmbientSound;
@@ -48,28 +50,35 @@ public:
 private:
 	void SetupReferences();
 	void SetupMonsterSpawns();
+	void StartLevel();
 	void PlayDialogue(const TArray<FDataTableRowHandle>& DialogueRowHandles) const;
 	void PlayInteractionSoundAtLocation(USoundBase* Sound, const FVector& Location) const;
 	void SpawnMonster(int32 Index);
 	void UpdatePlayerChaseStatus(bool IsChased) const;
+	void AddObjectiveOnce(const FDataTableRowHandle& RowHandle) const;
+	void MarkObjectiveCompleted(const FDataTableRowHandle& RowHandle) const;
 
 
 private:
 	/** The list of dialogue items that the player can say when interacting with a locked door */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RequiredAssetDataTags="RowStructure=/Script/FrozenDread.DialogueItem"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
 	TArray<FDataTableRowHandle> LockedDoorDialogueOptions;
 
 	/** The list of dialogue items to play when interacting with the broken door panel */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RequiredAssetDataTags="RowStructure=/Script/FrozenDread.DialogueItem"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
 	TArray<FDataTableRowHandle> BrokenPanelDialogueOptions;
 
 	/** The list of dialogue items to play when the player tries to exit the game early */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RequiredAssetDataTags="RowStructure=/Script/FrozenDread.DialogueItem"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
 	TArray<FDataTableRowHandle> EarlyExitDialogueOptions;
 
 	/** The inventory item that the player is expected to have for repairing the broken door */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true", RequiredAssetDataTags="RowStructure=/Script/FrozenDread.InventoryItemInfo"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true", RowType="InventoryItemInfo"))
 	FDataTableRowHandle InventoryItemToRepairDoor;
+
+	/** The inventory item that the player is expected to have for accessing the control room */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true", RowType="InventoryItemInfo"))
+	FDataTableRowHandle InventoryItemToUnlockControlRoom;
 
 	/** The sound to play when the player successfully repairs the damaged door panel */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess="true"))
@@ -90,12 +99,30 @@ private:
 	/** The monster class to use when spawning monsters */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay", meta=(AllowPrivateAccess="true"))
 	TSubclassOf<AMonster> MonsterClass;
+
+	/** The main top level objective to complete */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Objectives", meta=(AllowPrivateAccess="true", RowType="GameObjective"))
+	FDataTableRowHandle MainObjective;
+
+	/** The door repair objective */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Objectives", meta=(AllowPrivateAccess="true", RowType="GameObjective"))
+	FDataTableRowHandle DoorRepairObjective;
+
+	/** The key-card objective */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Objectives", meta=(AllowPrivateAccess="true", RowType="GameObjective"))
+	FDataTableRowHandle FindKeyCardObjective;
+
+	/** The override lockdown objective */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Objectives", meta=(AllowPrivateAccess="true", RowType="GameObjective"))
+	FDataTableRowHandle OverrideLockDownObjective;
 	
 private:
 	TWeakObjectPtr<APlayerCharacter> Player;
 	TWeakObjectPtr<ADoor> RepairPanelDoor;
 	TWeakObjectPtr<AAmbientSound> RedAlertSound;
 	TWeakObjectPtr<ARectLight> RedAlertLight;
+	TWeakObjectPtr<ATriggerVolume> ExitTriggerVolume;
+	TWeakObjectPtr<ABlockingVolume> ExitBlockingVolume;
 
 	TArray<FMonsterSpawnInfo> MonsterSpawnInfoList;
 

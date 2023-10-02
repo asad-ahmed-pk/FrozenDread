@@ -12,10 +12,8 @@ enum class EInteractionItemID : uint8
 	OtherDoor						UMETA(DisplayName = "Other Non Essential Door"),
 	BrokenDoor						UMETA(DisplayName = "Broken Door"),
 	BrokenDoorPanel					UMETA(DisplayName = "Broken Door Repair Panel"),
-	ControlRoomMainDoor				UMETA(DisplayName = "Control Room Main Door"),
-	ControlRoomBottomDoor			UMETA(DisplayName = "Control Room Bottom Door"),
-	ControlRoomTopDoor				UMETA(DisplayName = "Control Room Top Door"),
-	ControlRoomControlPanel			UMETA(DisplayName = "Control Room Control Panel"),
+	ControlRoomDoor					UMETA(DisplayName = "Control Room Door"),
+	ControlRoomPanel				UMETA(DisplayName = "Control Room Panel")
 };
 
 /** The ID for inventory items */
@@ -32,9 +30,12 @@ namespace Tags
 	constexpr char* TAG_TRIGGER_EARLY_EXIT { "EarlyExitTrigger" };
 	constexpr char* TAG_TRIGGER_RED_ALERT { "RedAlertTrigger" };
 	constexpr char* TAG_TRIGGER_MUSIC_START { "MusicStartTrigger" };
+	constexpr char* TAG_TRIGGER_2ND_MONSTER_SPAWN { "SpawnSecondMonsterTrigger" };
 
+	constexpr char* TAG_ACTOR_DOOR_REPAIR_PANEL { "BrokenPanelDoor" };
 	constexpr char* TAG_ACTOR_AMBIENT_SOUND_RED_ALERT { "RedAlertSound" };
 	constexpr char* TAG_ACTOR_RECT_LIGHT_RED_ALERT { "RedAlertRectLight" };
+	constexpr char* TAG_ACTOR_EXIT_BLOCKING_VOLUME { "ExitBlockingVolume" };
 
 	constexpr char* TAG_MONSTER_1_SPAWN_LOCATION { "Monster1Spawn" };
 	constexpr char* TAG_MONSTER_1_Waypoints { "Monster1Waypoints" };

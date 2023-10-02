@@ -105,7 +105,7 @@ void APlayGameMode::SetupItemInteractionEvents()
 	{
 		if (AInteractionItem* InteractionItem { Cast<AInteractionItem>(Actor)} )
 		{
-			InteractionItem->OnInteractedWith.AddUObject(LevelCoordinator.Get(), &ALevelCoordinator::PlayerInteractedWithItem);
+			InteractionItem->OnInteractedWith.AddDynamic(LevelCoordinator.Get(), &ALevelCoordinator::PlayerInteractedWithItem);
 		}
 	}
 }
