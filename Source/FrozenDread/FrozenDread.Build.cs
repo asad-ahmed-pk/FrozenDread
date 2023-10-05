@@ -9,6 +9,6 @@ public class FrozenDread : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput", "MetasoundEngine", "UMG", "GameplayTasks" });
-		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "AIModule", "NavigationSystem", "GameplayTags" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "AIModule", "NavigationSystem", "GameplayTags", "LevelSequence", "MovieScene" });
 	}
 }

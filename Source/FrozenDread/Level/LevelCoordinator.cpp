@@ -5,6 +5,9 @@
 
 #include "FrozenDread/Level/LevelCoordinator.h"
 
+#include "LevelSequencePlayer.h"
+#include "LevelSequenceActor.h"
+
 void ALevelCoordinator::Init(const FSubsystemCache& SubsystemCacheRef)
 {
 	SubsystemCache = SubsystemCacheRef;
@@ -15,6 +18,26 @@ void ALevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState Do
 	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::PlayerInteractedWithDoor called. Please override in child class."));
 }
 
+void ALevelCoordinator::PlayLevelSequence(ULevelSequence* LevelSequence, const TFunction<void(ULevelSequence*)>& CompletionCallback)
+{
+	if (SequencePlayer == nullptr)
+	{
+		ALevelSequenceActor* OutActor;
+		SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), LevelSequence, {}, OutActor);
+		SequenceActor = OutActor;
+	}
+	else
+	{
+		SequenceActor->SetSequence(LevelSequence);
+	}
+
+	SequencePlayer->OnFinished.AddDynamic(this, &ALevelCoordinator::LevelSequenceFinishedPlaying);
+	SequencePlayer->Play();
+
+	CurrentPlayingLevelSequence = LevelSequence;
+	LevelSequenceCallback = CompletionCallback;
+}
+
 void ALevelCoordinator::PlayerInteractedWithItem(uint8 ItemID, AInteractionItem* Item)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::PlayerInteractedWithItem called. Please override in child class."));
@@ -23,4 +46,12 @@ void ALevelCoordinator::PlayerInteractedWithItem(uint8 ItemID, AInteractionItem*
 void ALevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::OnTriggerVolumeBeginOverlap called. Please override in child class."));
+}
+
+void ALevelCoordinator::LevelSequenceFinishedPlaying()
+{
+	if (CurrentPlayingLevelSequence.IsValid())
+	{
+		LevelSequenceCallback(CurrentPlayingLevelSequence.Get());
+	}
 }

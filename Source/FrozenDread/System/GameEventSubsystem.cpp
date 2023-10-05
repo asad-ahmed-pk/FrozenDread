@@ -20,11 +20,6 @@ void UGameEventSubsystem::Setup(APlayerCharacter* PlayerCharacter)
 	Player = PlayerCharacter;
 }
 
-void UGameEventSubsystem::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState)
-{
-	
-}
-
 void UGameEventSubsystem::PlayerWasCaught() const
 {
 	// Destroy monsters

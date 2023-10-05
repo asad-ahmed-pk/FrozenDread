@@ -115,6 +115,10 @@ private:
 	/** The override lockdown objective */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Objectives", meta=(AllowPrivateAccess="true", RowType="GameObjective"))
 	FDataTableRowHandle OverrideLockDownObjective;
+
+	/** The intro level sequence asset */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Cutscenes", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<ULevelSequence> IntroSequence;
 	
 private:
 	TWeakObjectPtr<APlayerCharacter> Player;

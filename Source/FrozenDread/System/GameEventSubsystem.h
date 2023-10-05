@@ -30,9 +30,6 @@ public:
 	// Init
 	void Setup(APlayerCharacter* PlayerCharacter);
 
-	// The player interacted with the door
-	void PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState);
-
 	// The player was caught by the monster
 	void PlayerWasCaught() const;
 

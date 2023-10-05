@@ -9,6 +9,9 @@
 #include "GameFramework/Info.h"
 #include "LevelCoordinator.generated.h"
 
+class ALevelSequenceActor;
+class ULevelSequencePlayer;
+class ULevelSequence;
 class APatrolWaypointSet;
 class AInteractionItem;
 enum class EDoorLockState : uint8;
@@ -51,6 +54,9 @@ public:
 	
 	/** The player interacted with a door in the level */
 	virtual void PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState);
+	
+	/** Play the given level sequence */
+	void PlayLevelSequence(ULevelSequence* LevelSequence, const TFunction<void(ULevelSequence*)>& CompletionCallback);
 
 	/** The player interacted with an interactive item in the level */
 	UFUNCTION()
@@ -60,8 +66,18 @@ public:
 	UFUNCTION()
 	virtual void OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
+private:
+	UFUNCTION()
+	void LevelSequenceFinishedPlaying();
+
 protected:
 	FSubsystemCache SubsystemCache;
+
+private:
+	TObjectPtr<ULevelSequencePlayer> SequencePlayer;
+	TObjectPtr<ALevelSequenceActor> SequenceActor;
+	TWeakObjectPtr<ULevelSequence> CurrentPlayingLevelSequence;
+	TFunction<void(ULevelSequence*)> LevelSequenceCallback;
 };
 
 
