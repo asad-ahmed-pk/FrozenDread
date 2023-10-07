@@ -25,7 +25,6 @@
 #include "FrozenDread/System/GameObjectiveSubsystem.h"
 #include "FrozenDread/System/MusicPlayerSubsystem.h"
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
-#include "FrozenDread/UI/GameHUD.h"
 
 void AMainLevelCoordinator::BeginPlay()
 {
@@ -82,21 +81,19 @@ void AMainLevelCoordinator::SetupMonsterSpawns()
 
 void AMainLevelCoordinator::StartLevel()
 {
-	// Hide HUD and disable player control
-	AGamePlayerController* PlayerController { CastChecked<AGamePlayerController>(Player->GetController()) };
-	Player->DisableInput(PlayerController);
-	
-	// Play intro cutscene
-	check(IntroSequence);
-	PlayLevelSequence(IntroSequence, [&](ULevelSequence* Sequence)
-	{
-		// Add main objective and primary objective
-		AddObjectiveOnce(MainObjective);
-		AddObjectiveOnce(OverrideLockDownObjective);
+	// Add main objective and primary objective
+	AddObjectiveOnce(MainObjective);
+	AddObjectiveOnce(OverrideLockDownObjective);
 
-		// Enable input again
-		Player->EnableInput(PlayerController);
-	});
+	// Play intro music
+	SubsystemCache.MusicPlayerSubsystem->PlayRandomTrack(EMusicTrackType::Intro);
+}
+
+void AMainLevelCoordinator::PlayerIntroSequenceCompleted()
+{
+	// Show the intro dialogue
+	check(!IntroDialogueOptions.IsEmpty());
+	PlayDialogue(IntroDialogueOptions);
 }
 
 void AMainLevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState)
@@ -304,5 +301,4 @@ void AMainLevelCoordinator::PlayerInteractedWithItem(uint8 ItemID, AInteractionI
 			break;
 	}
 }
-
 

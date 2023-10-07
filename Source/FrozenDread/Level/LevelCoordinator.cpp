@@ -18,6 +18,11 @@ void ALevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState Do
 	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::PlayerInteractedWithDoor called. Please override in child class."));
 }
 
+void ALevelCoordinator::PlayerIntroSequenceCompleted()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::PlayerControllerSetupComplete called. Please override in child class."));
+}
+
 void ALevelCoordinator::PlayLevelSequence(ULevelSequence* LevelSequence, const TFunction<void(ULevelSequence*)>& CompletionCallback)
 {
 	if (SequencePlayer == nullptr)
@@ -37,6 +42,7 @@ void ALevelCoordinator::PlayLevelSequence(ULevelSequence* LevelSequence, const T
 	CurrentPlayingLevelSequence = LevelSequence;
 	LevelSequenceCallback = CompletionCallback;
 }
+
 
 void ALevelCoordinator::PlayerInteractedWithItem(uint8 ItemID, AInteractionItem* Item)
 {

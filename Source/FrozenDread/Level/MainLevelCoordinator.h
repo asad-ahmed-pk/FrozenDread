@@ -43,6 +43,9 @@ public:
 
 	/** The player interacted with the given item */
 	virtual void PlayerInteractedWithItem(uint8 ItemID, AInteractionItem* Item) override;
+
+	/** The player intro sequence was completed */
+	virtual void PlayerIntroSequenceCompleted() override;
 	
 public:
 	virtual void OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor) override;
@@ -60,6 +63,10 @@ private:
 
 
 private:
+	/** The list of dialogue to play when the game starts after the intro */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
+	TArray<FDataTableRowHandle> IntroDialogueOptions;
+	
 	/** The list of dialogue items that the player can say when interacting with a locked door */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
 	TArray<FDataTableRowHandle> LockedDoorDialogueOptions;
@@ -115,10 +122,6 @@ private:
 	/** The override lockdown objective */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Objectives", meta=(AllowPrivateAccess="true", RowType="GameObjective"))
 	FDataTableRowHandle OverrideLockDownObjective;
-
-	/** The intro level sequence asset */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Cutscenes", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<ULevelSequence> IntroSequence;
 	
 private:
 	TWeakObjectPtr<APlayerCharacter> Player;

@@ -15,7 +15,8 @@ enum class EMusicTrackType : uint8
 {
 	MainMenu				UMETA(DisplayName="Main Menu"),
 	Gameplay				UMETA(DisplayName="Regular Gameplay"),
-	MonsterChase			UMETA(DisplayName="Monster Chase")
+	MonsterChase			UMETA(DisplayName="Monster Chase"),
+	Intro					UMETA(DisplayName="Intro")
 };
 
 /**

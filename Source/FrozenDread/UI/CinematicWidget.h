@@ -20,10 +20,16 @@ class FROZENDREAD_API UCinematicWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	/** Play the fade in animation */
-	void PlayFadeInAnimation();
+	/** Play the fade in animation and call the callback once completed */
+	void PlayFadeInAnimation(const TFunction<void()>& Callback);
+
+protected:
+	virtual void OnAnimationFinishedPlaying(UUMGSequencePlayer& Player) override;
 
 protected:
 	UPROPERTY(Transient, meta=(BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> FadeInAnimation;
+
+private:
+	TFunction<void()> AnimationCompletionCallback;
 };

@@ -37,7 +37,7 @@ void UMusicPlayerSubsystem::PlayTrackAsset(const UMusicTrackDataAsset* TrackAsse
 	if (AudioPlayer == nullptr)
 	{
 		CurrentTrackName = TrackAsset->GetTrackName();
-		AudioPlayer = UGameplayStatics::SpawnSound2D(this, TrackAsset->GetTrack(), 1, 1, 0, nullptr, true);
+		AudioPlayer = UGameplayStatics::SpawnSound2D(this, TrackAsset->GetTrack(), 1, 1, 0, nullptr, true, false);
 		return;
 	}
 	

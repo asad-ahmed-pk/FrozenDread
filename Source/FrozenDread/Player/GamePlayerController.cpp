@@ -7,6 +7,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "FrozenDread/Game/PlayGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "FrozenDread/Gameplay/InteractionComponent.h"
@@ -61,8 +62,8 @@ void AGamePlayerController::BeginPlay()
 	UGameObjectiveSubsystem* GameObjectiveSubsystem { GetWorld()->GetSubsystem<UGameObjectiveSubsystem>() };
 	GameObjectiveSubsystem->Setup(GameHUD->GetObjectiveWidget());
 
-	// Notify that UI is now ready
-	OnPlayerUIReady.Broadcast();
+	// Play intro widget animation
+	PlayIntro();
 }
 
 void AGamePlayerController::SetMousePointerOnCenter()
@@ -123,5 +124,22 @@ void AGamePlayerController::PlayIntro()
 {
 	check(GameHUD.IsValid());
 	UCinematicWidget* CinematicWidget { GameHUD->GetCinematicWidget() };
-	CinematicWidget->PlayFadeInAnimation();
+
+	// Show the widget
+	CinematicWidget->SetVisibility(ESlateVisibility::Visible);
+
+	// Disable input
+	check(PlayerCharacter.IsValid());
+	PlayerCharacter->DisableInput(this);
+
+	// Play intro fade in animation on UI
+	CinematicWidget->PlayFadeInAnimation([&]()
+	{
+		// Enable input again
+		PlayerCharacter->EnableInput(this);
+
+		// Notify level coordinator that intro completed
+		const APlayGameMode* GameMode { CastChecked<APlayGameMode>(UGameplayStatics::GetGameMode(this)) };
+		GameMode->GetLevelCoordinator()->PlayerIntroSequenceCompleted();
+	});
 }
