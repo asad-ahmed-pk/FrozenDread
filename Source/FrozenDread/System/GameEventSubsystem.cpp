@@ -37,7 +37,7 @@ void UGameEventSubsystem::PlayerWasCaught() const
 	Player->DisableInput(PlayerController);
 
 	// Stop all music
-	UGameStatics::GetMusicSubsystem(Player.Get())->Stop();
+	UGameStatics::GetMusicSubsystem(Player.Get())->StopCurrentTrack();
 	
 	// Notify level script actor that the player was caught
 	AGameLevelScriptActor* LevelScript { CastChecked<AGameLevelScriptActor>(GetWorld()->GetLevelScriptActor()) };

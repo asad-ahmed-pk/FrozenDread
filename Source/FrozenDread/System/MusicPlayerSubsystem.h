@@ -6,6 +6,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FrozenDread/Game/MusicData.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MusicPlayerSubsystem.generated.h"
 
@@ -29,17 +30,19 @@ public:
 	void PlayRandomTrack(EMusicTrackType TrackType);
 
 	/** Stop playing music */
-	void Stop() const;
+	void StopCurrentTrack();
 
 private:
-	void PlayTrackAsset(const UMusicTrackDataAsset* TrackAsset);
+	void OnTrackFinished(UAudioComponent* Component);
+	void PlayTrack(const UMusicTrackDataAsset* TrackAsset);
 
 private:
 	UPROPERTY()
 	TObjectPtr<UAudioComponent> AudioPlayer { nullptr };
 
 private:
-	FName CurrentTrackName;
+	bool AudioWasStopped { false };
+	TWeakObjectPtr<const UMusicTrackDataAsset> CurrentlyPlayingAsset;
 	const TArray<UMusicTrackDataAsset*>* MusicTrackList;
 };
 

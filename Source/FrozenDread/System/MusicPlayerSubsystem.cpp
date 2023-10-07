@@ -28,38 +28,72 @@ void UMusicPlayerSubsystem::PlayRandomTrack(EMusicTrackType TrackType)
 	check(!TrackAssets.IsEmpty());
 
 	const int32 Index { FMath::RandRange(0, TrackAssets.Num() - 1) };
-	PlayTrackAsset(TrackAssets[Index]);
+	PlayTrack(TrackAssets[Index]);
 }
 
-void UMusicPlayerSubsystem::PlayTrackAsset(const UMusicTrackDataAsset* TrackAsset)
+void UMusicPlayerSubsystem::OnTrackFinished(UAudioComponent* Component)
 {
-	// Lazy init audio component
-	if (AudioPlayer == nullptr)
+	check(CurrentlyPlayingAsset.IsValid());
+
+	// Only switch to a new track if audio completed playing to end and was not stopped manually
+	if (AudioWasStopped)
 	{
-		CurrentTrackName = TrackAsset->GetTrackName();
-		AudioPlayer = UGameplayStatics::SpawnSound2D(this, TrackAsset->GetTrack(), 1, 1, 0, nullptr, true, false);
 		return;
 	}
-	
-	// Stop previous sound and play this one
-	check(AudioPlayer);
-	if(AudioPlayer->IsPlaying() && CurrentTrackName != TrackAsset->GetTrackName())
+
+	// Select and play next track based on the current track that stopped playing
+	switch (CurrentlyPlayingAsset->GetTrackType())
 	{
-		AudioPlayer->Stop();
+	case EMusicTrackType::Intro:
+	case EMusicTrackType::Gameplay:
+		PlayRandomTrack(EMusicTrackType::Gameplay);
+		break;
+
+	case EMusicTrackType::MainMenu:
+		PlayRandomTrack(EMusicTrackType::MainMenu);
+		break;
+
+	case EMusicTrackType::MonsterChase:
+		PlayRandomTrack(EMusicTrackType::MonsterChase);
+		break;
 	}
-
-	// Play this track
-	AudioPlayer->SetSound(TrackAsset->GetTrack());
-	AudioPlayer->Play();
-
-	CurrentTrackName = TrackAsset->GetTrackName();
 }
 
-void UMusicPlayerSubsystem::Stop() const
+void UMusicPlayerSubsystem::PlayTrack(const UMusicTrackDataAsset* TrackAsset)
+{
+	if (AudioPlayer == nullptr)
+	{
+		// Lazy init audio component
+		AudioPlayer = UGameplayStatics::SpawnSound2D(this, TrackAsset->GetTrack(), 1, 1, 0, nullptr, true, false);
+		AudioPlayer->OnAudioFinishedNative.AddUObject(this, &UMusicPlayerSubsystem::OnTrackFinished);
+	}
+	else
+	{
+		// Stop current track and switch to new track
+		if (CurrentlyPlayingAsset != TrackAsset)
+		{
+			StopCurrentTrack();
+			
+			AudioPlayer->SetSound(TrackAsset->GetTrack());
+			AudioPlayer->Play();
+
+			AudioWasStopped = false;
+		}
+	}
+
+	CurrentlyPlayingAsset = TrackAsset;
+}
+
+void UMusicPlayerSubsystem::StopCurrentTrack()
 {
 	check(AudioPlayer);
 	if (AudioPlayer->IsPlaying())
 	{
 		AudioPlayer->Stop();
+		AudioWasStopped = true;
 	}
+
+	CurrentlyPlayingAsset = nullptr;
 }
+
+
