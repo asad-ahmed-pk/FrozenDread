@@ -13,7 +13,7 @@
 const FString MAIN_MENU_LEVEL_NAME { "MainMenu" };
 
 // Settings for this subsystem
-constexpr float TEXT_TYPING_INTERVAL { 0.02F };
+constexpr float TEXT_TYPING_INTERVAL { 0.06F };
 
 bool UPlayerDialogueSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {

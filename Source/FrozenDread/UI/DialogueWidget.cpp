@@ -7,6 +7,7 @@
 
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
+#include "Kismet/GameplayStatics.h"
 
 void UDialogueWidget::NativeOnInitialized()
 {
@@ -20,6 +21,9 @@ void UDialogueWidget::SetText(const FString& Text)
 	check(DialogueTextBlock);
 	IsWaitingForInput = false;
 	DialogueTextBlock->SetText(FText::FromString(Text));
+
+	check(TextUpdateSound);
+	UGameplayStatics::PlaySound2D(this, TextUpdateSound);
 }
 
 void UDialogueWidget::SetToNextMode()

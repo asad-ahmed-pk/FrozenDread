@@ -48,6 +48,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UImage> NextIcon;
 
+	/** The sound to play when text is updated */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sound", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<USoundBase> TextUpdateSound;
+
 private:
 	bool IsWaitingForInput { false };
 	FDialogueWidgetNextEvent NextEvent;

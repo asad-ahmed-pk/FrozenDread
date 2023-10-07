@@ -95,5 +95,3 @@ void UMusicPlayerSubsystem::StopCurrentTrack()
 
 	CurrentlyPlayingAsset = nullptr;
 }
-
-
