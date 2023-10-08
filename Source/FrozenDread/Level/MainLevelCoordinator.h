@@ -66,6 +66,10 @@ private:
 	/** The list of dialogue to play when the game starts after the intro */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
 	TArray<FDataTableRowHandle> IntroDialogueOptions;
+
+	/** The dialogue to play to notify the player about flashlight use */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
+	TArray<FDataTableRowHandle> FlashLightDialogueOptions;
 	
 	/** The list of dialogue items that the player can say when interacting with a locked door */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
@@ -130,6 +134,7 @@ private:
 	TWeakObjectPtr<ARectLight> RedAlertLight;
 	TWeakObjectPtr<ATriggerVolume> ExitTriggerVolume;
 	TWeakObjectPtr<ABlockingVolume> ExitBlockingVolume;
+	TWeakObjectPtr<ATriggerVolume> FlashLightDialogueTriggerVolume;
 
 	TArray<FMonsterSpawnInfo> MonsterSpawnInfoList;
 

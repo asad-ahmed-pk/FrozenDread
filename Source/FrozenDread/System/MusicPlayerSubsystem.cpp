@@ -33,13 +33,13 @@ void UMusicPlayerSubsystem::PlayRandomTrack(EMusicTrackType TrackType)
 
 void UMusicPlayerSubsystem::OnTrackFinished(UAudioComponent* Component)
 {
-	check(CurrentlyPlayingAsset.IsValid());
-
 	// Only switch to a new track if audio completed playing to end and was not stopped manually
 	if (AudioWasStopped)
 	{
 		return;
 	}
+
+	check(CurrentlyPlayingAsset.IsValid());
 
 	// Select and play next track based on the current track that stopped playing
 	switch (CurrentlyPlayingAsset->GetTrackType())

@@ -59,6 +59,9 @@ void AMainLevelCoordinator::SetupReferences()
 	ExitTriggerVolume = UGameStatics::GetActorInLevel<ATriggerVolume>(Tags::TAG_TRIGGER_EARLY_EXIT, GetWorld());
 	ExitBlockingVolume = UGameStatics::GetActorInLevel<ABlockingVolume>(Tags::TAG_ACTOR_EXIT_BLOCKING_VOLUME, GetWorld());
 
+	// Flashlight trigger volume
+	FlashLightDialogueTriggerVolume = UGameStatics::GetActorInLevel<ATriggerVolume>(Tags::TAG_TRIGGER_FLASHLIGHT_DIALOGUE, GetWorld());
+
 	// Setup the monster spawns
 	SetupMonsterSpawns();
 }
@@ -238,14 +241,15 @@ void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor,
 			SpawnMonster(1);
 		}
 	}
-	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_MUSIC_START))
-	{
-		SubsystemCache.MusicPlayerSubsystem->PlayRandomTrack(EMusicTrackType::Gameplay);
-	}
 	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_EARLY_EXIT))
 	{
 		check(EarlyExitDialogueOptions.Num() > 0);
 		PlayDialogue(EarlyExitDialogueOptions);
+	}
+	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_FLASHLIGHT_DIALOGUE))
+	{
+		check(FlashLightDialogueOptions.Num() > 0);
+		PlayDialogue(FlashLightDialogueOptions);
 	}
 }
 

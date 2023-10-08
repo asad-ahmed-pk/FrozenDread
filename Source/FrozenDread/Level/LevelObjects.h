@@ -29,7 +29,7 @@ namespace Tags
 {
 	constexpr char* TAG_TRIGGER_EARLY_EXIT { "EarlyExitTrigger" };
 	constexpr char* TAG_TRIGGER_RED_ALERT { "RedAlertTrigger" };
-	constexpr char* TAG_TRIGGER_MUSIC_START { "MusicStartTrigger" };
+	constexpr char* TAG_TRIGGER_FLASHLIGHT_DIALOGUE { "FlashlightDialogueTrigger" };
 	constexpr char* TAG_TRIGGER_2ND_MONSTER_SPAWN { "SpawnSecondMonsterTrigger" };
 
 	constexpr char* TAG_ACTOR_DOOR_REPAIR_PANEL { "BrokenPanelDoor" };
