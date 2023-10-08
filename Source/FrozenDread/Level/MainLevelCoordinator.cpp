@@ -5,6 +5,7 @@
 
 #include "FrozenDread/Level/MainLevelCoordinator.h"
 
+#include "LevelSequence.h"
 #include "Components/RectLightComponent.h"
 #include "Engine/BlockingVolume.h"
 #include "Engine/RectLight.h"
@@ -97,6 +98,17 @@ void AMainLevelCoordinator::PlayerIntroSequenceCompleted()
 	// Show the intro dialogue
 	check(!IntroDialogueOptions.IsEmpty());
 	PlayDialogue(IntroDialogueOptions);
+}
+
+void AMainLevelCoordinator::TriggerGameOver()
+{
+	check(GameOverLevelSequence);
+	PlayLevelSequence(GameOverLevelSequence, [&](ULevelSequence* Sequence){
+		if (Sequence == GameOverLevelSequence)
+		{
+			SubsystemCache.GameEventSubsystem->DeathLevelSequenceFinished();
+		}
+	});
 }
 
 void AMainLevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockState DoorLockState)

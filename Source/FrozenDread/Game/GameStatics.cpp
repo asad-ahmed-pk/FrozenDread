@@ -10,6 +10,7 @@
 #include "FrozenDread/Player/PlayerCharacter.h"
 
 #include "AIController.h"
+#include "PlayGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 AGameLevelScriptActor* UGameStatics::GetLevelScript(const AActor* ContextActor)

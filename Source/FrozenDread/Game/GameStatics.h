@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 
 class AGameLevelScriptActor;
+class ALevelCoordinator;
 class UBlackboardComponent;
 class UMusicPlayerSubsystem;
 class UPlayerDialogueSubsystem;

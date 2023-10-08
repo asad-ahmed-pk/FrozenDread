@@ -58,6 +58,9 @@ public:
 	/** Play the given level sequence */
 	void PlayLevelSequence(ULevelSequence* LevelSequence, const TFunction<void(ULevelSequence*)>& CompletionCallback);
 
+	/** Trigger game over */
+	virtual void TriggerGameOver();
+
 	/** The player controller has completed setup */
 	virtual void PlayerIntroSequenceCompleted();
 

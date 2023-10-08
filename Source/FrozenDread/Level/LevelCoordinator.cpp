@@ -23,6 +23,11 @@ void ALevelCoordinator::PlayerIntroSequenceCompleted()
 	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::PlayerControllerSetupComplete called. Please override in child class."));
 }
 
+void ALevelCoordinator::TriggerGameOver()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::TriggerGameOver called. Please override in child class."));
+}
+
 void ALevelCoordinator::PlayLevelSequence(ULevelSequence* LevelSequence, const TFunction<void(ULevelSequence*)>& CompletionCallback)
 {
 	if (SequencePlayer == nullptr)

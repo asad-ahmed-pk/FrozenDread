@@ -8,7 +8,7 @@
 #include "FrozenDread/AI/MonsterAIController.h"
 #include "FrozenDread/System/MusicPlayerSubsystem.h"
 #include "FrozenDread/Game/GameStatics.h"
-#include "FrozenDread/Gameplay/GameLevelScriptActor.h"
+#include "FrozenDread/Game/PlayGameMode.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/UI/GameHUD.h"
 #include "FrozenDread/UI/GameOverWidget.h"
@@ -38,10 +38,10 @@ void UGameEventSubsystem::PlayerWasCaught() const
 
 	// Stop all music
 	UGameStatics::GetMusicSubsystem(Player.Get())->StopCurrentTrack();
-	
-	// Notify level script actor that the player was caught
-	AGameLevelScriptActor* LevelScript { CastChecked<AGameLevelScriptActor>(GetWorld()->GetLevelScriptActor()) };
-	LevelScript->PlayerWasCaught();
+
+	// Notify the level coordinator
+	const APlayGameMode* GameMode { CastChecked<APlayGameMode>(UGameplayStatics::GetGameMode(this)) };
+	GameMode->GetLevelCoordinator()->TriggerGameOver();
 }
 
 void UGameEventSubsystem::PlayerRequestedRestart() const

@@ -46,6 +46,9 @@ public:
 
 	/** The player intro sequence was completed */
 	virtual void PlayerIntroSequenceCompleted() override;
+
+	/** Game over */
+	virtual void TriggerGameOver() override;
 	
 public:
 	virtual void OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor) override;
@@ -126,6 +129,10 @@ private:
 	/** The override lockdown objective */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Objectives", meta=(AllowPrivateAccess="true", RowType="GameObjective"))
 	FDataTableRowHandle OverrideLockDownObjective;
+
+	/** The game over cut scene to play when the player is caught */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Cutscenes", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<ULevelSequence> GameOverLevelSequence;
 	
 private:
 	TWeakObjectPtr<APlayerCharacter> Player;
