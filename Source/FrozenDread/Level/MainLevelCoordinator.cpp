@@ -126,8 +126,19 @@ void AMainLevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockStat
 				const FDialogueItem* DialogueItem { LockedDoorDialogueOptions[Index].GetRow<FDialogueItem>(TEXT("MainLevelCoordinator::PlayerInteractedWithDoor")) };
 				SubsystemCache.DialogueSubsystem->AddDialogueItem(*DialogueItem, {});
 
-				// Add objective for keycard
-				AddObjectiveOnce(FindKeyCardObjective);
+				// Play the dialogue if the goal has not been added yet
+				const FGameObjective* KeyCardGoal { FindKeyCardObjective.GetRow<FGameObjective>("AMainLevelCoordinator::PlayerInteractedWithDoor") };
+				if (!SubsystemCache.GameObjectiveSubsystem->IsObjectiveAdded(*KeyCardGoal))
+				{
+					check(FindKeyCardGoalDialogueOptions.Num() > 0);
+
+					const TFunction<void()> CallBackFunc = [this](){
+						// Add objective for keycard
+						AddObjectiveOnce(FindKeyCardObjective);
+					};
+					
+					PlayDialogue(FindKeyCardGoalDialogueOptions, CallBackFunc);
+				}
 			}
 
 			break;
@@ -154,13 +165,13 @@ void AMainLevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockStat
 	}
 }
 
-void AMainLevelCoordinator::PlayDialogue(const TArray<FDataTableRowHandle>& DialogueRowHandles) const
+void AMainLevelCoordinator::PlayDialogue(const TArray<FDataTableRowHandle>& DialogueRowHandles, const TOptional<TFunction<void()>>& CallBackFunc) const
 {
 	for (const FDataTableRowHandle& RowHandle : DialogueRowHandles)
 	{
 		check(SubsystemCache.DialogueSubsystem);
 		const FDialogueItem* DialogueItem { RowHandle.GetRow<FDialogueItem>(TEXT("AMainLevelCoordinator::PlayDialogue")) };
-		SubsystemCache.DialogueSubsystem->AddDialogueItem(*DialogueItem, {});
+		SubsystemCache.DialogueSubsystem->AddDialogueItem(*DialogueItem, CallBackFunc);
 	}
 }
 
@@ -202,6 +213,12 @@ void AMainLevelCoordinator::MarkObjectiveCompleted(const FDataTableRowHandle& Ro
 	{
 		SubsystemCache.GameObjectiveSubsystem->CompleteObjective(*Objective);
 	}
+}
+
+void AMainLevelCoordinator::AddKeyCardGoal()
+{
+	check(!FindKeyCardObjective.IsNull());
+	AddObjectiveOnce(FindKeyCardObjective);
 }
 
 void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
@@ -248,10 +265,13 @@ void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor,
 		check(Player.IsValid());
 		check(!InventoryItemToUnlockControlRoom.IsNull());
 		const uint8 ItemID { InventoryItemToUnlockControlRoom.GetRow<FInventoryItemInfo>("AMainLevelCoordinator::OnTriggerVolumeBeginOverlap")->ID };
+		
 		if (Player->GetInventory()->HasItem(ItemID))
 		{
 			SpawnMonster(1);
 		}
+
+		TriggerVolume->Destroy();
 	}
 	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_EARLY_EXIT))
 	{
@@ -262,6 +282,7 @@ void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor,
 	{
 		check(FlashLightDialogueOptions.Num() > 0);
 		PlayDialogue(FlashLightDialogueOptions);
+		TriggerVolume->Destroy();
 	}
 }
 

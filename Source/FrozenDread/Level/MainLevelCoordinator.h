@@ -57,12 +57,13 @@ private:
 	void SetupReferences();
 	void SetupMonsterSpawns();
 	void StartLevel();
-	void PlayDialogue(const TArray<FDataTableRowHandle>& DialogueRowHandles) const;
+	void PlayDialogue(const TArray<FDataTableRowHandle>& DialogueRowHandles, const TOptional<TFunction<void()>>& CallBackFunc = NullOpt) const;
 	void PlayInteractionSoundAtLocation(USoundBase* Sound, const FVector& Location) const;
 	void SpawnMonster(int32 Index);
 	void UpdatePlayerChaseStatus(bool IsChased) const;
 	void AddObjectiveOnce(const FDataTableRowHandle& RowHandle) const;
 	void MarkObjectiveCompleted(const FDataTableRowHandle& RowHandle) const;
+	void AddKeyCardGoal();
 
 
 private:
@@ -85,6 +86,10 @@ private:
 	/** The list of dialogue items to play when the player tries to exit the game early */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
 	TArray<FDataTableRowHandle> EarlyExitDialogueOptions;
+
+	/** The list of dialogue items to play to introduce the key card goal */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
+	TArray<FDataTableRowHandle> FindKeyCardGoalDialogueOptions;
 
 	/** The inventory item that the player is expected to have for repairing the broken door */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true", RowType="InventoryItemInfo"))

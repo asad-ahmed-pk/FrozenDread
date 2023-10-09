@@ -13,7 +13,7 @@
 const FString MAIN_MENU_LEVEL_NAME { "MainMenu" };
 
 // Settings for this subsystem
-constexpr float TEXT_TYPING_INTERVAL { 0.06F };
+constexpr float TEXT_TYPING_INTERVAL { 0.04F };
 
 bool UPlayerDialogueSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -67,12 +67,12 @@ void UPlayerDialogueSubsystem::Tick(float DeltaTime)
 	}
 }
 
-void UPlayerDialogueSubsystem::AddDialogueItem(const FDialogueItem& DialogueItem, const TOptional<const FDialogueCallBack>& CallBackRef)
+void UPlayerDialogueSubsystem::AddDialogueItem(const FDialogueItem& DialogueItem, const TOptional<TFunction<void()>>& CallBackFunc)
 {
 	DialogueQueue.Enqueue(DialogueItem);
 	if (!DialogueQueue.IsEmpty() && DialogueWidget != nullptr)
 	{
-		CallBack = CallBackRef;
+		CallBack = CallBackFunc;
 		BeginDialogueMode();
 	}
 }
@@ -127,7 +127,8 @@ void UPlayerDialogueSubsystem::EndDialogueMode()
 	// ReSharper disable once CppExpressionWithoutSideEffects
 	if (CallBack.IsSet())
 	{
-		CallBack->ExecuteIfBound();
+		const auto CallBackFunc { CallBack.GetValue() };
+		CallBackFunc();
 	}
 }
 

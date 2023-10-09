@@ -48,7 +48,7 @@ public:
 	void Setup(UDialogueWidget* DialogueWidgetPtr, AGamePlayerController* LocalPlayerController);
 
 	/** Add text to the dialogue queue */
-	void AddDialogueItem(const FDialogueItem& DialogueItem, const TOptional<const FDialogueCallBack>& CallBackRef);
+	void AddDialogueItem(const FDialogueItem& DialogueItem, const TOptional<TFunction<void()>>& CallBackFunc = NullOpt);
 
 private:
 	void BeginDialogueMode();
@@ -60,7 +60,7 @@ private:
 	TQueue<FDialogueItem, EQueueMode::Mpsc> DialogueQueue;
 	UDialogueWidget* DialogueWidget { nullptr };
 	FDialogueItem LastPlayedItem;
-	TOptional<const FDialogueCallBack> CallBack {};
+	TOptional<TFunction<void()>> CallBack {};
 
 	TWeakObjectPtr<AGamePlayerController> PlayerController;
 
