@@ -1,15 +1,29 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//
+// BaseGameInstance.cpp
+// Implementation of the UBaseGameInstance class.
+//
 
 
 #include "FrozenDread/Game/BaseGameInstance.h"
 
+#include "Blueprint/UserWidget.h"
+#include "FrozenDread/Level/LevelObjects.h"
 #include "FrozenDread/System/GameSettingsSubsystem.h"
+#include "FrozenDread/System/GameUISubsystem.h"
 #include "FrozenDread/System/MusicPlayerSubsystem.h"
+#include "Kismet/GameplayStatics.h"
+#include "Misc/MessageDialog.h"
+
 
 void UBaseGameInstance::OnStart()
 {
 	Super::OnStart();
+	SetupSubsystems();
+	SetupGameUI();
+}
 
+void UBaseGameInstance::SetupSubsystems() const
+{
 	// Setup music subsystem
 	UMusicPlayerSubsystem* MusicPlayerSubsystem { GetSubsystem<UMusicPlayerSubsystem>() };
 	check(MusicPlayerSubsystem);
@@ -17,9 +31,47 @@ void UBaseGameInstance::OnStart()
 
 	// Setup settings subsystem
 	UGameSettingsSubsystem* SettingsSubsystem { GetSubsystem<UGameSettingsSubsystem>() };
-	
 	check(SettingsSubsystem);
 	check(PlayerMappableInputConfig);
-	
 	SettingsSubsystem->Init(PlayerMappableInputConfig);
+}
+
+void UBaseGameInstance::SetupGameUI()
+{
+	// Setup the loading screen widget
+	if (LoadingScreenWidgetClass)
+	{
+		LoadingScreenWidget = CreateWidget<UUserWidget>(this, LoadingScreenWidgetClass);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("LoadingScreenWidgetClass is not set on BaseGameInstance"));
+	}
+
+	// Setup Game UI Subsystem
+	GameUISubsystem =  GetSubsystem<UGameUISubsystem>();
+	check(GameUISubsystem.IsValid());
+	GameUISubsystem->Init(LoadingScreenWidget);
+}
+
+void UBaseGameInstance::StartGameRequested() const
+{
+	// Show loading screen
+	check(GameUISubsystem.IsValid());
+	auto CallBack = [&]{
+		UGameplayStatics::OpenLevel(this, LevelNames::GAME);
+	};
+	GameUISubsystem->ShowLoadingScreen(CallBack);
+}
+
+void UBaseGameInstance::QuitGameRequested()
+{
+	const FText Message { FText::FromString("Are you sure you want to quit") };
+	const FText Title { FText::FromString("Quit Game") };
+	const EAppReturnType::Type ReturnType { FMessageDialog::Open(EAppMsgType::YesNo, Message, &Title) };
+
+	if (ReturnType == EAppReturnType::Yes)
+	{
+		FGenericPlatformMisc::RequestExit(false);
+	}
 }

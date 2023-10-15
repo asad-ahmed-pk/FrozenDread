@@ -9,6 +9,7 @@
 #include "FrozenDread/System/MusicPlayerSubsystem.h"
 #include "FrozenDread/Game/GameStatics.h"
 #include "FrozenDread/Game/PlayGameMode.h"
+#include "FrozenDread/Level/LevelObjects.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/UI/GameHUD.h"
 #include "FrozenDread/UI/GameOverWidget.h"
@@ -50,17 +51,17 @@ void UGameEventSubsystem::PlayerRequestedRestart() const
 	const FInputModeGameOnly InputMode;
 	Player->GetController<APlayerController>()->SetInputMode(InputMode);
 	Player->GetController<APlayerController>()->SetShowMouseCursor(false);
-	
-	// TODO: Use a checkpoint system to load the level
+
+	// Replay this level
 	const FName CurrentLevelName { UGameplayStatics::GetCurrentLevelName(this) };
 	UGameplayStatics::OpenLevel(this, CurrentLevelName);
 }
 
 void UGameEventSubsystem::PlayerRequestedLevelQuit() const
 {
-	// TODO: Go back to the main menu once main menu is implemented
+	// Go back to main menu
 	check(Player.IsValid());
-	UKismetSystemLibrary::QuitGame(this, Player->GetController<APlayerController>(), EQuitPreference::Quit, false);
+	UGameplayStatics::OpenLevel(this, LevelNames::MAIN_MENU);
 }
 
 void UGameEventSubsystem::PlayerIsBeingChased(bool IsChased)

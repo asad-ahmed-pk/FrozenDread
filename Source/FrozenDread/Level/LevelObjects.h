@@ -5,6 +5,13 @@
 
 #pragma once
 
+/** Level Names */
+namespace LevelNames
+{
+	constexpr char* MAIN_MENU { "MainMenu" };
+	constexpr char* GAME { "SciFiBase" };
+}
+
 /** ID for gameplay / level objects that can be interacted with */
 UENUM(BlueprintType)
 enum class EInteractionItemID : uint8
