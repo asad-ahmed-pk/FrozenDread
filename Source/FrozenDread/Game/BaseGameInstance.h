@@ -7,6 +7,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MainUserInterface.h"
 #include "Engine/GameInstance.h"
 #include "BaseGameInstance.generated.h"
 
@@ -29,6 +30,9 @@ public:
 	/** Player requested to quit the game */
 	static void QuitGameRequested();
 
+	/** Player requests game options to be displayed */
+	void OptionsMenuRequested() const;
+
 protected:
 	virtual void OnStart() override;
 
@@ -46,9 +50,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Settings", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UPlayerMappableInputConfig> PlayerMappableInputConfig;
 
-	/** The loading screen widget class to use for the loading screen */
+	/** The set of widget classes to use for the game (excludes in-game UI such as inventory) */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="UI", meta=(AllowPrivateAccess="true"))
-	TSubclassOf<UUserWidget> LoadingScreenWidgetClass;
+	FGameWidgetClass WidgetBlueprintClasses;
 
 private:
 	TWeakObjectPtr<UGameUISubsystem> GameUISubsystem;

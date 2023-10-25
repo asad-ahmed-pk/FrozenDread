@@ -6,7 +6,6 @@
 
 #include "FrozenDread/Game/BaseGameInstance.h"
 
-#include "Blueprint/UserWidget.h"
 #include "FrozenDread/Level/LevelObjects.h"
 #include "FrozenDread/System/GameSettingsSubsystem.h"
 #include "FrozenDread/System/GameUISubsystem.h"
@@ -38,20 +37,10 @@ void UBaseGameInstance::SetupSubsystems() const
 
 void UBaseGameInstance::SetupGameUI()
 {
-	// Setup the loading screen widget
-	if (LoadingScreenWidgetClass)
-	{
-		LoadingScreenWidget = CreateWidget<UUserWidget>(this, LoadingScreenWidgetClass);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("LoadingScreenWidgetClass is not set on BaseGameInstance"));
-	}
-
 	// Setup Game UI Subsystem
 	GameUISubsystem =  GetSubsystem<UGameUISubsystem>();
 	check(GameUISubsystem.IsValid());
-	GameUISubsystem->Init(LoadingScreenWidget);
+	GameUISubsystem->Init(WidgetBlueprintClasses);
 }
 
 void UBaseGameInstance::StartGameRequested() const
@@ -74,4 +63,10 @@ void UBaseGameInstance::QuitGameRequested()
 	{
 		FGenericPlatformMisc::RequestExit(false);
 	}
+}
+
+void UBaseGameInstance::OptionsMenuRequested() const
+{
+	check(GameUISubsystem.IsValid());
+	GameUISubsystem->ShowGameOptions();
 }

@@ -40,4 +40,7 @@ private:
 
 	UFUNCTION()
 	void EndGameButtonPressed();
+
+	UFUNCTION()
+	void OptionsButtonPressed();
 };

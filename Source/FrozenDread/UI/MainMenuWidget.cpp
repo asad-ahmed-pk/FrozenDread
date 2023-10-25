@@ -23,6 +23,11 @@ void UMainMenuWidget::NativeConstruct()
 	{
 		EndGameButton->OnClicked.AddDynamic(this, &UMainMenuWidget::EndGameButtonPressed);
 	}
+
+	if (OptionsButton)
+	{
+		OptionsButton->OnClicked.AddDynamic(this, &UMainMenuWidget::OptionsButtonPressed);
+	}
 }
 
 void UMainMenuWidget::StartGameButtonPressed()
@@ -34,4 +39,10 @@ void UMainMenuWidget::StartGameButtonPressed()
 void UMainMenuWidget::EndGameButtonPressed()
 {
 	UBaseGameInstance::QuitGameRequested();
+}
+
+void UMainMenuWidget::OptionsButtonPressed()
+{
+	const UBaseGameInstance* GameInstance { CastChecked<UBaseGameInstance>(UGameplayStatics::GetGameInstance(this)) };
+	GameInstance->OptionsMenuRequested();
 }
