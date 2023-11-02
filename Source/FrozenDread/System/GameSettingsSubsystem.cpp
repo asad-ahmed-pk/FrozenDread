@@ -7,6 +7,7 @@
 #include "FrozenDread/Game/BaseSaveGame.h"
 
 #include "PlayerMappableInputConfig.h"
+#include "GameFramework/GameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
 
 constexpr char* SAVE_SLOT_NAME { "DefaultSaveSlot" };
@@ -66,4 +67,45 @@ void UGameSettingsSubsystem::UpdateKeyMappings(const TArray<FEnhancedActionKeyMa
 	check(BaseSaveGame);
 	BaseSaveGame->KeyMappings = Mappings;
 	SaveGame(BaseSaveGame);
+}
+
+GameSettings::FGraphicsOptions UGameSettingsSubsystem::GetGraphicsOptions()
+{
+	// Get the game settings from disk
+	UGameUserSettings* GameUserSettings { UGameUserSettings::GetGameUserSettings() };
+	GameUserSettings->LoadSettings();
+
+	// Create simple graphic options
+	GameSettings::FGraphicsOptions Options;
+
+	// Lumen
+	Options.EnableLumen = GameUserSettings->GetGlobalIlluminationQuality() > static_cast<int32>(GameSettings::EScale::SCALE_MEDIUM);
+
+	// Overall graphics quality
+	Options.GraphicsQuality = static_cast<GameSettings::EScale>(GameUserSettings->GetOverallScalabilityLevel());
+
+	// Screen Resolution
+	Options.ScreenResolution = GameUserSettings->GetScreenResolution();
+
+	return Options;
+}
+
+void UGameSettingsSubsystem::ApplyGraphicsOptions(const GameSettings::FGraphicsOptions& GraphicsOptions)
+{
+	// Get the game settings from disk
+	UGameUserSettings* GameUserSettings { UGameUserSettings::GetGameUserSettings() };
+	GameUserSettings->LoadSettings();
+
+	// Overall graphics quality
+	GameUserSettings->SetOverallScalabilityLevel(static_cast<int32>(GraphicsOptions.GraphicsQuality));
+
+	// Lumen
+	GameSettings::EScale LightingScale { GraphicsOptions.EnableLumen ? GameSettings::EScale::SCALE_EPIC : GameSettings::EScale::SCALE_MEDIUM };
+	GameUserSettings->SetGlobalIlluminationQuality(static_cast<int32>(LightingScale));
+
+	// Screen resolution
+	GameUserSettings->SetScreenResolution(GraphicsOptions.ScreenResolution);
+
+	// Save to disk
+	GameUserSettings->ApplySettings(false);
 }

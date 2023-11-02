@@ -21,6 +21,11 @@ void UOptionsMenuWidget::NativeConstruct()
 	{
 		BackButton->OnClicked.AddDynamic(this, &UOptionsMenuWidget::BackButtonClicked);
 	}
+
+	if (SettingsButton)
+	{
+		SettingsButton->OnClicked.AddDynamic(this, &UOptionsMenuWidget::SettingsButtonClicked);
+	}
 }
 
 FReply UOptionsMenuWidget::NativeOnKeyUp(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
@@ -41,4 +46,9 @@ void UOptionsMenuWidget::KeyBindsButtonClicked()
 void UOptionsMenuWidget::BackButtonClicked()
 {
 	OnBackButtonClicked.Broadcast();
+}
+
+void UOptionsMenuWidget::SettingsButtonClicked()
+{
+	OnSettingsButtonClicked.Broadcast();
 }

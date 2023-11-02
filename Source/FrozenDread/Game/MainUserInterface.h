@@ -27,4 +27,8 @@ struct FGameWidgetClass
 	/** The widget to use for the key binds UI */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UUserWidget> KeyBindsWidgetClass;
+
+	/** The widget to use for the game settings */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UUserWidget> GameSettingsWidgetClass;
 };

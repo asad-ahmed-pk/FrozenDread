@@ -9,6 +9,8 @@
 #include "EnhancedActionKeyMapping.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 
+#include "FrozenDread/Game/GameOptions.h"
+
 #include "GameSettingsSubsystem.generated.h"
 
 class UBaseSaveGame;
@@ -32,6 +34,12 @@ public:
 
 	/** Update and save the keymap settings */
 	static void UpdateKeyMappings(const TArray<FEnhancedActionKeyMapping>& Mappings);
+
+	/** Get the current saved graphics options for the game */
+	static GameSettings::FGraphicsOptions GetGraphicsOptions();
+
+	/** Apply and save the graphics options for the game with the following settings */
+	static void ApplyGraphicsOptions(const GameSettings::FGraphicsOptions& GraphicsOptions);
 
 private:
 	/** Load the keymap */

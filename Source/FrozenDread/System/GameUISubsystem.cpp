@@ -6,11 +6,13 @@
 #include "GameUISubsystem.h"
 
 #include "Blueprint/UserWidget.h"
+#include "FrozenDread/UI/GameSettingsWidget.h"
 #include "FrozenDread/UI/KeyBindsWidget.h"
 #include "FrozenDread/UI/OptionsMenuWidget.h"
 
 constexpr int32 VIEW_PORT_ORDER_OPTIONS_MENU { 10 };
 constexpr int32 VIEW_PORT_ORDER_KEYBINDS_MENU { 11 };
+constexpr int32 VIEW_PORT_ORDER_SETTINGS_SCREEN { 12 };
 constexpr int32 VIEW_PORT_ORDER_LOADING_SCREEN { 20 };
 
 void UGameUISubsystem::Init(const FGameWidgetClass& WidgetClasses)
@@ -35,6 +37,7 @@ void UGameUISubsystem::CreateWidgets(const FGameWidgetClass& WidgetClass)
 	{
 		OptionsWidget = CreateWidgetOfClass<UOptionsMenuWidget>(WidgetClass.GameOptionsWidgetClass, VIEW_PORT_ORDER_OPTIONS_MENU);
 		OptionsWidget->OnKeyBindButtonClicked.AddUObject(this, &UGameUISubsystem::ShowKeyBindsWidget);
+		OptionsWidget->OnSettingsButtonClicked.AddUObject(this, &UGameUISubsystem::ShowSettingsWidget);
 		OptionsWidget->OnBackButtonClicked.AddUObject(this, &UGameUISubsystem::NavigateBack);
 	}
 
@@ -43,6 +46,13 @@ void UGameUISubsystem::CreateWidgets(const FGameWidgetClass& WidgetClass)
 	{
 		KeyBindsWidget = CreateWidgetOfClass<UKeyBindsWidget>(WidgetClass.KeyBindsWidgetClass, VIEW_PORT_ORDER_KEYBINDS_MENU);
 		KeyBindsWidget->OnCloseButtonClicked.AddUObject(this, &UGameUISubsystem::NavigateBack);
+	}
+
+	// Game settings widget
+	if (WidgetClass.GameSettingsWidgetClass)
+	{
+		GameSettingsWidget = CreateWidgetOfClass<UGameSettingsWidget>(WidgetClass.GameSettingsWidgetClass, VIEW_PORT_ORDER_SETTINGS_SCREEN);
+		GameSettingsWidget->OnBackButtonClicked.AddUObject(this, &UGameUISubsystem::NavigateBack);
 	}
 }
 
@@ -88,6 +98,12 @@ void UGameUISubsystem::ShowKeyBindsWidget()
 {
 	check(KeyBindsWidget.IsValid());
 	PushWidgetOntoStack(KeyBindsWidget);
+}
+
+void UGameUISubsystem::ShowSettingsWidget()
+{
+	check(GameSettingsWidget.IsValid());
+	PushWidgetOntoStack(GameSettingsWidget);
 }
 
 void UGameUISubsystem::PushWidgetOntoStack(const TWeakObjectPtr<UUserWidget>& Widget)

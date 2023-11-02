@@ -14,8 +14,10 @@
 
 #include "GameUISubsystem.generated.h"
 
+class UGameSettingsWidget;
 class UKeyBindsWidget;
 class UOptionsMenuWidget;
+
 /**
  * Subsystem responsible for the main game UI (main menu, options screen, etc...) and NOT the in-game player UI (HUD).
  */
@@ -43,12 +45,11 @@ public:
 private:
 	void OnMapPostLoad(UWorld* World);
 	void ShowKeyBindsWidget();
+	void ShowSettingsWidget();
 	void PushWidgetOntoStack(const TWeakObjectPtr<UUserWidget>& Widget);
 	void NavigateBack();
 
 private:
-	//template <typename WidgetType, typename = std::enable_if_t<std::is_base_of_v<UUserWidget, WidgetType>>>
-
 	template <typename WidgetType, typename = TEnableIf<TIsDerivedFrom<WidgetType, UUserWidget>::IsDerived, WidgetType>>
 	WidgetType* CreateWidgetOfClass(const TSubclassOf<UUserWidget>& WidgetClass, int32 ZOrder) const
 	{
@@ -64,6 +65,7 @@ private:
 	TArray<TWeakObjectPtr<UUserWidget>> NavigationStack;
 
 	TWeakObjectPtr<UOptionsMenuWidget> OptionsWidget;
+	TWeakObjectPtr<UGameSettingsWidget> GameSettingsWidget;
 	TWeakObjectPtr<UKeyBindsWidget> KeyBindsWidget;
 	TWeakObjectPtr<UUserWidget> LoadingScreenWidget;
 };

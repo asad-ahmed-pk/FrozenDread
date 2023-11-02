@@ -13,6 +13,7 @@
 class UButton;
 
 DECLARE_MULTICAST_DELEGATE(FKeyBindsOptionClicked);
+DECLARE_MULTICAST_DELEGATE(FSettingsButtonClicked);
 
 /**
  * Widget for displaying the top level game options for the user to customise.
@@ -32,14 +33,21 @@ private:
 
 	UFUNCTION()
 	void BackButtonClicked();
+
+	UFUNCTION()
+	void SettingsButtonClicked();
 	
 public:
 	FKeyBindsOptionClicked OnKeyBindButtonClicked;
+	FSettingsButtonClicked OnSettingsButtonClicked;
 	FBackButtonClickDelegate OnBackButtonClicked;
 
 protected:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UButton> KeyBindsButton;
+
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UButton> SettingsButton;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UButton> BackButton;
