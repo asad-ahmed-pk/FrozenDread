@@ -64,9 +64,3 @@ void UBaseGameInstance::QuitGameRequested()
 		FGenericPlatformMisc::RequestExit(false);
 	}
 }
-
-void UBaseGameInstance::OptionsMenuRequested() const
-{
-	check(GameUISubsystem.IsValid());
-	GameUISubsystem->ShowGameOptions();
-}

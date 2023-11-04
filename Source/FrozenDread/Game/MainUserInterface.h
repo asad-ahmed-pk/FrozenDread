@@ -31,4 +31,8 @@ struct FGameWidgetClass
 	/** The widget to use for the game settings */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UUserWidget> GameSettingsWidgetClass;
+
+	/** The widget to use for the game credits screen */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UUserWidget> CreditsWidgetClass;
 };

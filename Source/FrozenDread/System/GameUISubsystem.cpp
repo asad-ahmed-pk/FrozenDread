@@ -6,6 +6,7 @@
 #include "GameUISubsystem.h"
 
 #include "Blueprint/UserWidget.h"
+#include "FrozenDread/UI/CreditsWidget.h"
 #include "FrozenDread/UI/GameSettingsWidget.h"
 #include "FrozenDread/UI/KeyBindsWidget.h"
 #include "FrozenDread/UI/OptionsMenuWidget.h"
@@ -13,6 +14,7 @@
 constexpr int32 VIEW_PORT_ORDER_OPTIONS_MENU { 10 };
 constexpr int32 VIEW_PORT_ORDER_KEYBINDS_MENU { 11 };
 constexpr int32 VIEW_PORT_ORDER_SETTINGS_SCREEN { 12 };
+constexpr int32 VIEW_PORT_ORDER_CREDITS_SCREEN { 13 };
 constexpr int32 VIEW_PORT_ORDER_LOADING_SCREEN { 20 };
 
 void UGameUISubsystem::Init(const FGameWidgetClass& WidgetClasses)
@@ -54,6 +56,13 @@ void UGameUISubsystem::CreateWidgets(const FGameWidgetClass& WidgetClass)
 		GameSettingsWidget = CreateWidgetOfClass<UGameSettingsWidget>(WidgetClass.GameSettingsWidgetClass, VIEW_PORT_ORDER_SETTINGS_SCREEN);
 		GameSettingsWidget->OnBackButtonClicked.AddUObject(this, &UGameUISubsystem::NavigateBack);
 	}
+
+	// Credits widget
+	if (WidgetClass.CreditsWidgetClass)
+	{
+		CreditsWidget = CreateWidgetOfClass<UCreditsWidget>(WidgetClass.CreditsWidgetClass, VIEW_PORT_ORDER_CREDITS_SCREEN);
+		CreditsWidget->OnBackButtonClicked.AddUObject(this, &UGameUISubsystem::NavigateBack);
+	}
 }
 
 void UGameUISubsystem::ShowLoadingScreen(const TFunction<void()>& CompletionCallBack)
@@ -86,6 +95,12 @@ void UGameUISubsystem::ShowGameOptions()
 {
 	check(OptionsWidget.IsValid());
 	PushWidgetOntoStack(OptionsWidget);
+}
+
+void UGameUISubsystem::ShowCredits()
+{
+	check(CreditsWidget.IsValid());
+	PushWidgetOntoStack(CreditsWidget);
 }
 
 void UGameUISubsystem::OnMapPostLoad(UWorld* World)

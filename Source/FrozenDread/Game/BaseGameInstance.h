@@ -30,9 +30,6 @@ public:
 	/** Player requested to quit the game */
 	static void QuitGameRequested();
 
-	/** Player requests game options to be displayed */
-	void OptionsMenuRequested() const;
-
 protected:
 	virtual void OnStart() override;
 

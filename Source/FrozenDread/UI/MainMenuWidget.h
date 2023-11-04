@@ -34,6 +34,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	TObjectPtr<UButton> OptionsButton;
 
+	/** The button to show the credits screen */
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	TObjectPtr<UButton> CreditsButton;
+
 private:
 	UFUNCTION()
 	void StartGameButtonPressed();
@@ -43,4 +47,7 @@ private:
 
 	UFUNCTION()
 	void OptionsButtonPressed();
+
+	UFUNCTION()
+	void CreditsButtonPressed();
 };

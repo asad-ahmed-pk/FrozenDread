@@ -7,8 +7,10 @@
 #include "MainMenuWidget.h"
 
 #include "Components/Button.h"
-#include "FrozenDread/Game/BaseGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+
+#include "FrozenDread/Game/BaseGameInstance.h"
+#include "FrozenDread/System/GameUISubsystem.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
@@ -28,6 +30,11 @@ void UMainMenuWidget::NativeConstruct()
 	{
 		OptionsButton->OnClicked.AddDynamic(this, &UMainMenuWidget::OptionsButtonPressed);
 	}
+
+	if (CreditsButton)
+	{
+		CreditsButton->OnClicked.AddDynamic(this, &UMainMenuWidget::CreditsButtonPressed);
+	}
 }
 
 void UMainMenuWidget::StartGameButtonPressed()
@@ -44,5 +51,13 @@ void UMainMenuWidget::EndGameButtonPressed()
 void UMainMenuWidget::OptionsButtonPressed()
 {
 	const UBaseGameInstance* GameInstance { CastChecked<UBaseGameInstance>(UGameplayStatics::GetGameInstance(this)) };
-	GameInstance->OptionsMenuRequested();
+	UGameUISubsystem* GameUISubsystem { GameInstance->GetSubsystem<UGameUISubsystem>() };
+	GameUISubsystem->ShowGameOptions();
+}
+
+void UMainMenuWidget::CreditsButtonPressed()
+{
+	const UBaseGameInstance* GameInstance { CastChecked<UBaseGameInstance>(UGameplayStatics::GetGameInstance(this)) };
+	UGameUISubsystem* GameUISubsystem { GameInstance->GetSubsystem<UGameUISubsystem>() };
+	GameUISubsystem->ShowCredits();
 }

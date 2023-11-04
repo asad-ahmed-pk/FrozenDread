@@ -14,6 +14,7 @@
 
 #include "GameUISubsystem.generated.h"
 
+class UCreditsWidget;
 class UGameSettingsWidget;
 class UKeyBindsWidget;
 class UOptionsMenuWidget;
@@ -42,6 +43,9 @@ public:
 	/** Show the game options UI */
 	void ShowGameOptions();
 
+	/** Show the credits UI */
+	void ShowCredits();
+
 private:
 	void OnMapPostLoad(UWorld* World);
 	void ShowKeyBindsWidget();
@@ -67,5 +71,6 @@ private:
 	TWeakObjectPtr<UOptionsMenuWidget> OptionsWidget;
 	TWeakObjectPtr<UGameSettingsWidget> GameSettingsWidget;
 	TWeakObjectPtr<UKeyBindsWidget> KeyBindsWidget;
+	TWeakObjectPtr<UCreditsWidget> CreditsWidget;
 	TWeakObjectPtr<UUserWidget> LoadingScreenWidget;
 };
