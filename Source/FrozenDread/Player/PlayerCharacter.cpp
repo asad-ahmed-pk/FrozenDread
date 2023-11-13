@@ -122,6 +122,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Flashlight toggle action
 		EnhancedInputComponent->BindAction(FlashLightAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ToggleFlashLight);
+
+		// Show / hide main menu
+		EnhancedInputComponent->BindAction(MainMenuAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ToggleMainMenu);
 	}
 }
 
@@ -170,6 +173,17 @@ void APlayerCharacter::ToggleFlashLight(const FInputActionValue& Value)
 {
 	check(FlashLightComponent);
 	FlashLightComponent->Toggle();
+}
+
+void APlayerCharacter::ToggleMainMenu(const FInputActionValue& Value)
+{
+	static bool IsActive { false };
+	AGamePlayerController* PlayerController { GetController<AGamePlayerController>() };
+	if (PlayerController)
+	{
+		IsActive = !IsActive;
+		PlayerController->SetMainMenuIsActive(IsActive);
+	}
 }
 
 //////////////////////////////////////////////// OTHER ////////////////////////////////////////////////

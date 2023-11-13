@@ -63,6 +63,9 @@ private:
 	/** Called for pressing the 'toggle flashlight' key */
 	void ToggleFlashLight(const FInputActionValue& Value);
 
+	/** Called for showing / hiding the main menu */
+	void ToggleMainMenu(const FInputActionValue& Value);
+
 private:
 	/** Main FPS Camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
@@ -95,6 +98,10 @@ private:
 	/** Use Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> UseAction;
+
+	/** Main Menu / Pause Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess="true"))
+	TObjectPtr<UInputAction> MainMenuAction;
 
 	/** Flashlight Toggle Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input", meta=(AllowPrivateAccess = "true"))

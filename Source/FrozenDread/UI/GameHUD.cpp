@@ -8,6 +8,7 @@
 #include "CinematicWidget.h"
 #include "GameOverWidget.h"
 #include "ObjectiveWidget.h"
+#include "PauseMenuWidget.h"
 #include "FrozenDread/UI/InteractionWidget.h"
 #include "FrozenDread/UI/InventoryWidget.h"
 #include "FrozenDread/UI/DialogueWidget.h"
@@ -48,10 +49,16 @@ void AGameHUD::InitAndAddToViewport()
 	DialogueWidget->AddToViewport(3);
 	DialogueWidget->SetVisibility(ESlateVisibility::Collapsed);
 
+	// Pause Menu Widget
+	check(PauseMenuWidgetClass);
+	PauseMenuWidget = CreateWidget<UUserWidget>(PlayerController, PauseMenuWidgetClass);
+	PauseMenuWidget->AddToViewport(4);
+	PauseMenuWidget->SetVisibility(ESlateVisibility::Collapsed);
+
 	// Game Over Widget
 	check(GameOverWidgetClass);
 	GameOverWidget = CreateWidget<UUserWidget>(PlayerController, GameOverWidgetClass);
-	GameOverWidget->AddToViewport(4);
+	GameOverWidget->AddToViewport(5);
 	GameOverWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
@@ -83,6 +90,12 @@ UGameOverWidget* AGameHUD::GetGameOverWidget() const
 {
 	check(GameOverWidget);
 	return Cast<UGameOverWidget>(GameOverWidget);
+}
+
+UPauseMenuWidget* AGameHUD::GetPauseMenuWidget() const
+{
+	check(PauseMenuWidget);
+	return Cast<UPauseMenuWidget>(PauseMenuWidget);
 }
 
 UObjectiveWidget* AGameHUD::GetObjectiveWidget() const

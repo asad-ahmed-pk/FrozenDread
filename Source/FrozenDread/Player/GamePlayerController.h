@@ -36,6 +36,9 @@ public:
 
 	/** Set the mouse pointer on the center of the view port */
 	void SetMousePointerOnCenter();
+
+	/** Display the main menu or back to the gameplay */
+	void SetMainMenuIsActive(bool IsActive);
 	
 	/** Get a reference to the player's inventory system */
 	FORCEINLINE UInventory* GetInventory() const { return Inventory; }

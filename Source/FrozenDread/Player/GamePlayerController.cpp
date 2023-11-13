@@ -19,6 +19,7 @@
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
 #include "FrozenDread/System/GameObjectiveSubsystem.h"
 #include "FrozenDread/UI/CinematicWidget.h"
+#include "FrozenDread/UI/PauseMenuWidget.h"
 
 AGamePlayerController::AGamePlayerController() : Inventory(CreateDefaultSubobject<UInventory>(TEXT("Inventory")))
 {
@@ -74,6 +75,28 @@ void AGamePlayerController::SetMousePointerOnCenter()
 		const FIntPoint ViewportSize {Viewport->GetSizeXY() };
 		Viewport->SetMouse(ViewportSize.X / 2, ViewportSize.Y / 2);
 	} 
+}
+
+void AGamePlayerController::SetMainMenuIsActive(bool IsActive)
+{
+	// Set input mode
+	if (IsActive)
+	{
+		SetInputMode(FInputModeUIOnly{});
+		SetShowMouseCursor(true);
+	}
+	else
+	{
+		SetInputMode(FInputModeGameOnly{});
+		SetShowMouseCursor(false);
+	}
+
+	// Show or hide pause menu
+	check(GameHUD.IsValid());
+	GameHUD->GetPauseMenuWidget()->SetVisibility(IsActive ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+
+	// Pause / unpause game
+	UGameplayStatics::SetGamePaused(this, IsActive);
 }
 
 void AGamePlayerController::SetupInputComponent()

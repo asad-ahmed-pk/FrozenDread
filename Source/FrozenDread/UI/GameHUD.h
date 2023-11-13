@@ -9,6 +9,7 @@
 #include "GameFramework/HUD.h"
 #include "GameHUD.generated.h"
 
+class UPauseMenuWidget;
 class UUserWidget;
 class UInteractionWidget;
 class UInventoryWidget;
@@ -44,6 +45,9 @@ public:
 	/** Get the reference to the game over Widget */
 	UGameOverWidget* GetGameOverWidget() const;
 
+	/** Get the reference to the pause menu Widget */
+	UPauseMenuWidget* GetPauseMenuWidget() const;
+
 	/** Get the reference to the objectives Widget */
 	UObjectiveWidget* GetObjectiveWidget() const;
 
@@ -62,6 +66,10 @@ protected:
 	/** The BP class to use for the dialogue widget */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widgets")
 	TSubclassOf<UUserWidget> DialogueWidgetClass;
+
+	/** The BP class to use for the pause menu widget */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widgets")
+	TSubclassOf<UUserWidget> PauseMenuWidgetClass;
 
 	/** The BP class to use for the game over widget */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widgets")
@@ -84,6 +92,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> DialogueWidget;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> PauseMenuWidget;
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> GameOverWidget;

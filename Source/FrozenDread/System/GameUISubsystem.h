@@ -68,6 +68,8 @@ private:
 	FTimerHandle TimerHandle;
 	TArray<TWeakObjectPtr<UUserWidget>> NavigationStack;
 
+	FGameWidgetClass GameWidgetClasses;
+
 	TWeakObjectPtr<UOptionsMenuWidget> OptionsWidget;
 	TWeakObjectPtr<UGameSettingsWidget> GameSettingsWidget;
 	TWeakObjectPtr<UKeyBindsWidget> KeyBindsWidget;

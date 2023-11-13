@@ -23,6 +23,7 @@ void UGameUISubsystem::Init(const FGameWidgetClass& WidgetClasses)
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UGameUISubsystem::OnMapPostLoad);
 
 	// Create game widgets
+	GameWidgetClasses = WidgetClasses;
 	CreateWidgets(WidgetClasses);
 }
 
@@ -107,6 +108,9 @@ void UGameUISubsystem::OnMapPostLoad(UWorld* World)
 {
 	// Hide loading screen
 	HideLoadingScreen();
+
+	// Re-create widgets since new map was loaded
+	CreateWidgets(GameWidgetClasses);
 }
 
 void UGameUISubsystem::ShowKeyBindsWidget()
