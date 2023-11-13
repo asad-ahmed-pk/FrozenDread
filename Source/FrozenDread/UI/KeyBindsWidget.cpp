@@ -13,6 +13,7 @@
 #include "FrozenDread/UI/KeyBindOptionWidget.h"
 #include "FrozenDread/System/GameSettingsSubsystem.h"
 #include "FrozenDread/System/GameUISubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
 void UKeyBindsWidget::NativeConstruct()
 {
@@ -65,7 +66,9 @@ FReply UKeyBindsWidget::NativeOnKeyUp(const FGeometry& InGeometry, const FKeyEve
 void UKeyBindsWidget::Close()
 {
 	// Save the key mappings
-	UGameSettingsSubsystem::UpdateKeyMappings(KeyMappings);
+	const UGameInstance* GameInstance { UGameplayStatics::GetGameInstance(this) };
+	UGameSettingsSubsystem* SettingsSubsystem { GameInstance->GetSubsystem<UGameSettingsSubsystem>() };
+	SettingsSubsystem->UpdateKeyMappings(KeyMappings);
 	OnCloseButtonClicked.Broadcast();
 }
 

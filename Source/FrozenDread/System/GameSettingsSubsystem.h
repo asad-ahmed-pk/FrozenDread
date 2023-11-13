@@ -33,7 +33,7 @@ public:
 	void GetKeyMappings(TArray<FEnhancedActionKeyMapping>& Mappings) const;
 
 	/** Update and save the keymap settings */
-	static void UpdateKeyMappings(const TArray<FEnhancedActionKeyMapping>& Mappings);
+	void UpdateKeyMappings(const TArray<FEnhancedActionKeyMapping>& Mappings);
 
 	/** Get the current saved graphics options for the game */
 	static GameSettings::FGraphicsOptions GetGraphicsOptions();
@@ -42,11 +42,9 @@ public:
 	static void ApplyGraphicsOptions(const GameSettings::FGraphicsOptions& GraphicsOptions);
 
 private:
-	/** Load the keymap */
 	static UBaseSaveGame* LoadSaveGame();
-	
-	/** Save the game settings */
 	static bool SaveGame(UBaseSaveGame* SaveGame);
+	void SyncKeyMappings(const TArray<FEnhancedActionKeyMapping>& NewMappings) const;
 
 private:
 	TArray<FEnhancedActionKeyMapping> CurrentKeyMappings;

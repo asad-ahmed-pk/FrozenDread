@@ -4,6 +4,9 @@
 //
 
 #include "FrozenDread/System/GameSettingsSubsystem.h"
+
+#include "EnhancedInputLibrary.h"
+#include "InputMappingContext.h"
 #include "FrozenDread/Game/BaseSaveGame.h"
 
 #include "PlayerMappableInputConfig.h"
@@ -21,6 +24,7 @@ void UGameSettingsSubsystem::Init(UPlayerMappableInputConfig* PMIC)
 	if (const UBaseSaveGame* SaveGame { LoadSaveGame() })
 	{
 		CurrentKeyMappings = SaveGame->KeyMappings;
+		SyncKeyMappings(CurrentKeyMappings);
 	}
 }
 
@@ -38,6 +42,35 @@ bool UGameSettingsSubsystem::SaveGame(UBaseSaveGame* SaveGame)
 {
 	check(SaveGame);
 	return (UGameplayStatics::SaveGameToSlot(SaveGame, SAVE_SLOT_NAME, 0));
+}
+
+void UGameSettingsSubsystem::SyncKeyMappings(const TArray<FEnhancedActionKeyMapping>& NewMappings) const
+{
+	check(DefaultPlayerMappableInputConfig.IsValid());
+
+	for (auto& [MappingContext, Order] : DefaultPlayerMappableInputConfig->GetMappingContexts())
+	{
+		for (const FEnhancedActionKeyMapping& CurrentMapping : MappingContext->GetMappings())
+		{
+			for (const FEnhancedActionKeyMapping& NewMapping : NewMappings)
+			{
+				if (NewMapping.PlayerMappableOptions.Name == CurrentMapping.PlayerMappableOptions.Name)
+				{
+					FEnhancedActionKeyMapping& Mapping { MappingContext->MapKey(CurrentMapping.Action, NewMapping.Key) };
+					
+					Mapping.Modifiers = CurrentMapping.Modifiers;
+					Mapping.Triggers = CurrentMapping.Triggers;
+					Mapping.bIsPlayerMappable = CurrentMapping.bIsPlayerMappable;
+					Mapping.bShouldBeIgnored = CurrentMapping.bShouldBeIgnored;
+					Mapping.PlayerMappableOptions = CurrentMapping.PlayerMappableOptions;
+					
+					MappingContext->UnmapKey(CurrentMapping.Action, CurrentMapping.Key);
+				}
+			}
+		}
+
+		UEnhancedInputLibrary::RequestRebuildControlMappingsUsingContext(MappingContext);
+	}
 }
 
 void UGameSettingsSubsystem::GetKeyMappings(TArray<FEnhancedActionKeyMapping>& Mappings) const
@@ -67,6 +100,9 @@ void UGameSettingsSubsystem::UpdateKeyMappings(const TArray<FEnhancedActionKeyMa
 	check(BaseSaveGame);
 	BaseSaveGame->KeyMappings = Mappings;
 	SaveGame(BaseSaveGame);
+
+	// Re-sync the key mappings
+	SyncKeyMappings(Mappings);
 }
 
 GameSettings::FGraphicsOptions UGameSettingsSubsystem::GetGraphicsOptions()
