@@ -14,10 +14,17 @@
 
 #include "GameUISubsystem.generated.h"
 
+class UConfirmationDialogWidget;
 class UCreditsWidget;
 class UGameSettingsWidget;
 class UKeyBindsWidget;
 class UOptionsMenuWidget;
+
+enum class EConfirmationDialogType : uint8
+{
+	QUIT_GAME = 0,
+	RETURN_TO_MENU = 1
+};
 
 /**
  * Subsystem responsible for the main game UI (main menu, options screen, etc...) and NOT the in-game player UI (HUD).
@@ -45,6 +52,9 @@ public:
 
 	/** Show the credits UI */
 	void ShowCredits();
+
+	/** Show a confirmation modal dialogue of the given type and call the callback with the result */
+	void ShowConfirmationDialog(EConfirmationDialogType Type, TFunction<void(bool)> CallBack);
 
 private:
 	void OnMapPostLoad(UWorld* World);
@@ -74,5 +84,6 @@ private:
 	TWeakObjectPtr<UGameSettingsWidget> GameSettingsWidget;
 	TWeakObjectPtr<UKeyBindsWidget> KeyBindsWidget;
 	TWeakObjectPtr<UCreditsWidget> CreditsWidget;
+	TWeakObjectPtr<UConfirmationDialogWidget> ConfirmationDialogWidget;
 	TWeakObjectPtr<UUserWidget> LoadingScreenWidget;
 };

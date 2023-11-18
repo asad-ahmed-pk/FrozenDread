@@ -35,4 +35,8 @@ struct FGameWidgetClass
 	/** The widget to use for the game credits screen */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UUserWidget> CreditsWidgetClass;
+
+	/** The widget to use for the confirmation dialogue */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UUserWidget> ConfirmationDialogWidgetClass;
 };

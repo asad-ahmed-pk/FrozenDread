@@ -28,7 +28,10 @@ public:
 	void StartGameRequested() const;
 	
 	/** Player requested to quit the game */
-	static void QuitGameRequested();
+	void QuitGameRequested() const;
+
+	/** Player requested to return to the main menu */
+	void ReturnToMainMenuRequested();
 
 protected:
 	virtual void OnStart() override;

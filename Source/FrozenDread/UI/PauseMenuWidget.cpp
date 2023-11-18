@@ -36,15 +36,23 @@ void UPauseMenuWidget::OptionsButtonClicked()
 {
 	const UGameInstance* GameInstance { UGameplayStatics::GetGameInstance(this) };
 	UGameUISubsystem* UISubsystem { GameInstance->GetSubsystem<UGameUISubsystem>() };
-	
 	check(UISubsystem);
-
 	UISubsystem->ShowGameOptions();
 }
 
 void UPauseMenuWidget::ExitButtonClicked()
 {
-	// TODO: Show confirmation dialogue and exit
+	UGameInstance* GameInstance { UGameplayStatics::GetGameInstance(this) };
+	UGameUISubsystem* UISubsystem { GameInstance->GetSubsystem<UGameUISubsystem>() };
+	check(UISubsystem);
+	
+	UISubsystem->ShowConfirmationDialog(EConfirmationDialogType::RETURN_TO_MENU, [GameInstance](bool IsConfirmed)
+	{
+		if (IsConfirmed)
+		{
+			GameInstance->ReturnToMainMenu();
+		}
+	});
 }
 
 void UPauseMenuWidget::ResumeButtonClicked()

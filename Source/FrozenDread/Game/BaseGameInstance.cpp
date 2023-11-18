@@ -53,14 +53,27 @@ void UBaseGameInstance::StartGameRequested() const
 	GameUISubsystem->ShowLoadingScreen(CallBack);
 }
 
-void UBaseGameInstance::QuitGameRequested()
+void UBaseGameInstance::QuitGameRequested() const
 {
-	const FText Message { FText::FromString("Are you sure you want to quit") };
+	check(GameUISubsystem.IsValid());
+	
 	const FText Title { FText::FromString("Quit Game") };
-	const EAppReturnType::Type ReturnType { FMessageDialog::Open(EAppMsgType::YesNo, Message, &Title) };
+	const FText Message { FText::FromString("Are you sure you want to quit") };
 
-	if (ReturnType == EAppReturnType::Yes)
+	GameUISubsystem->ShowConfirmationDialog(EConfirmationDialogType::QUIT_GAME, [](bool IsConfirmed)
 	{
-		FGenericPlatformMisc::RequestExit(false);
-	}
+		if (IsConfirmed)
+		{
+			FGenericPlatformMisc::RequestExit(false);
+		}
+	});
+}
+
+void UBaseGameInstance::ReturnToMainMenuRequested()
+{
+	check(GameUISubsystem.IsValid());
+	auto CallBack = [this] {
+		UGameplayStatics::OpenLevel(this, LevelNames::MAIN_MENU);
+	};
+	GameUISubsystem->ShowLoadingScreen(CallBack);
 }

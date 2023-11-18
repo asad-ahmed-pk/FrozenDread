@@ -6,6 +6,7 @@
 #include "GameUISubsystem.h"
 
 #include "Blueprint/UserWidget.h"
+#include "FrozenDread/UI/ConfirmationDialogWidget.h"
 #include "FrozenDread/UI/CreditsWidget.h"
 #include "FrozenDread/UI/GameSettingsWidget.h"
 #include "FrozenDread/UI/KeyBindsWidget.h"
@@ -15,6 +16,7 @@ constexpr int32 VIEW_PORT_ORDER_OPTIONS_MENU { 10 };
 constexpr int32 VIEW_PORT_ORDER_KEYBINDS_MENU { 11 };
 constexpr int32 VIEW_PORT_ORDER_SETTINGS_SCREEN { 12 };
 constexpr int32 VIEW_PORT_ORDER_CREDITS_SCREEN { 13 };
+constexpr int32 VIEW_PORT_ORDER_CONFIRMATION_DIALOG { 14 };
 constexpr int32 VIEW_PORT_ORDER_LOADING_SCREEN { 20 };
 
 void UGameUISubsystem::Init(const FGameWidgetClass& WidgetClasses)
@@ -64,6 +66,12 @@ void UGameUISubsystem::CreateWidgets(const FGameWidgetClass& WidgetClass)
 		CreditsWidget = CreateWidgetOfClass<UCreditsWidget>(WidgetClass.CreditsWidgetClass, VIEW_PORT_ORDER_CREDITS_SCREEN);
 		CreditsWidget->OnBackButtonClicked.AddUObject(this, &UGameUISubsystem::NavigateBack);
 	}
+
+	// Confirmation dialog widget
+	if (WidgetClass.ConfirmationDialogWidgetClass)
+	{
+		ConfirmationDialogWidget = CreateWidgetOfClass<UConfirmationDialogWidget>(WidgetClass.ConfirmationDialogWidgetClass, VIEW_PORT_ORDER_CONFIRMATION_DIALOG);
+	}
 }
 
 void UGameUISubsystem::ShowLoadingScreen(const TFunction<void()>& CompletionCallBack)
@@ -102,6 +110,35 @@ void UGameUISubsystem::ShowCredits()
 {
 	check(CreditsWidget.IsValid());
 	PushWidgetOntoStack(CreditsWidget);
+}
+
+void UGameUISubsystem::ShowConfirmationDialog(EConfirmationDialogType Type, TFunction<void(bool)> CallBack)
+{
+	check(ConfirmationDialogWidget.IsValid());
+
+	FText TitleText { FText::FromString("") };
+	FText MessageText { FText::FromString("") };
+
+	switch (Type)
+	{
+	case EConfirmationDialogType::QUIT_GAME:
+		TitleText = FText::FromString("Quit Game");
+		MessageText = FText::FromString("Are you sure you want to quit?");
+		break;
+
+	case EConfirmationDialogType::RETURN_TO_MENU:
+		TitleText = FText::FromString("Return to Main Menu");
+		MessageText = FText::FromString("Are you sure you want to return to the main menu?");
+		break;
+	}
+
+	ConfirmationDialogWidget->SetContent(TitleText, MessageText);
+	
+	PushWidgetOntoStack(ConfirmationDialogWidget);
+	ConfirmationDialogWidget->OnConfirmationResultSelected.BindLambda([&, CallBack](bool IsConfirmed){
+		NavigateBack();
+		CallBack(IsConfirmed);
+	});
 }
 
 void UGameUISubsystem::OnMapPostLoad(UWorld* World)

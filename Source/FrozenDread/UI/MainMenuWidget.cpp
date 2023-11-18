@@ -45,7 +45,8 @@ void UMainMenuWidget::StartGameButtonPressed()
 
 void UMainMenuWidget::EndGameButtonPressed()
 {
-	UBaseGameInstance::QuitGameRequested();
+	const UBaseGameInstance* GameInstance { CastChecked<UBaseGameInstance>(UGameplayStatics::GetGameInstance(this)) };
+	GameInstance->QuitGameRequested();
 }
 
 void UMainMenuWidget::OptionsButtonPressed()
