@@ -147,6 +147,7 @@ private:
 	TWeakObjectPtr<ATriggerVolume> ExitTriggerVolume;
 	TWeakObjectPtr<ABlockingVolume> ExitBlockingVolume;
 	TWeakObjectPtr<ATriggerVolume> FlashLightDialogueTriggerVolume;
+	TWeakObjectPtr<ATriggerVolume> EscapeTriggerVolume;
 
 	TArray<FMonsterSpawnInfo> MonsterSpawnInfoList;
 

@@ -22,9 +22,6 @@ class APlayerCharacter;
 class FROZENDREAD_API UGameStatics
 {
 public:
-	/** Get a reference to the level script actor */
-	static AGameLevelScriptActor* GetLevelScript(const AActor* ContextActor);
-
 	/** Get the given blackboard for the AI pawn */
 	static UBlackboardComponent* GetCharacterBlackBoardComponent(const APawn* Pawn);
 

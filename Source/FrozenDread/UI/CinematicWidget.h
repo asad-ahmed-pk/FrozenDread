@@ -23,12 +23,18 @@ public:
 	/** Play the fade in animation and call the callback once completed */
 	void PlayFadeInAnimation(const TFunction<void()>& Callback);
 
+	/** Play the fade out animation and call the callback once completed */
+	void PlayFadeOutAnimation(const TFunction<void()>& Callback);
+
 protected:
 	virtual void OnAnimationFinishedPlaying(UUMGSequencePlayer& Player) override;
 
 protected:
 	UPROPERTY(Transient, meta=(BindWidgetAnim))
 	TObjectPtr<UWidgetAnimation> FadeInAnimation;
+
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> FadeOutAnimation;
 
 private:
 	TFunction<void()> AnimationCompletionCallback;

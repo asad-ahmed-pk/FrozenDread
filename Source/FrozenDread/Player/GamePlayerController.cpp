@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "FrozenDread/Gameplay/InteractionComponent.h"
+#include "FrozenDread/Level/LevelObjects.h"
 #include "FrozenDread/Player/GamePlayerState.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/Player/Inventory.h"
@@ -97,6 +98,19 @@ void AGamePlayerController::SetMainMenuIsActive(bool IsActive)
 
 	// Pause / unpause game
 	UGameplayStatics::SetGamePaused(this, IsActive);
+}
+
+void AGamePlayerController::StartGameCompleteSequence() const
+{
+	check(GameHUD.IsValid());
+	UCinematicWidget* CinematicWidget { GameHUD->GetCinematicWidget() };
+
+	// Play fade out animation
+	CinematicWidget->SetVisibility(ESlateVisibility::Visible);
+	CinematicWidget->PlayFadeOutAnimation([this]
+	{
+		UGameplayStatics::OpenLevel(this, LevelNames::GAME_COMPLETE);
+	});
 }
 
 void AGamePlayerController::SetupInputComponent()

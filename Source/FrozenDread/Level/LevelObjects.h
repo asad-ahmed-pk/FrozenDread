@@ -10,6 +10,7 @@ namespace LevelNames
 {
 	constexpr char* MAIN_MENU { "MainMenu" };
 	constexpr char* GAME { "SciFiBase" };
+	constexpr char* GAME_COMPLETE { "GameComplete" };
 }
 
 /** ID for gameplay / level objects that can be interacted with */
@@ -38,6 +39,7 @@ namespace Tags
 	constexpr char* TAG_TRIGGER_RED_ALERT { "RedAlertTrigger" };
 	constexpr char* TAG_TRIGGER_FLASHLIGHT_DIALOGUE { "FlashlightDialogueTrigger" };
 	constexpr char* TAG_TRIGGER_2ND_MONSTER_SPAWN { "SpawnSecondMonsterTrigger" };
+	constexpr char* TAG_TRIGGER_ESCAPE { "EscapeTrigger" };
 
 	constexpr char* TAG_ACTOR_DOOR_REPAIR_PANEL { "BrokenPanelDoor" };
 	constexpr char* TAG_ACTOR_AMBIENT_SOUND_RED_ALERT { "RedAlertSound" };

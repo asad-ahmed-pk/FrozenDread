@@ -46,22 +46,25 @@ void AMainLevelCoordinator::SetupReferences()
 {
 	// Cache the player
 	Player = UGameStatics::GetPlayer(this);
+
+	UWorld* World { GetWorld() };
 	
 	// Cache the reference for the door with the repair panel
-	RepairPanelDoor = UGameStatics::GetActorInLevel<ADoor>(Tags::TAG_ACTOR_DOOR_REPAIR_PANEL, GetWorld());
+	RepairPanelDoor = UGameStatics::GetActorInLevel<ADoor>(Tags::TAG_ACTOR_DOOR_REPAIR_PANEL, World);
 
 	// Cache the reference for the red alert sequence
-	RedAlertSound = UGameStatics::GetActorInLevel<AAmbientSound>(Tags::TAG_ACTOR_AMBIENT_SOUND_RED_ALERT, GetWorld());
+	RedAlertSound = UGameStatics::GetActorInLevel<AAmbientSound>(Tags::TAG_ACTOR_AMBIENT_SOUND_RED_ALERT, World);
 
 	// Cache the reference for the red alert light
-	RedAlertLight = UGameStatics::GetActorInLevel<ARectLight>(Tags::TAG_ACTOR_RECT_LIGHT_RED_ALERT, GetWorld());
+	RedAlertLight = UGameStatics::GetActorInLevel<ARectLight>(Tags::TAG_ACTOR_RECT_LIGHT_RED_ALERT, World);
 
 	// Cache the reference for the exit trigger and blocking volumes
-	ExitTriggerVolume = UGameStatics::GetActorInLevel<ATriggerVolume>(Tags::TAG_TRIGGER_EARLY_EXIT, GetWorld());
-	ExitBlockingVolume = UGameStatics::GetActorInLevel<ABlockingVolume>(Tags::TAG_ACTOR_EXIT_BLOCKING_VOLUME, GetWorld());
+	ExitTriggerVolume = UGameStatics::GetActorInLevel<ATriggerVolume>(Tags::TAG_TRIGGER_EARLY_EXIT, World);
+	ExitBlockingVolume = UGameStatics::GetActorInLevel<ABlockingVolume>(Tags::TAG_ACTOR_EXIT_BLOCKING_VOLUME, World);
+	EscapeTriggerVolume = UGameStatics::GetActorInLevel<ATriggerVolume>(Tags::TAG_TRIGGER_ESCAPE, World);
 
 	// Flashlight trigger volume
-	FlashLightDialogueTriggerVolume = UGameStatics::GetActorInLevel<ATriggerVolume>(Tags::TAG_TRIGGER_FLASHLIGHT_DIALOGUE, GetWorld());
+	FlashLightDialogueTriggerVolume = UGameStatics::GetActorInLevel<ATriggerVolume>(Tags::TAG_TRIGGER_FLASHLIGHT_DIALOGUE, World);
 
 	// Setup the monster spawns
 	SetupMonsterSpawns();
@@ -269,9 +272,8 @@ void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor,
 		if (Player->GetInventory()->HasItem(ItemID))
 		{
 			SpawnMonster(1);
+			TriggerVolume->Destroy();
 		}
-
-		TriggerVolume->Destroy();
 	}
 	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_EARLY_EXIT))
 	{
@@ -283,6 +285,12 @@ void AMainLevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor,
 		check(FlashLightDialogueOptions.Num() > 0);
 		PlayDialogue(FlashLightDialogueOptions);
 		TriggerVolume->Destroy();
+	}
+	else if (TriggerVolume->ActorHasTag(Tags::TAG_TRIGGER_ESCAPE))
+	{
+		check(Player.IsValid());
+		const AGamePlayerController* PlayerController { Player->GetController<AGamePlayerController>() };
+		PlayerController->StartGameCompleteSequence();
 	}
 }
 

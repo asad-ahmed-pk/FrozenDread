@@ -39,6 +39,9 @@ public:
 
 	/** Display the main menu or back to the gameplay */
 	void SetMainMenuIsActive(bool IsActive);
+
+	/** Trigger game complete cinematics */
+	void StartGameCompleteSequence() const;
 	
 	/** Get a reference to the player's inventory system */
 	FORCEINLINE UInventory* GetInventory() const { return Inventory; }

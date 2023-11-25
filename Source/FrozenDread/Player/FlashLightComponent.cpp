@@ -56,7 +56,7 @@ AActor* UFlashLightComponent::GetActorInRange() const
 
 	const bool bHit { GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, LightSweepChannel, CollisionShape) };
 
-	bool bIsInLightRange { false };
+	bool IsInLightRange { false };
 	if (bHit)
 	{
 		// Ensure hit actor is within the cone based on angle
@@ -68,16 +68,19 @@ AActor* UFlashLightComponent::GetActorInRange() const
 		
 		if (AngleBetween < OuterSpotLightComponent->GetHalfConeAngle())
 		{
-			bIsInLightRange = true;
+			IsInLightRange = true;
 		}
 	}
+
+	// TODO: Ensure that there is no blocking volume in between
+	bool IsLightBlocked = false;
 
 	// Uncomment for debugging
 #if !(UE_BUILD_SHIPPING | UE_BUILD_TEST)
 	//DrawDebugCone(GetWorld(), Start, Direction, Range, OuterSpotLightComponent->GetHalfConeAngle(), OuterSpotLightComponent->GetHalfConeAngle(), 4, bIsInLightRange ? FColor::Blue : FColor::Red, false, 0, 0);
 #endif
 
-	return (bIsInLightRange && IsOn ? HitResult.GetActor() : nullptr);
+	return (IsInLightRange && IsOn && !IsLightBlocked ? HitResult.GetActor() : nullptr);
 }
 
 void UFlashLightComponent::Toggle()

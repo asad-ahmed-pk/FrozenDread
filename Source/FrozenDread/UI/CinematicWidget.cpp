@@ -14,10 +14,17 @@ void UCinematicWidget::PlayFadeInAnimation(const TFunction<void()>& Callback)
 	PlayAnimation(FadeInAnimation);
 }
 
+void UCinematicWidget::PlayFadeOutAnimation(const TFunction<void()>& Callback)
+{
+	check(FadeOutAnimation);
+	AnimationCompletionCallback = Callback;
+	PlayAnimation(FadeOutAnimation);
+}
+
 void UCinematicWidget::OnAnimationFinishedPlaying(UUMGSequencePlayer& Player)
 {
 	Super::OnAnimationFinishedPlaying(Player);
-	if (Player.GetAnimation() == FadeInAnimation)
+	if (Player.GetAnimation() == FadeInAnimation || Player.GetAnimation() == FadeOutAnimation)
 	{
 		AnimationCompletionCallback();
 	}
