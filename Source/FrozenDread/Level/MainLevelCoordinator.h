@@ -44,6 +44,9 @@ public:
 	/** The player interacted with the given item */
 	virtual void PlayerInteractedWithItem(uint8 ItemID, AInteractionItem* Item) override;
 
+	/** Player picked up an inventory item */
+	virtual void PlayerPickedUpItem(EInventoryItemID ItemID) override;
+
 	/** The player intro sequence was completed */
 	virtual void PlayerIntroSequenceCompleted() override;
 
@@ -90,6 +93,14 @@ private:
 	/** The list of dialogue items to play to introduce the key card goal */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
 	TArray<FDataTableRowHandle> FindKeyCardGoalDialogueOptions;
+
+	/** The list of dialogue items to play when the player picks up the keycard */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
+	TArray<FDataTableRowHandle> PickedUpKeyCardDialogueOptions;
+
+	/** The list of dialogue items to play when the player lifts the lock-down */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Dialogue", meta=(AllowPrivateAccess="true", RowType="DialogueItem"))
+	TArray<FDataTableRowHandle> LiftedLockDownDialogueOptions;
 
 	/** The inventory item that the player is expected to have for repairing the broken door */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Inventory", meta=(AllowPrivateAccess="true", RowType="InventoryItemInfo"))

@@ -9,6 +9,8 @@
 
 #include "InventoryItemInfo.generated.h"
 
+enum class EInventoryItemID : uint8;
+
 /**
  * Represents info for an inventory item.
  */

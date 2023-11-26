@@ -63,7 +63,7 @@ void AInventoryItem::Interact(APlayerCharacter* PlayerCharacter)
 	UGameplayStatics::PlaySoundAtLocation(this, InteractionSound, GetActorLocation());
 
 	// Notify delegates
-	OnPickedUp.Broadcast();
+	OnPickedUp.Broadcast(static_cast<EInventoryItemID>(ItemInfo->ID));
 
 	// Remove from game world
 	Destroy();

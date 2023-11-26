@@ -54,6 +54,11 @@ void ALevelCoordinator::PlayerInteractedWithItem(uint8 ItemID, AInteractionItem*
 	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::PlayerInteractedWithItem called. Please override in child class."));
 }
 
+void ALevelCoordinator::PlayerPickedUpItem(EInventoryItemID ItemID)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::PlayerPickedUpItem called. Please override in child class."));
+}
+
 void ALevelCoordinator::OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ALevelCoordinator::OnTriggerVolumeBeginOverlap called. Please override in child class."));

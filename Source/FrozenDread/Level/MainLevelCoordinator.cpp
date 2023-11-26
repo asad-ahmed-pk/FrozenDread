@@ -338,12 +338,34 @@ void AMainLevelCoordinator::PlayerInteractedWithItem(uint8 ItemID, AInteractionI
 			ExitBlockingVolume->Destroy();
 			check(ExitTriggerVolume.IsValid());
 			ExitTriggerVolume->Destroy();
+
+			// Play dialogue after 2 seconds
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([this]
+			{
+				check(!LiftedLockDownDialogueOptions.IsEmpty());
+				PlayDialogue(LiftedLockDownDialogueOptions);
+			}), 2.0F, false);
 			
 			break;
 		}
 
 		default:
 			break;
+	}
+}
+
+void AMainLevelCoordinator::PlayerPickedUpItem(EInventoryItemID ItemID)
+{
+	switch (ItemID)
+	{
+	case EInventoryItemID::ControlRoomKeyCard:
+		check(!PickedUpKeyCardDialogueOptions.IsEmpty());
+		MarkObjectiveCompleted(FindKeyCardObjective);
+		PlayDialogue(PickedUpKeyCardDialogueOptions);
+		break;
+
+	default:
+		break;
 	}
 }
 

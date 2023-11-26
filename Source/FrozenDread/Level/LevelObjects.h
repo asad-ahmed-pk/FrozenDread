@@ -26,7 +26,7 @@ enum class EInteractionItemID : uint8
 
 /** The ID for inventory items */
 UENUM(BlueprintType)
-enum class InventoryItemID : uint8
+enum class EInventoryItemID : uint8
 {
 	Toolbox							UMETA(DisplayName = "Toolbox"),
 	ControlRoomKeyCard				UMETA(DisplayName = "Control Room Keycard")

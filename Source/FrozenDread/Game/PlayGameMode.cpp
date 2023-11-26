@@ -12,6 +12,7 @@
 
 #include "FrozenDread/Gameplay/Door.h"
 #include "FrozenDread/Gameplay/InteractionItem.h"
+#include "FrozenDread/Gameplay/InventoryItem.h"
 #include "FrozenDread/Level/MainLevelCoordinator.h"
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/System/GameEventSubsystem.h"
@@ -90,9 +91,13 @@ void APlayGameMode::SetupItemInteractionEvents()
 
 	for (AActor* Actor : Actors)
 	{
-		if (AInteractionItem* InteractionItem { Cast<AInteractionItem>(Actor)} )
+		if (AInteractionItem* InteractionItem { Cast<AInteractionItem>(Actor) })
 		{
 			InteractionItem->OnInteractedWith.AddDynamic(LevelCoordinator.Get(), &ALevelCoordinator::PlayerInteractedWithItem);
+		}
+		else if (AInventoryItem* InventoryItem { Cast<AInventoryItem>(Actor) })
+		{
+			InventoryItem->OnPickedUp.AddDynamic(LevelCoordinator.Get(), &ALevelCoordinator::PlayerPickedUpItem);
 		}
 	}
 }

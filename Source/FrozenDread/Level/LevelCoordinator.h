@@ -14,6 +14,8 @@ class ULevelSequencePlayer;
 class ULevelSequence;
 class APatrolWaypointSet;
 class AInteractionItem;
+
+enum class EInventoryItemID : uint8;
 enum class EDoorLockState : uint8;
 
 class UPlayerDialogueSubsystem;
@@ -67,6 +69,10 @@ public:
 	/** The player interacted with an interactive item in the level */
 	UFUNCTION()
 	virtual void PlayerInteractedWithItem(uint8 ItemID, AInteractionItem* Item);
+
+	/** The player picked up an inventory item in the level */
+	UFUNCTION()
+	virtual void PlayerPickedUpItem(EInventoryItemID ItemID);
 
 public:
 	UFUNCTION()

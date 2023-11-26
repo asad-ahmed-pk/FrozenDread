@@ -22,7 +22,7 @@ class UStaticMeshComponent;
 class UMetaSoundSource;
 class UTexture2D;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPickedUpItemDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPickedUpItemDelegate, EInventoryItemID, ItemID);
 
 UCLASS()
 class FROZENDREAD_API AInventoryItem : public AActor, public IInteractiveObject
