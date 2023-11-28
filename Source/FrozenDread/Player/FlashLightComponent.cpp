@@ -6,6 +6,7 @@
 #include "FlashLightComponent.h"
 
 #include "Components/SpotLightComponent.h"
+#include "FrozenDread/Game/GameTags.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -39,28 +40,22 @@ void UFlashLightComponent::PostInitProperties()
 
 AActor* UFlashLightComponent::GetActorInRange() const
 {
-	check(OuterSpotLightComponent);
-	check(LightSweepChannel);
-	
-	FHitResult HitResult;
+	// Uncomment for debugging
+	#if !(UE_BUILD_SHIPPING | UE_BUILD_TEST)
+	//DrawDebugCone(GetWorld(), Start, Direction, Range, OuterSpotLightComponent->GetHalfConeAngle(), OuterSpotLightComponent->GetHalfConeAngle(), 4, bIsInLightRange ? FColor::Blue : FColor::Red, false, 0, 0);
+	#endif
 
-	const float Range { static_cast<float>(OuterSpotLightComponent->GetBoundingSphere().W * 2) };
-	const FVector Direction { OuterSpotLightComponent->GetForwardVector() };
-	
-	const FVector Start { OuterSpotLightComponent->GetComponentLocation() };
-	const FVector End { Start + (Direction * (Range/2)) };
-
-	FCollisionShape CollisionShape;
-	const FVector3f HalfExtent { Range / 2, Range / 2, 200.0F };
-	CollisionShape.SetBox(HalfExtent);
-
-	const bool bHit { GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, LightSweepChannel, CollisionShape) };
-
-	bool IsInLightRange { false };
-	if (bHit)
+	// Sweep by set channel to find target actor
+	if (AActor* TargetActor { GetHitActorBySweep(LightSweepChannel) })
 	{
+		// The offset from the flashlight to avoid collision with player's character
+		static constexpr float OFFSET { 20.0F };
+		
+		const FVector FlashlightStart { GetComponentLocation() + GetForwardVector() * OFFSET };
+		const bool IsBlocked { IsBlockedByStaticObject(TargetActor, FlashlightStart) };
+
 		// Ensure hit actor is within the cone based on angle
-		const FVector ToHitActor { HitResult.GetActor()->GetActorLocation() - GetComponentLocation() };
+		const FVector ToHitActor { TargetActor->GetActorLocation() - GetComponentLocation() };
 		const FVector ToHitActorDirection { ToHitActor.GetSafeNormal() };
 		const FVector Forward { OuterSpotLightComponent->GetForwardVector() };
 
@@ -68,19 +63,11 @@ AActor* UFlashLightComponent::GetActorInRange() const
 		
 		if (AngleBetween < OuterSpotLightComponent->GetHalfConeAngle())
 		{
-			IsInLightRange = true;
+			return (IsOn && !IsBlocked ? TargetActor : nullptr);
 		}
 	}
 
-	// TODO: Ensure that there is no blocking volume in between
-	bool IsLightBlocked = false;
-
-	// Uncomment for debugging
-#if !(UE_BUILD_SHIPPING | UE_BUILD_TEST)
-	//DrawDebugCone(GetWorld(), Start, Direction, Range, OuterSpotLightComponent->GetHalfConeAngle(), OuterSpotLightComponent->GetHalfConeAngle(), 4, bIsInLightRange ? FColor::Blue : FColor::Red, false, 0, 0);
-#endif
-
-	return (IsInLightRange && IsOn && !IsLightBlocked ? HitResult.GetActor() : nullptr);
+	return nullptr;
 }
 
 void UFlashLightComponent::Toggle()
@@ -94,5 +81,37 @@ void UFlashLightComponent::Toggle()
 	// Turn spotlights on/off
 	InnerSpotLightComponent->SetVisibility(IsOn, true);
 	OuterSpotLightComponent->SetVisibility(IsOn, true);
+}
+
+bool UFlashLightComponent::IsBlockedByStaticObject(const AActor* TargetActor, const FVector& Start) const
+{
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, TargetActor->GetActorLocation(), ECC_WorldStatic);
+	return HitResult.bBlockingHit && HitResult.GetActor() != TargetActor;
+}
+
+AActor* UFlashLightComponent::GetHitActorBySweep(ECollisionChannel Channel) const
+{
+	check(OuterSpotLightComponent);
+	
+	FHitResult HitResult;
+
+	const float Range { static_cast<float>(OuterSpotLightComponent->GetBoundingSphere().W * 2) };
+	const FVector Direction { OuterSpotLightComponent->GetForwardVector() };
+	
+	const FVector Start { OuterSpotLightComponent->GetComponentLocation() };
+	const FVector End { Start + (Direction * (Range/2)) };
+
+	FCollisionShape CollisionShape;
+	const FVector3f HalfExtent { Range / 2, Range / 2, 200.0F };
+	CollisionShape.SetBox(HalfExtent);
+	
+	const bool IsHit { GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, Channel, CollisionShape) };
+	if (IsHit)
+	{
+		return HitResult.GetActor();
+	}
+
+	return nullptr;
 }
 

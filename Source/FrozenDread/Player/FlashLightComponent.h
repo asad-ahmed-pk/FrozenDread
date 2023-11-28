@@ -37,6 +37,10 @@ public:
 	void Toggle();
 
 private:
+	bool IsBlockedByStaticObject(const AActor* TargetActor, const FVector& Start) const;
+	AActor* GetHitActorBySweep(ECollisionChannel Channel) const;
+
+private:
 	/** The sound to play when the flash light is toggled on and off manually */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Sound", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<USoundBase> ToggleSound;
@@ -54,5 +58,5 @@ private:
 	TEnumAsByte<ECollisionChannel> LightSweepChannel;
 
 private:
-	bool IsOn { false }; 
+	bool IsOn { false };
 };
