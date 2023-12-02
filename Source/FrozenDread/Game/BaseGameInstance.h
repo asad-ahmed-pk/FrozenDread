@@ -34,7 +34,10 @@ public:
 	void ReturnToMainMenuRequested();
 
 protected:
-	virtual void OnStart() override;
+	//virtual void OnStart() override;
+	virtual void StartGameInstance() override;
+
+	
 
 private:
 	void SetupSubsystems() const;

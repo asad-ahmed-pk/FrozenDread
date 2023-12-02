@@ -52,6 +52,9 @@ public:
 
 	/** Game over */
 	virtual void TriggerGameOver() override;
+
+	/** Level has started */
+	virtual void StartLevel() override;
 	
 public:
 	virtual void OnTriggerVolumeBeginOverlap(AActor* OverlappedActor, AActor* OtherActor) override;
@@ -59,7 +62,6 @@ public:
 private:
 	void SetupReferences();
 	void SetupMonsterSpawns();
-	void StartLevel();
 	void PlayDialogue(const TArray<FDataTableRowHandle>& DialogueRowHandles, const TOptional<TFunction<void()>>& CallBackFunc = NullOpt) const;
 	void PlayInteractionSoundAtLocation(USoundBase* Sound, const FVector& Location) const;
 	void SpawnMonster(int32 Index);

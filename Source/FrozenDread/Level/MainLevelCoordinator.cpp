@@ -31,7 +31,6 @@ void AMainLevelCoordinator::BeginPlay()
 {
 	Super::BeginPlay();
 	SetupReferences();
-	StartLevel();
 }
 
 void AMainLevelCoordinator::Init(const FSubsystemCache& SubsystemCacheRef)

@@ -20,9 +20,11 @@ class APlayGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	virtual void BeginPlay() override;
-
+	/** Called when the game mode is being initialised */
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
+	/** Called when the game mode has started */
+	virtual void StartPlay() override;
 
 	/** Get a reference to the current level coordinator that is coordinating this level */
 	ALevelCoordinator* GetLevelCoordinator() const { return LevelCoordinator.Get(); }

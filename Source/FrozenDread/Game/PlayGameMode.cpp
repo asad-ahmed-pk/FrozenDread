@@ -20,12 +20,6 @@
 #include "FrozenDread/System/MusicPlayerSubsystem.h"
 #include "FrozenDread/System/GameObjectiveSubsystem.h"
 
-void APlayGameMode::BeginPlay()
-{
-	Super::BeginPlay();
-	SetupSubsystems();
-}
-
 void APlayGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
@@ -41,12 +35,19 @@ void APlayGameMode::InitGame(const FString& MapName, const FString& Options, FSt
 	SetupTriggerEvents();
 }
 
+void APlayGameMode::StartPlay()
+{
+	Super::StartPlay();
+	SetupSubsystems();
+	check(LevelCoordinator.IsValid());
+	LevelCoordinator->StartLevel();
+}
+
 void APlayGameMode::SetupSubsystems()
 {
 	// Setup game event subsystem
 	UGameEventSubsystem* EventSubsystem { GetWorld()->GetSubsystem<UGameEventSubsystem>() };
 	check(EventSubsystem);
-	EventSubsystem = EventSubsystem;
 	APlayerCharacter* Player { CastChecked<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)) };
 	EventSubsystem->Setup(Player);
 

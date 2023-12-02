@@ -28,7 +28,7 @@ struct FInventoryItemInfo : public FTableRowBase
 	FText Title;
 
 	// The description text for the item in the inventory
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(MultiLine="true"))
 	FText Description;
 
 	// The Icon to use for the item in the inventory

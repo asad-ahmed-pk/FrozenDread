@@ -63,6 +63,9 @@ public:
 	/** Trigger game over */
 	virtual void TriggerGameOver();
 
+	/** Call to the start the level */
+	virtual void StartLevel();
+
 	/** The player controller has completed setup */
 	virtual void PlayerIntroSequenceCompleted();
 

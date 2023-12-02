@@ -11,14 +11,13 @@
 #include "FrozenDread/System/GameUISubsystem.h"
 #include "FrozenDread/System/MusicPlayerSubsystem.h"
 #include "Kismet/GameplayStatics.h"
-#include "Misc/MessageDialog.h"
 
 
-void UBaseGameInstance::OnStart()
+void UBaseGameInstance::StartGameInstance()
 {
-	Super::OnStart();
 	SetupSubsystems();
 	SetupGameUI();
+	Super::StartGameInstance();
 }
 
 void UBaseGameInstance::SetupSubsystems() const
@@ -26,6 +25,7 @@ void UBaseGameInstance::SetupSubsystems() const
 	// Setup music subsystem
 	UMusicPlayerSubsystem* MusicPlayerSubsystem { GetSubsystem<UMusicPlayerSubsystem>() };
 	check(MusicPlayerSubsystem);
+	check(!MusicTrackList.IsEmpty());
 	MusicPlayerSubsystem->SetupWithTrackList(MusicTrackList);
 
 	// Setup settings subsystem
