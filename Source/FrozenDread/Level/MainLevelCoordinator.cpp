@@ -124,7 +124,7 @@ void AMainLevelCoordinator::PlayerInteractedWithDoor(uint8 DoorID, EDoorLockStat
 			if (DoorLockState == EDoorLockState::RequiresKeyCard)
 			{
 				check(SubsystemCache.DialogueSubsystem);
-				const int32 Index { FMath::RandRange(0, LockedDoorDialogueOptions.Num()) };
+				const int32 Index { FMath::RandRange(0, LockedDoorDialogueOptions.Num() - 1) };
 				const FDialogueItem* DialogueItem { LockedDoorDialogueOptions[Index].GetRow<FDialogueItem>(TEXT("MainLevelCoordinator::PlayerInteractedWithDoor")) };
 				SubsystemCache.DialogueSubsystem->AddDialogueItem(*DialogueItem, {});
 
