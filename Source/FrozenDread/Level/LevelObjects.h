@@ -51,4 +51,6 @@ namespace Tags
 
 	constexpr char* TAG_MONSTER_2_SPAWN_LOCATION { "Monster2Spawn" };
 	constexpr char* TAG_MONSTER_2_Waypoints { "Monster2Waypoints" };
+
+	constexpr char* TAG_POST_PROCESS_VOLUME { "PostProcessVolume" };
 }

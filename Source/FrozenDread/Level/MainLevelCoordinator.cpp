@@ -10,6 +10,7 @@
 #include "Engine/BlockingVolume.h"
 #include "Engine/RectLight.h"
 #include "Engine/TriggerVolume.h"
+#include "Engine/PostProcessVolume.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/AmbientSound.h"
 
@@ -24,6 +25,7 @@
 #include "FrozenDread/Player/PlayerCharacter.h"
 #include "FrozenDread/System/GameEventSubsystem.h"
 #include "FrozenDread/System/GameObjectiveSubsystem.h"
+#include "FrozenDread/System/GameSettingsSubsystem.h"
 #include "FrozenDread/System/MusicPlayerSubsystem.h"
 #include "FrozenDread/System/PlayerDialogueSubsystem.h"
 
@@ -31,6 +33,7 @@ void AMainLevelCoordinator::BeginPlay()
 {
 	Super::BeginPlay();
 	SetupReferences();
+	UpdatePostProcessVolumeForSettings();
 }
 
 void AMainLevelCoordinator::Init(const FSubsystemCache& SubsystemCacheRef)
@@ -39,6 +42,21 @@ void AMainLevelCoordinator::Init(const FSubsystemCache& SubsystemCacheRef)
 
 	// Subscribe to the game event sub-system's player chase event
 	SubsystemCache.GameEventSubsystem->OnPlayerBeingChased.AddUObject(this, &AMainLevelCoordinator::UpdatePlayerChaseStatus);
+
+	// Subscribe to game settings change (to handle lighting update for Lumen vs non Lumen settings on PPV)
+	FGameSettingsDelegate::OnGameSettingsChanged.AddUObject(this, &AMainLevelCoordinator::UpdatePostProcessVolumeForSettings);
+}
+
+void AMainLevelCoordinator::UpdatePostProcessVolumeForSettings()
+{
+	static constexpr float LUMEN_SETTING { 1.0F };
+	static constexpr float NON_LUMEN_SETTING { -2.25F };
+
+	check(PostProcessVolume.IsValid());
+
+	const auto GraphicsOptions { UGameSettingsSubsystem::GetGraphicsOptions() };
+	
+	PostProcessVolume->Settings.AutoExposureBias = (GraphicsOptions.EnableLumen ? LUMEN_SETTING : NON_LUMEN_SETTING);
 }
 
 void AMainLevelCoordinator::SetupReferences()
@@ -67,6 +85,9 @@ void AMainLevelCoordinator::SetupReferences()
 
 	// Setup the monster spawns
 	SetupMonsterSpawns();
+
+	// Cache the post process volume in the level
+	PostProcessVolume = UGameStatics::GetActorInLevel<APostProcessVolume>(Tags::TAG_POST_PROCESS_VOLUME, World);
 }
 
 void AMainLevelCoordinator::SetupMonsterSpawns()

@@ -12,6 +12,7 @@
 
 #include "MainLevelCoordinator.generated.h"
 
+class APostProcessVolume;
 class ATriggerVolume;
 class ABlockingVolume;
 class AMonster;
@@ -69,6 +70,7 @@ private:
 	void AddObjectiveOnce(const FDataTableRowHandle& RowHandle) const;
 	void MarkObjectiveCompleted(const FDataTableRowHandle& RowHandle) const;
 	void AddKeyCardGoal();
+	void UpdatePostProcessVolumeForSettings();
 
 
 private:
@@ -161,6 +163,7 @@ private:
 	TWeakObjectPtr<ABlockingVolume> ExitBlockingVolume;
 	TWeakObjectPtr<ATriggerVolume> FlashLightDialogueTriggerVolume;
 	TWeakObjectPtr<ATriggerVolume> EscapeTriggerVolume;
+	TWeakObjectPtr<APostProcessVolume> PostProcessVolume;
 
 	TArray<FMonsterSpawnInfo> MonsterSpawnInfoList;
 

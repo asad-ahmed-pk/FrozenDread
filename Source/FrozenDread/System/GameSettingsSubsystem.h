@@ -17,6 +17,13 @@ class UBaseSaveGame;
 class APlayerCharacter;
 class UPlayerMappableInputConfig;
 
+DECLARE_MULTICAST_DELEGATE(FGameSettingsChangedDelegate);
+
+namespace FGameSettingsDelegate
+{
+	inline FGameSettingsChangedDelegate OnGameSettingsChanged;
+};
+
 /**
  * Subsystem responsible for managing game settings including key binds.
  */
@@ -40,6 +47,7 @@ public:
 
 	/** Apply and save the graphics options for the game with the following settings */
 	static void ApplyGraphicsOptions(const GameSettings::FGraphicsOptions& GraphicsOptions);
+
 
 private:
 	static UBaseSaveGame* LoadSaveGame();

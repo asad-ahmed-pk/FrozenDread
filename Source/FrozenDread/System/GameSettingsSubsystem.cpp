@@ -144,4 +144,7 @@ void UGameSettingsSubsystem::ApplyGraphicsOptions(const GameSettings::FGraphicsO
 
 	// Save to disk
 	GameUserSettings->ApplySettings(false);
+
+	// Notify delegates
+	FGameSettingsDelegate::OnGameSettingsChanged.Broadcast();
 }

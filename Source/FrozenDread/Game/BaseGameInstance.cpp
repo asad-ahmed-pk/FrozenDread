@@ -77,3 +77,13 @@ void UBaseGameInstance::ReturnToMainMenuRequested()
 	};
 	GameUISubsystem->ShowLoadingScreen(CallBack);
 }
+
+void UBaseGameInstance::OnStart()
+{
+	Super::OnStart();
+	
+#if UE_EDITOR
+	SetupSubsystems();
+	SetupGameUI();
+#endif
+}

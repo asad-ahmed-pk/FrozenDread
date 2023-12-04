@@ -26,7 +26,7 @@ class FROZENDREAD_API UBaseGameInstance : public UGameInstance
 public:
 	/** Player requested to start the game */
 	void StartGameRequested() const;
-	
+
 	/** Player requested to quit the game */
 	void QuitGameRequested() const;
 
@@ -34,7 +34,7 @@ public:
 	void ReturnToMainMenuRequested();
 
 protected:
-	//virtual void OnStart() override;
+	virtual void OnStart() override;
 	virtual void StartGameInstance() override;
 
 	
