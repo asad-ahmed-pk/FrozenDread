@@ -27,6 +27,9 @@ public:
 	/** Called after all properties have been initialised in the constructor */
 	virtual void PostInitProperties() override;
 
+	/** Called when the level begins play */
+	virtual void BeginPlay() override;
+
 	/** Return the first actor currently within the flashlight range */
 	AActor* GetActorInRange() const;
 
@@ -37,6 +40,7 @@ public:
 	void Toggle();
 
 private:
+	void UpdateFlashLightStrengthForGameSetting();
 	bool IsBlockedByStaticObject(const AActor* TargetActor, const FVector& Start) const;
 	AActor* GetHitActorBySweep(ECollisionChannel Channel) const;
 
@@ -59,4 +63,6 @@ private:
 
 private:
 	bool IsOn { false };
+	float LumenIntensityOuter { 5000.0F };
+	float LumenIntensityInner { 5000.0F };
 };

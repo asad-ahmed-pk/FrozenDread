@@ -6,7 +6,8 @@
 #include "FlashLightComponent.h"
 
 #include "Components/SpotLightComponent.h"
-#include "FrozenDread/Game/GameTags.h"
+#include "FrozenDread/Game/GameOptions.h"
+#include "FrozenDread/System/GameSettingsSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -34,8 +35,21 @@ UFlashLightComponent::UFlashLightComponent()
 void UFlashLightComponent::PostInitProperties()
 {
 	Super::PostInitProperties();
+	
 	OuterSpotLightComponent->SetupAttachment(this);
 	InnerSpotLightComponent->SetupAttachment(this);
+
+	LumenIntensityInner = InnerSpotLightComponent->Intensity;
+	LumenIntensityOuter = OuterSpotLightComponent->Intensity;
+}
+
+void UFlashLightComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Register for changes to the game settings (to adjust light strength when lumen setting changes)
+	FGameSettingsDelegate::OnGameSettingsChanged.AddUObject(this, &UFlashLightComponent::UpdateFlashLightStrengthForGameSetting);
+	UpdateFlashLightStrengthForGameSetting();
 }
 
 AActor* UFlashLightComponent::GetActorInRange() const
@@ -81,6 +95,19 @@ void UFlashLightComponent::Toggle()
 	// Turn spotlights on/off
 	InnerSpotLightComponent->SetVisibility(IsOn, true);
 	OuterSpotLightComponent->SetVisibility(IsOn, true);
+}
+
+void UFlashLightComponent::UpdateFlashLightStrengthForGameSetting()
+{
+	static constexpr float NON_LUMEN_SCALE_FACTOR { 3.0F };
+	
+	const auto GraphicsOptions { UGameSettingsSubsystem::GetGraphicsOptions() };
+
+	check(InnerSpotLightComponent);
+	check(OuterSpotLightComponent);
+	
+	InnerSpotLightComponent->SetIntensity(GraphicsOptions.EnableLumen ? LumenIntensityInner : LumenIntensityInner * NON_LUMEN_SCALE_FACTOR);
+	OuterSpotLightComponent->SetIntensity(GraphicsOptions.EnableLumen ? LumenIntensityOuter : LumenIntensityOuter * NON_LUMEN_SCALE_FACTOR);
 }
 
 bool UFlashLightComponent::IsBlockedByStaticObject(const AActor* TargetActor, const FVector& Start) const
