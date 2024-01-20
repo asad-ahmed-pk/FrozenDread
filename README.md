@@ -3,7 +3,7 @@
 
 ### Description
 
-[![Game Trailer](https://img.youtube.com/vi/0tTUace0P1g/0.jpg)](https://www.youtube.com/watch?v=0tTUace0P1g)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0tTUace0P1g?si=qh0-AYnTq3N0HEnb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 Frozen Dread is an Unreal Engine 5 first person horror game that is built entirely in C++. Blueprints are only used for connecting asset references.
 
